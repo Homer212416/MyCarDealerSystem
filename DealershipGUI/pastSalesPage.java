@@ -54,7 +54,7 @@ public class pastSalesPage{
 		JLabel carImage = new JLabel("");
 		carImage.setBackground(Color.BLACK);
 		carImage.setOpaque(true);
-		carImage.setIcon(new ImageIcon(pastSalesPage.class.getResource("/images/backgroundd.jpg")));
+		carImage.setIcon(new ImageIcon(dealerShipInfoPage.class.getResource("/images/backgroundd.jpg")));
 		carImage.setBounds(0, -50, 650, 200);
 		controlPanel.add(carImage);
 		
@@ -65,14 +65,14 @@ public class pastSalesPage{
 		searchBarBG.setLayout(layoutS);
 		GridBagConstraints gbcS = new GridBagConstraints();
 		searchBarBG.setBounds(0, 150, 650, 50);
-		controlPanel.add(searchBarBG);
+		//controlPanel.add(searchBarBG);
 		
 		JPanel filterBG = new JPanel();
 		filterBG.setBackground(new Color(230, 230, 230));
 		filterBG.setLayout(new GridBagLayout());
 		GridBagLayout layoutF = new GridBagLayout();
 		filterBG.setLayout(layoutF);
-		filterBG.setBounds(450, 225, 200, 450);
+		filterBG.setBounds(450, 175, 200, 450);
 		GridBagConstraints gbcF = new GridBagConstraints();
 		controlPanel.add(filterBG);
 		
@@ -81,7 +81,7 @@ public class pastSalesPage{
 		displayBG.setLayout(new GridBagLayout());
 		GridBagLayout layoutD = new GridBagLayout();
 		displayBG.setLayout(layoutD);
-		displayBG.setBounds(10, 200, 440, 30);
+		displayBG.setBounds(0, 150, 450, 30);
 		GridBagConstraints gbcD = new GridBagConstraints();
 		controlPanel.add(displayBG);
 		
@@ -91,7 +91,7 @@ public class pastSalesPage{
 		GridBagLayout layoutI = new GridBagLayout();
 		inventoryBG.setLayout(layoutI);
 		GridBagConstraints gbcI = new GridBagConstraints();
-		inventoryBG.setBounds(0, 225, 450, 430);
+		inventoryBG.setBounds(10, 175, 440, 430);
 		controlPanel.add(inventoryBG);
 		
 		//page menu in upper right hand corner
@@ -100,6 +100,7 @@ public class pastSalesPage{
 		pageMenuDD.addElement("Inventory");
 		pageMenuDD.addElement("Dealership Info");
 		pageMenuDD.addElement("Sales History");
+		pageMenuDD.addElement("Manage User Accounts");
 		pageMenuDD.addElement("Sign Out");
 		
 		final JComboBox pageMenuDDB = new JComboBox(pageMenuDD);    
@@ -108,181 +109,23 @@ public class pastSalesPage{
 		pageMenuDDP.setBounds(500, 20, 150, 25);
 		controlPanel.add(pageMenuDDP);
 		
-		//edit inventory button on search bar left hand side
-		final DefaultComboBoxModel addVehicle = new DefaultComboBoxModel();
-		
-		addVehicle.addElement("");
-		addVehicle.addElement("Add Car");
-		addVehicle.addElement("Add Motorcycle");
-		addVehicle.addElement("Edit Vehicle");
-		addVehicle.addElement("Sell Vehicle");
-		addVehicle.addElement("Remove Vehicle");
-
-		final JComboBox addVehicleBox = new JComboBox(addVehicle);    
-		addVehicleBox.setSelectedIndex(0);
-		JScrollPane addVehiclePane = new JScrollPane(addVehicleBox);    
-		gbcS.gridx = 1;
-		gbcS.gridy = 0;
-		searchBarBG.add(addVehiclePane, gbcS); 
-		
-		JLabel editLabel = new JLabel("Edit Inventory: ");
-		gbcS.gridx = 0;
-		gbcS.gridy = 0;
-		searchBarBG.add(editLabel, gbcS); 
-		
-		//search bar on right hand side
-		JTextField searchBar  = new JTextField("Search", 15);
-		gbcS.gridx = 2;
-		gbcS.gridy = 0;
-		gbcS.insets = new Insets(0,200,0,0);
-		searchBarBG.add(searchBar, gbcS);
-		
-		//searchButton
-		JButton MagButton = new JButton("S");
-		gbcS.insets = new Insets(0,0,0,0);
-		gbcS.gridx = 6;
-		gbcS.gridy = 0;
-		searchBarBG.add(MagButton, gbcS);
-		
-		//filter portion right hand side
-		//make filter
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel make = new JLabel("Make");
-		gbcF.gridwidth = 3;
-		gbcF.weighty =.2;
-		gbcF.gridx = 0;
-		gbcF.gridy = 3;
-		gbcF.ipady = 5;
-		filterBG.add(make, gbcF);
-		gbcF.anchor = GridBagConstraints.WEST;
-		final JCheckBox Honda = new JCheckBox("Honda");
-		Honda.setBackground(new Color(230, 230, 230));
-		final JCheckBox BMW = new JCheckBox("BMW");
-		BMW.setBackground(new Color(230, 230, 230));
-		final JCheckBox Volkswagon = new JCheckBox("Volkswagon");
-		Volkswagon.setBackground(new Color(230, 230, 230));
-		gbcF.gridx = 0;
-		gbcF.gridy = 4;
-		filterBG.add(Honda, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 5;
-		filterBG.add(BMW, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 6;
-		gbcF.ipady = 15;
-		filterBG.add(Volkswagon, gbcF);
-		
-		//model filter
-		gbcF.anchor = GridBagConstraints.CENTER;
-		
-		JLabel model = new JLabel("Model");
-		gbcF.gridwidth = 3;
-		gbcF.weighty =.2;
-		gbcF.gridx = 0;
-		gbcF.gridy = 7;
-		gbcF.ipady = 0;
-		filterBG.add(model, gbcF);
-		gbcF.anchor = GridBagConstraints.WEST;
-		final JCheckBox accord = new JCheckBox("Accord");
-		accord.setBackground(new Color(230, 230, 230));
-		final JCheckBox oneSeries = new JCheckBox("1 Series");
-		oneSeries.setBackground(new Color(230, 230, 230));
-		final JCheckBox bug = new JCheckBox("Beetle");
-		bug.setBackground(new Color(230, 230, 230));
-		gbcF.gridx = 0;
-		gbcF.gridy = 8;
-		filterBG.add(accord, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 9;
-		filterBG.add(oneSeries, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 10;
-		gbcF.ipady = 15;
-		filterBG.add(bug, gbcF);
-		
-		//year filter
-		gbcF.anchor = GridBagConstraints.CENTER;
-		JLabel year = new JLabel("Year");
-		gbcF.insets = new Insets(-50,0,0,0);
-		gbcF.gridwidth = 3;
-		gbcF.weighty =.8;
-		gbcF.gridx = 0;
-		gbcF.gridy = 11;
-		gbcF.ipady = 0;
-		filterBG.add(year, gbcF);
-		
-		gbcF.anchor = GridBagConstraints.WEST;
-		SpinnerModel yearMinSpinnerModel = new SpinnerNumberModel(1900,1900,2025, 1);//min, max,step
-		JSpinner minSpinner = new JSpinner(yearMinSpinnerModel);
-		JSpinner.NumberEditor minEditor = new JSpinner.NumberEditor(minSpinner, "#");
-		minSpinner.setEditor(minEditor);			
-		gbcF.gridwidth = 1;
-		
-		gbcF.gridx = 0;
-		gbcF.gridy = 12;
-		//gbcF.insets = new Insets(-70,0,0,0);
-		gbcF.ipady = 5;
-		filterBG.add(minSpinner, gbcF);
-		
-		SpinnerModel yearMaxSpinnerModel = new SpinnerNumberModel(2025,1900, 2025,1);
-		JSpinner maxSpinner = new JSpinner(yearMaxSpinnerModel);
-		JSpinner.NumberEditor maxEditor = new JSpinner.NumberEditor(maxSpinner, "#");
-		maxSpinner.setEditor(maxEditor);
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 2;
-		gbcF.gridy = 12;
-		gbcF.ipady = 5;
-
-		filterBG.add(maxSpinner, gbcF);
-		
-		gbcF.anchor = GridBagConstraints.CENTER;
-		JLabel dashyear = new JLabel("       - ");
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 1;
-		gbcF.gridy = 12;
-		gbcF.ipadx = 5;
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
-		filterBG.add(dashyear, gbcF);
-		
-		gbcF.fill = GridBagConstraints.NONE;
-		gbcF.anchor = GridBagConstraints.CENTER;
-		JLabel price = new JLabel("Price");
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = 13;
-		filterBG.add(price, gbcF);
-		
-		//price slider
-		JLabel min = new JLabel("0");
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 0;
-		gbcF.gridy = 15;
-		gbcF.weightx = .05;
-		gbcF.insets = new Insets(-70,0,0,0);
-		gbcF.ipady = 0;
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
-		filterBG.add(min, gbcF);
-		
-		gbcF.anchor = GridBagConstraints.WEST;
-		JLabel max = new JLabel("5000");
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 3;
-		gbcF.gridy = 15;
-		gbcF.weightx = .5;
-		gbcF.fill = GridBagConstraints.NONE;
-		filterBG.add(max, gbcF);
-		
-		gbcF.anchor = GridBagConstraints.CENTER;
-		JSlider priceSlider = new JSlider(0, 5000, 5000);
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = 14;
-		gbcF.weightx = .25;
-		gbcF.insets = new Insets(-50,0,0,0);
-		gbcF.ipady = 0;
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
-		filterBG.add(priceSlider, gbcF);
-		
+		pageMenuDDB.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+		    if (pageMenuDDB.getSelectedIndex() == 1){
+				inventoryPage inventory = new inventoryPage();
+				mainFrame.dispose();
+			}else if(pageMenuDDB.getSelectedIndex() == 2){
+				dealerShipInfoPage dealer = new dealerShipInfoPage();
+				mainFrame.dispose();
+			}else if(pageMenuDDB.getSelectedIndex() == 4){
+				accountManagePage accounts = new accountManagePage();
+				mainFrame.dispose();
+			}else if(pageMenuDDB.getSelectedIndex() == 5){
+				loginPage login = new loginPage();
+				mainFrame.dispose();
+			}
+         }          
+		});
 		//display options
 		gbcD.anchor = GridBagConstraints.NORTHWEST;
 		final JCheckBox dAll = new JCheckBox("Display All");
@@ -309,31 +152,7 @@ public class pastSalesPage{
 		gbcD.ipady = 0;
 		gbcD.ipadx = 10;
 		displayBG.add(dCar, gbcD);
-		
-		final DefaultComboBoxModel sortMenu = new DefaultComboBoxModel();
-		
-		sortMenu.addElement("Sort By");
-		sortMenu.addElement("Price Descending");
-		sortMenu.addElement("Price Ascending");
-		sortMenu.addElement("Make");
-		sortMenu.addElement("Model");
-		sortMenu.addElement("Year Descending");
-		sortMenu.addElement("Year Ascending");
-	
 
-		final JComboBox sortMenuBox = new JComboBox(sortMenu);    
-		sortMenuBox.setSelectedIndex(0);
-		JScrollPane sortMenuPane = new JScrollPane(sortMenuBox); 
-		gbcD.fill = GridBagConstraints.HORIZONTAL;		
-		gbcD.gridwidth = 1;
-		gbcD.gridx = 3;
-		gbcD.gridy = 0;
-		gbcD.ipadx = 5;
-		gbcD.insets = new Insets(0,-140,0,0);
-		gbcD.weightx = .1;
-		displayBG.add(sortMenuPane, gbcD);
-	
-	
 		//inventory list
 		final DefaultListModel inventoryModel = new DefaultListModel();
 

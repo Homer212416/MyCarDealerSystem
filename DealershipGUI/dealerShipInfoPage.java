@@ -101,6 +101,7 @@ public class dealerShipInfoPage{
 		pageMenuDD.addElement("Inventory");
 		pageMenuDD.addElement("Dealership Info");
 		pageMenuDD.addElement("Sales History");
+		pageMenuDD.addElement("Manage User Accounts");
 		pageMenuDD.addElement("Sign Out");
 		
 		final JComboBox pageMenuDDB = new JComboBox(pageMenuDD);    
@@ -108,7 +109,24 @@ public class dealerShipInfoPage{
 		JScrollPane pageMenuDDP = new JScrollPane(pageMenuDDB);  
 		pageMenuDDP.setBounds(500, 20, 150, 25);
 		controlPanel.add(pageMenuDDP);
-
+		
+		pageMenuDDB.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            if (pageMenuDDB.getSelectedIndex() == 1){
+				inventoryPage inventory = new inventoryPage();
+				mainFrame.dispose();
+			}else if(pageMenuDDB.getSelectedIndex() == 3){
+				pastSalesPage sales = new pastSalesPage();
+				mainFrame.dispose();
+			}else if(pageMenuDDB.getSelectedIndex() == 4){
+				accountManagePage accounts = new accountManagePage();
+				mainFrame.dispose();
+			}else if(pageMenuDDB.getSelectedIndex() == 5){
+				loginPage login = new loginPage();
+				mainFrame.dispose();
+			}
+         }          
+		});
 		
 		//add and delete dealer button
 		gbcF.anchor = GridBagConstraints.NORTHWEST;

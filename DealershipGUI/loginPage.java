@@ -20,6 +20,8 @@ import java.awt.Toolkit;
 
 public class loginPage{
 	private JFrame mainFrame;
+	private JFrame requestPmainFrame;
+	private JFrame resetPmainFrame;
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
@@ -117,5 +119,264 @@ public class loginPage{
 		
 		mainFrame.setContentPane(controlPanel);
 		mainFrame.setVisible(true);
+		
+		
+		
+		//set actions
+		forgotButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            requestPasswordPage();
+         }          
+		});
+		
+		submitButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            inventoryPage myInventory = new inventoryPage();
+         }          
+		});
+	}
+	
+	private void requestPasswordPage(){
+		requestPmainFrame = new JFrame("Request New Password");
+		requestPmainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+		requestPmainFrame.setBounds(0, 0, 315, 335);
+		requestPmainFrame.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent windowEvent){
+            System.exit(0);
+			}        
+		});
+		
+		JPanel controlPanel = new JPanel();
+		controlPanel.setBackground(new Color(230, 230, 230));
+		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		controlPanel.setBounds(0, 0, 315, 335);
+		controlPanel.setLayout(new GridLayout());
+		
+		GridBagLayout layout = new GridBagLayout();
+		controlPanel.setLayout(null);	
+		
+		JPanel announcementBG = new JPanel();
+		announcementBG.setBackground(Color.RED);
+		announcementBG.setLayout(new GridBagLayout());
+		GridBagLayout layoutA = new GridBagLayout();
+		announcementBG.setLayout(layoutA);
+		GridBagConstraints gbcA = new GridBagConstraints();
+		announcementBG.setBounds(0, 0, 300, 50);
+		controlPanel.add(announcementBG);
+		
+		JPanel infoBG = new JPanel();
+		infoBG.setBackground(new Color(230, 230, 230));
+		infoBG.setLayout(new GridBagLayout());
+		GridBagLayout layoutI = new GridBagLayout();
+		infoBG.setLayout(layoutI);
+		infoBG.setBounds(10, 50, 290, 250);
+		GridBagConstraints gbcI = new GridBagConstraints();
+		controlPanel.add(infoBG);
+		
+		//JLabel announcement = new JLabel("Please fill out all the information below and a new temporary password will be sent to your email shortly");
+		JTextArea announcement = new JTextArea(2, 20);
+		announcement.setForeground(Color.BLACK);
+		announcement.setText("Please fill out all the information below and a new temporary password will be sent to your email shortly");
+		announcement.setWrapStyleWord(true);
+		announcement.setLineWrap(true);
+		announcement.setOpaque(false);
+		announcement.setEditable(false);
+		announcement.setFocusable(false);
+		//gbcA.anchor = GridBagConstraints.SOUTHWEST;
+		gbcA.fill = GridBagConstraints.BOTH;
+		gbcA.weighty = 1;
+		gbcA.gridx = 0;
+		gbcA.gridy = 0;
+		announcementBG.add(announcement, gbcA);
+		
+		//request first and last name, job title, email 
+		JLabel fNameL = new JLabel("First Name: ");
+		gbcI.anchor = GridBagConstraints.EAST;
+		gbcI.weighty = .5;
+		gbcI.gridx = 0;
+		gbcI.gridy = 0;
+		infoBG.add(fNameL, gbcI);
+		
+		JLabel lNameL = new JLabel("Last Name: ");
+		gbcI.anchor = GridBagConstraints.EAST;
+		gbcI.gridx = 0;
+		gbcI.gridy = 1;
+		infoBG.add(lNameL, gbcI);
+		
+		JLabel jobTitleL = new JLabel("Job Title: ");
+		gbcI.anchor = GridBagConstraints.EAST;
+		gbcI.gridx = 0;
+		gbcI.gridy = 2;
+		infoBG.add(jobTitleL, gbcI);
+		
+		JLabel emailL = new JLabel("Email: ");
+		gbcI.gridx = 0;
+		gbcI.gridy = 3;
+		infoBG.add(emailL, gbcI);
+		gbcI.anchor = GridBagConstraints.WEST;
+		
+		JTextField fNameT = new JTextField(15);
+		gbcI.fill = GridBagConstraints.HORIZONTAL;
+		gbcI.weightx = .99;
+		gbcI.gridx = 1;
+		gbcI.gridy = 0;
+		infoBG.add(fNameT, gbcI);
+		
+		JTextField lNameT = new JTextField(15);
+		gbcI.gridx = 1;
+		gbcI.gridy = 1;
+		infoBG.add(lNameT, gbcI);
+		
+		JTextField jobTitleT = new JTextField(15);
+		gbcI.gridx = 1;
+		gbcI.gridy = 2;
+		infoBG.add(jobTitleT, gbcI);
+		
+		JTextField emailT = new JTextField(15);
+		gbcI.gridx = 1;
+		gbcI.gridy = 3;
+		infoBG.add(emailT, gbcI);
+		
+		//submit button
+		JButton requestB = new JButton("Submit");
+		gbcI.fill = GridBagConstraints.NONE;
+		gbcI.anchor = GridBagConstraints.EAST;
+		gbcI.weightx = .01;
+		gbcI.gridx = 2;
+		gbcI.gridy = 4;
+		infoBG.add(requestB, gbcI);
+		requestPmainFrame.setContentPane(controlPanel);
+		requestPmainFrame.setVisible(true);
+		
+		//add button functions
+		requestB.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            resetPasswordPage();
+			requestPmainFrame.dispose();
+         }          
+		});
+	}
+	private void resetPasswordPage(){
+		resetPmainFrame = new JFrame("Reset Password");
+		resetPmainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+		resetPmainFrame.setBounds(0, 0, 315, 335);
+		resetPmainFrame.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent windowEvent){
+            System.exit(0);
+			}        
+		});
+		
+		JPanel controlPanel = new JPanel();
+		controlPanel.setBackground(new Color(230, 230, 230));
+		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		controlPanel.setBounds(0, 0, 315, 335);
+		controlPanel.setLayout(new GridLayout());
+		
+		GridBagLayout layout = new GridBagLayout();
+		controlPanel.setLayout(null);	
+		
+		JPanel announcementBG = new JPanel();
+		announcementBG.setBackground(Color.RED);
+		announcementBG.setLayout(new GridBagLayout());
+		GridBagLayout layoutA = new GridBagLayout();
+		announcementBG.setLayout(layoutA);
+		GridBagConstraints gbcA = new GridBagConstraints();
+		announcementBG.setBounds(0, 0, 300, 50);
+		controlPanel.add(announcementBG);
+		
+		JPanel infoBG = new JPanel();
+		infoBG.setBackground(new Color(230, 230, 230));
+		infoBG.setLayout(new GridBagLayout());
+		GridBagLayout layoutI = new GridBagLayout();
+		infoBG.setLayout(layoutI);
+		infoBG.setBounds(10, 50, 290, 250);
+		GridBagConstraints gbcI = new GridBagConstraints();
+		controlPanel.add(infoBG);
+		
+		//JLabel announcement = new JLabel("Please fill out all the information below and a new temporary password will be sent to your email shortly");
+		JTextArea announcement = new JTextArea(2, 20);
+		announcement.setForeground(Color.BLACK);
+		announcement.setText("Please fill out all the information below to reset your password. This must be done after recieving a temporary password from an admin.");
+		announcement.setWrapStyleWord(true);
+		announcement.setLineWrap(true);
+		announcement.setOpaque(false);
+		announcement.setEditable(false);
+		announcement.setFocusable(false);
+		//gbcA.anchor = GridBagConstraints.SOUTHWEST;
+		gbcA.fill = GridBagConstraints.BOTH;
+		gbcA.weighty = 1;
+		gbcA.gridx = 0;
+		gbcA.gridy = 0;
+		announcementBG.add(announcement, gbcA);
+		
+		//request first and last name, job title, email 
+		JLabel userNameL = new JLabel("Username: ");
+		gbcI.anchor = GridBagConstraints.EAST;
+		gbcI.weighty = .5;
+		gbcI.gridx = 0;
+		gbcI.gridy = 0;
+		infoBG.add(userNameL, gbcI);
+		
+		JLabel tempL = new JLabel("Old Password: ");
+		gbcI.anchor = GridBagConstraints.EAST;
+		gbcI.gridx = 0;
+		gbcI.gridy = 1;
+		infoBG.add(tempL, gbcI);
+		
+		JLabel newPassL = new JLabel("New Password: ");
+		gbcI.anchor = GridBagConstraints.EAST;
+		gbcI.gridx = 0;
+		gbcI.gridy = 2;
+		infoBG.add(newPassL, gbcI);
+		
+		JLabel confirmPassL = new JLabel("Confirm Password: ");
+		gbcI.gridx = 0;
+		gbcI.gridy = 3;
+		infoBG.add(confirmPassL, gbcI);
+		gbcI.anchor = GridBagConstraints.WEST;
+		
+		JPasswordField tempPasswordBar  = new JPasswordField("Password",18);
+		tempPasswordBar.setEchoChar('~');
+		gbcI.fill = GridBagConstraints.HORIZONTAL;
+		gbcI.weightx = .99;
+		gbcI.gridx = 1;
+		gbcI.gridy = 1;
+		infoBG.add(tempPasswordBar, gbcI);
+		
+		JPasswordField newPasswordBar  = new JPasswordField("Password",18);
+		newPasswordBar.setEchoChar('~');
+		gbcI.gridx = 1;
+		gbcI.gridy = 2;
+		infoBG.add(newPasswordBar, gbcI);
+		
+		JPasswordField confirmPasswordBar  = new JPasswordField("Password",18);
+		confirmPasswordBar.setEchoChar('~');
+		gbcI.gridx = 1;
+		gbcI.gridy = 3;
+		infoBG.add(confirmPasswordBar, gbcI);
+		
+		JTextField userNameT = new JTextField(15);
+		gbcI.gridx = 1;
+		gbcI.gridy = 0;
+		infoBG.add(userNameT, gbcI);
+		
+		//submit button
+		JButton requestB = new JButton("Submit");
+		gbcI.fill = GridBagConstraints.NONE;
+		gbcI.anchor = GridBagConstraints.EAST;
+		gbcI.weightx = .01;
+		gbcI.gridx = 2;
+		gbcI.gridy = 4;
+		infoBG.add(requestB, gbcI);
+		resetPmainFrame.setContentPane(controlPanel);
+		resetPmainFrame.setVisible(true);
+		
+		//set functions
+		requestB.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            resetPmainFrame.dispose();
+         }          
+		});
+		
 	}
 }
