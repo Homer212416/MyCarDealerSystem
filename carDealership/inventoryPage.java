@@ -53,6 +53,10 @@ public class inventoryPage{
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
+	private int minyear = 1900;
+	private int maxyear = 2025;
+	private double minPrice = 0;
+	private double maxPrice = 50000;
 
 	public inventoryPage(){
 		prepareInventoryGUI();
@@ -286,52 +290,19 @@ public class inventoryPage{
 		
 		//filter portion right hand side
 		//make filter
-		int yBox = 3;
+		int yBox = 0;
 		gbcF.anchor = GridBagConstraints.NORTH;
 		JLabel make = new JLabel("Make");
 		make.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
 		gbcF.gridwidth = 3;
 		gbcF.gridx = 0;
-		gbcF.gridy = yBox;
+		gbcF.gridy = yBox++;
 		gbcF.ipady = 0;
 		filterBG.add(make, gbcF);
 		
-		/* gbcF.anchor = GridBagConstraints.NORTHWEST;
-		final JCheckBox Honda = new JCheckBox("Honda");
-		Honda.setBackground(new Color(230, 230, 230));
-		Honda.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		final JCheckBox BMW = new JCheckBox("BMW");
-		BMW.setBackground(new Color(230, 230, 230));
-		BMW.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		final JCheckBox Volkswagon = new JCheckBox("Volkswagon");
-		Volkswagon.setBackground(new Color(230, 230, 230));
-		Volkswagon.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.gridx = 0;
-		gbcF.gridy = 4;
-		filterBG.add(Honda, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 5;
-		filterBG.add(BMW, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 6; */
-		
-		//filterBG.add(Volkswagon, gbcF);
-		
-
-		//model filter
-		gbcF.anchor = GridBagConstraints.NORTH;
-		
-		JLabel model = new JLabel("Model");
-		model.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = 7;
-		gbcF.ipady = 0;
-		filterBG.add(model, gbcF);
-		
 		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
 			yBox++;
-			final JCheckBox makeName = new JCheckBox(Main.m_dealership.inventory[i].getModel());
+			final JCheckBox makeName = new JCheckBox(Main.m_dealership.inventory[i].getMake());
 			makeName.setBackground(new Color(230, 230, 230));
 			makeName.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
 			gbcF.gridx = 0;
@@ -339,26 +310,26 @@ public class inventoryPage{
 			filterBG.add(makeName, gbcF);
 		}
 		
-		/* gbcF.anchor = GridBagConstraints.NORTHWEST;
-		final JCheckBox accord = new JCheckBox("Accord");
-		accord.setBackground(new Color(230, 230, 230));
-		accord.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		final JCheckBox oneSeries = new JCheckBox("1 Series");
-		oneSeries.setBackground(new Color(230, 230, 230));
-		oneSeries.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		final JCheckBox bug = new JCheckBox("Beetle");
-		bug.setBackground(new Color(230, 230, 230));
-		bug.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+		//model filter
+		gbcF.anchor = GridBagConstraints.NORTH;
+		
+		JLabel model = new JLabel("Model");
+		model.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
 		gbcF.ipady = 0;
-		gbcF.gridx = 0;
-		gbcF.gridy = 8;
-		filterBG.add(accord, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 9;
-		filterBG.add(oneSeries, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 10;
-		filterBG.add(bug, gbcF); */
+		filterBG.add(model, gbcF);
+		
+		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
+			yBox++;
+			final JCheckBox modelName = new JCheckBox(Main.m_dealership.inventory[i].getModel());
+			modelName.setBackground(new Color(230, 230, 230));
+			modelName.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+			gbcF.gridx = 0;
+			gbcF.gridy = yBox++;
+			filterBG.add(modelName, gbcF);
+		}
 		
 		
 		gbcF.anchor = GridBagConstraints.NORTH;
@@ -366,114 +337,144 @@ public class inventoryPage{
 		color.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
 		gbcF.gridwidth = 3;
 		gbcF.gridx = 0;
-		gbcF.gridy = 11;
+		gbcF.gridy = yBox++;
 		gbcF.ipady = 0;
 		filterBG.add(color, gbcF);
 		
-		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		final JCheckBox Blue = new JCheckBox("Blue");
-		Blue.setBackground(new Color(230, 230, 230));
-		Blue.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		final JCheckBox Yellow = new JCheckBox("Yellow");
-		Yellow.setBackground(new Color(230, 230, 230));
-		Yellow.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		final JCheckBox Red = new JCheckBox("Red");
-		Red.setBackground(new Color(230, 230, 230));
-		Red.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.gridx = 0;
-		gbcF.gridy = 12;
-		filterBG.add(Blue, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 13;
-		filterBG.add(Yellow, gbcF);
-		gbcF.gridx = 0;
-		gbcF.gridy = 14;
-		filterBG.add(Red, gbcF);
+		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
+			yBox++;
+			final JCheckBox vehColor = new JCheckBox(Main.m_dealership.inventory[i].getColor());
+			vehColor.setBackground(new Color(230, 230, 230));
+			vehColor.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+			gbcF.gridx = 0;
+			gbcF.gridy = yBox++;
+			filterBG.add(vehColor, gbcF);
+		}
+		
 		//year filter
 		gbcF.anchor = GridBagConstraints.NORTH;
 		JLabel year = new JLabel("Year");
 		year.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
 		gbcF.gridwidth = 3;
 		gbcF.gridx = 0;
-		gbcF.gridy = 15;
+		gbcF.gridy = yBox++;
 		gbcF.ipady = 0;
 		
 		filterBG.add(year, gbcF);
-
-		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		SpinnerModel yearMinSpinnerModel = new SpinnerNumberModel(1900,1900,2025, 1);//min, max,step
+		
+		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
+			if(Main.m_dealership.getTotalVehicles() > 1){
+				if(i + 1 < Main.m_dealership.getTotalVehicles()){
+					
+					if(Main.m_dealership.inventory[i].getYear() > Main.m_dealership.inventory[i+1].getYear()){
+						minyear = Main.m_dealership.inventory[i+1].getYear();
+						maxyear = Main.m_dealership.inventory[i].getYear();
+						
+					}else{
+						minyear = Main.m_dealership.inventory[i].getYear();
+						maxyear = Main.m_dealership.inventory[i+1].getYear();
+					}
+				}
+			}else{
+				minyear = Main.m_dealership.inventory[i].getYear();
+				maxyear = Main.m_dealership.inventory[i].getYear();
+			}
+				
+			
+		}
+		gbcF.anchor = GridBagConstraints.NORTH;
+		SpinnerModel yearMinSpinnerModel = new SpinnerNumberModel(minyear,minyear,maxyear, 1);//min, max,step
 		JSpinner minSpinner = new JSpinner(yearMinSpinnerModel);
 		JSpinner.NumberEditor minEditor = new JSpinner.NumberEditor(minSpinner, "#");
 		minSpinner.setEditor(minEditor);	
 		minSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
 		gbcF.gridwidth = 1;
 		gbcF.gridx = 0;
-		gbcF.gridy = 16;
+		gbcF.gridy = yBox;
 		gbcF.insets = new Insets(0, 5, 0, 0);
 		filterBG.add(minSpinner, gbcF);
-		
+
 		gbcF.anchor = GridBagConstraints.NORTHEAST;
-		SpinnerModel yearMaxSpinnerModel = new SpinnerNumberModel(2025,1900, 2025,1);
+		SpinnerModel yearMaxSpinnerModel = new SpinnerNumberModel(maxyear,minyear, maxyear,1);
 		JSpinner maxSpinner = new JSpinner(yearMaxSpinnerModel);
 		JSpinner.NumberEditor maxEditor = new JSpinner.NumberEditor(maxSpinner, "#");
 		maxSpinner.setEditor(maxEditor);
 		maxSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
 		gbcF.gridwidth = 1;
 		gbcF.gridx = 2;
-		gbcF.gridy = 16;
+		gbcF.gridy = yBox;
 		//gbcF.insets = new Insets(0, 0, 0, 20);
 		filterBG.add(maxSpinner, gbcF);
-		
-		gbcF.anchor = GridBagConstraints.CENTER;
+
+		gbcF.anchor = GridBagConstraints.NORTH;
 		gbcF.fill = GridBagConstraints.BOTH;
 		JLabel dashyear = new JLabel(" - ");
 		dashyear.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
 		gbcF.gridwidth = 1;
 		gbcF.gridx = 1;
-		gbcF.gridy = 16;
+		gbcF.gridy = yBox++;
 		gbcF.insets = new Insets(0, -15, 0, 0);
 		filterBG.add(dashyear, gbcF);
-		
+	
 		gbcF.fill = GridBagConstraints.NONE;
 		gbcF.anchor = GridBagConstraints.NORTH;
 		JLabel price = new JLabel("Price");
 		price.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
 		gbcF.gridwidth = 3;
 		gbcF.gridx = 0;
-		gbcF.gridy = 17;
+		gbcF.gridy = yBox++;
 		gbcF.insets = new Insets(5, 0, 0, 0);
 		filterBG.add(price, gbcF);
-		
 		//price slider
+		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
+			if(Main.m_dealership.getTotalVehicles() > 1){
+				if(i + 1 < Main.m_dealership.getTotalVehicles()){
+					
+					if(Main.m_dealership.inventory[i].getPrice() > Main.m_dealership.inventory[i+1].getPrice()){
+						minPrice = Main.m_dealership.inventory[i+1].getPrice();
+						maxPrice = Main.m_dealership.inventory[i].getPrice();
+						
+					}else{
+						minPrice = Main.m_dealership.inventory[i].getPrice();
+						maxPrice = Main.m_dealership.inventory[i+1].getPrice();
+					}
+				}
+			}else{
+				minPrice = Main.m_dealership.inventory[i].getPrice();
+				maxPrice = Main.m_dealership.inventory[i].getPrice();
+			}
+				
+			
+		}
 		gbcF.anchor = GridBagConstraints.NORTH;
-		JSlider priceSlider = new JSlider(0, 5000, 5000);
+		JSlider priceSlider = new JSlider((int)minPrice, (int)maxPrice, (int)maxPrice);
 		priceSlider.setBackground(new Color(230, 230, 230));
 		gbcF.insets = new Insets(0, 10, 0, 0);
 		gbcF.gridwidth = 3;
 		gbcF.gridx = 0;
-		gbcF.gridy = 18;
+		gbcF.gridy = yBox++;
 		gbcF.ipady = 0;
 		gbcF.fill = GridBagConstraints.HORIZONTAL;
 		filterBG.add(priceSlider, gbcF);
 		
 		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		JLabel min = new JLabel("0");
+		JLabel min = new JLabel(Integer.toString((int)minPrice));
 		min.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
 		gbcF.gridwidth = 1;
 		gbcF.gridx = 0;
-		gbcF.gridy = 19;
+		gbcF.gridy = yBox;
 		gbcF.ipady = 0;
 		gbcF.weightx = .2;
 		gbcF.fill = GridBagConstraints.HORIZONTAL;
 		filterBG.add(min, gbcF);
 		
 		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		JLabel max = new JLabel("5000");
+		JLabel max = new JLabel(Integer.toString((int)maxPrice));
 		max.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
 		gbcF.insets = new Insets(0, -15, 0, 0);
 		gbcF.gridwidth = 1;
 		gbcF.gridx = 3;
-		gbcF.gridy = 19;
+		gbcF.gridy = yBox++;
 		gbcF.weighty =.2;
 		gbcF.fill = GridBagConstraints.NONE;
 		filterBG.add(max, gbcF);
@@ -817,12 +818,13 @@ public class inventoryPage{
 
 			if (Main.m_dealership.addVehicle(new Car(make, model, color, year, price, type))){
 				JOptionPane.showMessageDialog(null, "Car has been added successfully.");
-				mainFrame.invalidate();
-				mainFrame.validate();
-				mainFrame.repaint();
+				
 			}else{
 			JOptionPane.showMessageDialog(null, "Sorry, the car has not been added.");}
 		}
+		mainFrame.invalidate();
+		mainFrame.validate();
+		mainFrame.repaint();
 	}
 	public void addMotorcycleMenu() {
 		JTextField makeField = new JTextField();
