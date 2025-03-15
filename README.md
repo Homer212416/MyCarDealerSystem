@@ -5,11 +5,13 @@ Original Version
 https://github.com/fhm-nzh/car-dealership-system
 
 *demo0.29 updates:*
+
 dealershipInfoPage:
   - only keep delete button
   - added listener for delete button
       - add confirmation dialog in listen
   - reset dealership info source to Dealership class
+
 dealership:
   - added a default constructor
   - added exists()
@@ -17,6 +19,7 @@ dealership:
   - added getInfoGUI()
   - added delete()
   - deleted existsAndSet()
+
 DBManager:
   - cleaned up constructor
   - cleaned up initDB()
