@@ -4,6 +4,9 @@ https://drive.google.com/drive/folders/1Wgdptkqnu7HH3_lLd_BGixPG3tOHt2Id
 Original Version
 https://github.com/fhm-nzh/car-dealership-system
 
+**demo0.31 updates:**
+it can add cars now although has some other issues
+
 **demo0.29 updates:**
 
 dealershipInfoPage:
