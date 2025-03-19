@@ -7,11 +7,22 @@ import java.util.ArrayList;
 import SE.project.carDealership.Dealership;
 
 public class DealershipDAO implements DAOInterface<Dealership> {
-
+	private static String m_name;
+	private static String m_location;
+	private static int m_capacity;
+	
     public DealershipDAO() {
-        createTable();
     }
 
+	public DealershipDAO(String name, String location, int capacity) throws SQLException {
+		m_name = name;
+		m_location = location;
+		m_capacity = capacity;
+
+		DBManager.getInstance().runInsert("INSERT INTO dealerships " + "(name, location, capacity) " + "VALUES ('"
+				+ name + "', '" + location + "', " + Integer.toString(capacity) + ");");
+	}
+	
     // Create the table if it does not exist
     private void createTable() {
         String dealershipSQL = "CREATE TABLE IF NOT EXISTS dealerships ("
@@ -47,7 +58,8 @@ public class DealershipDAO implements DAOInterface<Dealership> {
             String query = "SELECT * FROM dealerships";
             ResultSet resultSet = DBManager.getInstance().runQuery(query);
             ArrayList<Dealership> dealerships = new ArrayList<>();
-            while (resultSet.next()) {
+			System.out.println(resultSet.getString("name"));
+			if(resultSet.next()) {
                 dealerships.add(new Dealership(
                         resultSet.getString("name"),
                         resultSet.getString("location"),
@@ -87,7 +99,7 @@ public class DealershipDAO implements DAOInterface<Dealership> {
     }
 
     // for Main.java to check if the dealership exists
-    public static boolean exists() {
+    public static boolean exists() throws SQLException{
         try {
             ResultSet resultSet = DBManager.getInstance().runQuery("SELECT * FROM dealerships");
             return resultSet.next();
