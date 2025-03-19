@@ -72,7 +72,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
                             resultSet.getString("color"),
                             resultSet.getInt("year"),
                             resultSet.getDouble("price"),
-                            resultSet.getString("type"),
+                            resultSet.getString("carType"),
                             resultSet.getBoolean("inInventory")));
                 } else if (handlebarType != null) {
                     vehicles.add(new Motorcycle(

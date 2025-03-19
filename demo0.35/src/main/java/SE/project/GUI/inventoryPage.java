@@ -106,23 +106,29 @@ public class inventoryPage {
 
 		// Add action listener to page menu drop down
 		pageMenuDD.addActionListener(new ActionListener() {
-			// Switch to the selected page
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (available.contains(pageMenuDD.getSelectedIndex())) {
-					if (pageMenuDD.getSelectedIndex() == 2) {
-						new dealerShipInfoPage();
-						mainFrame.dispose();
-					} else if (pageMenuDD.getSelectedIndex() == 3) {
-						new pastSalesPage();
-						mainFrame.dispose();
-					} else if (pageMenuDD.getSelectedIndex() == 4) {
-						new accountManagePage();
-						mainFrame.dispose();
-					} else if (pageMenuDD.getSelectedIndex() == 5) {
-						new LoginPage();
-						mainFrame.dispose();
+				System.out.println("Dropdown selection changed: " + pageMenuDD.getSelectedIndex()); // Debugging
+																									// statement
+				if (pageMenuDD.getSelectedIndex() == 1) { // Ensure index matches "Dealership Info"
+					try {
+						System.out.println("Switching to Dealership Info page..."); // Debugging statement
+						new dealerShipInfoPage(); // Initialize dealerShipInfoPage
+						mainFrame.dispose(); // Dispose of inventoryPage
+					} catch (Exception ex) {
+						ex.printStackTrace(); // Log any exceptions for debugging
+						JOptionPane.showMessageDialog(mainFrame, "Failed to load Dealership Info page.", "Error",
+								JOptionPane.ERROR_MESSAGE);
 					}
+				} else if (pageMenuDD.getSelectedIndex() == 2) {
+					new pastSalesPage();
+					mainFrame.dispose();
+				} else if (pageMenuDD.getSelectedIndex() == 3) {
+					new accountManagePage();
+					mainFrame.dispose();
+				} else if (pageMenuDD.getSelectedIndex() == 4) {
+					new LoginPage();
+					mainFrame.dispose();
 				}
 			}
 		});
@@ -159,23 +165,23 @@ public class inventoryPage {
 		editInventoryMenu.setBounds(450, 20, 200, 25);
 		controlPanel.add(editInventoryMenu);
 
-		// Add action listener to edit inventory drop down
-		editInventoryMenu.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (editInventoryMenu.getSelectedIndex() == 1) {
-					addCarMenu();
-				} else if (editInventoryMenu.getSelectedIndex() == 2) {
-					addMotorcycleMenu();
-				} else if (editInventoryMenu.getSelectedIndex() == 3) {
-					editVehicleMenu();
-				} else if (editInventoryMenu.getSelectedIndex() == 4) {
-					sellVehicleMenu();
-				} else if (editInventoryMenu.getSelectedIndex() == 5) {
-					removeVehicleMenu();
-				}
-			}
-		});
+		// // Add action listener to edit inventory drop down
+		// editInventoryMenu.addActionListener(new ActionListener() {
+		// @Override
+		// public void actionPerformed(ActionEvent e) {
+		// if (editInventoryMenu.getSelectedIndex() == 1) {
+		// addCarMenu();
+		// } else if (editInventoryMenu.getSelectedIndex() == 2) {
+		// addMotorcycleMenu();
+		// } else if (editInventoryMenu.getSelectedIndex() == 3) {
+		// editVehicleMenu();
+		// } else if (editInventoryMenu.getSelectedIndex() == 4) {
+		// sellVehicleMenu();
+		// } else if (editInventoryMenu.getSelectedIndex() == 5) {
+		// removeVehicleMenu();
+		// }
+		// }
+		// });
 
 		editInventoryMenu.setSelectedIndex(0);
 		gbcS.anchor = GridBagConstraints.WEST;
@@ -223,15 +229,16 @@ public class inventoryPage {
 		gbcF.ipady = 0;
 		filterBG.add(make, gbcF);
 
-		for (int i = 0; i < controller.getTotalVehicleCount(); i++) {
-			yBox++;
-			final JCheckBox makeName = new JCheckBox(controller.searchVehicleByID(i).getMake());
-			makeName.setBackground(new Color(230, 230, 230));
-			makeName.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-			gbcF.gridx = 0;
-			gbcF.gridy = yBox++;
-			filterBG.add(makeName, gbcF);
-		}
+		// for (int i = 0; i < controller.getTotalVehicleCount(); i++) {
+		// yBox++;
+		// final JCheckBox makeName = new
+		// JCheckBox(controller.searchVehicleByID(i).getMake());
+		// makeName.setBackground(new Color(230, 230, 230));
+		// makeName.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+		// gbcF.gridx = 0;
+		// gbcF.gridy = yBox++;
+		// filterBG.add(makeName, gbcF);
+		// }
 
 		gbcF.anchor = GridBagConstraints.NORTH;
 
@@ -529,92 +536,94 @@ public class inventoryPage {
 
 	}
 
-	private void editVehicleMenu() {
-		try {
-			String idString = JOptionPane.showInputDialog(null, "Enter the id of the vehicle:");
+	// private void editVehicleMenu() {
+	// try {
+	// String idString = JOptionPane.showInputDialog(null, "Enter the id of the
+	// vehicle:");
 
-			if (idString == null) { // checks if no input
-				return;
-			}
+	// if (idString == null) { // checks if no input
+	// return;
+	// }
 
-			int id = Integer.parseInt(idString);
+	// int id = Integer.parseInt(idString);
 
-			Vehicle vehicle = controller.searchVehicleByID(id);
+	// Vehicle vehicle = controller.searchVehicleByID(id);
 
-			if (vehicle == null) { // check if exists
-				JOptionPane.showMessageDialog(null, "Vehicle not found!");
-				return;
-			}
+	// if (vehicle == null) { // check if exists
+	// JOptionPane.showMessageDialog(null, "Vehicle not found!");
+	// return;
+	// }
 
-			JTextField makeField = new JTextField();
-			JTextField modelField = new JTextField();
-			JTextField colorField = new JTextField();
-			JTextField yearField = new JTextField();
-			JTextField priceField = new JTextField();
-			JTextField typeField = new JTextField();
-			JTextField handlebarField = new JTextField();
+	// JTextField makeField = new JTextField();
+	// JTextField modelField = new JTextField();
+	// JTextField colorField = new JTextField();
+	// JTextField yearField = new JTextField();
+	// JTextField priceField = new JTextField();
+	// JTextField typeField = new JTextField();
+	// JTextField handlebarField = new JTextField();
 
-			JPanel editPanel = new JPanel();
-			editPanel.setLayout(new GridLayout(0, 2));
+	// JPanel editPanel = new JPanel();
+	// editPanel.setLayout(new GridLayout(0, 2));
 
-			if (vehicle instanceof Car) {
-				Car car = (Car) vehicle;
+	// if (vehicle instanceof Car) {
+	// Car car = (Car) vehicle;
 
-				editPanel.add(new JLabel("Make:"));
-				makeField.setText(car.getMake());
-				editPanel.add(makeField);
+	// editPanel.add(new JLabel("Make:"));
+	// makeField.setText(car.getMake());
+	// editPanel.add(makeField);
 
-				editPanel.add(new JLabel("Model:"));
-				modelField.setText(car.getModel());
-				editPanel.add(modelField);
+	// editPanel.add(new JLabel("Model:"));
+	// modelField.setText(car.getModel());
+	// editPanel.add(modelField);
 
-				editPanel.add(new JLabel("Color:"));
-				colorField.setText(car.getColor());
-				editPanel.add(colorField);
+	// editPanel.add(new JLabel("Color:"));
+	// colorField.setText(car.getColor());
+	// editPanel.add(colorField);
 
-				editPanel.add(new JLabel("Year:"));
-				yearField.setText(String.valueOf(car.getYear()));
-				editPanel.add(yearField);
+	// editPanel.add(new JLabel("Year:"));
+	// yearField.setText(String.valueOf(car.getYear()));
+	// editPanel.add(yearField);
 
-				editPanel.add(new JLabel("Price:"));
-				priceField.setText(String.valueOf(car.getPrice()));
-				editPanel.add(priceField);
+	// editPanel.add(new JLabel("Price:"));
+	// priceField.setText(String.valueOf(car.getPrice()));
+	// editPanel.add(priceField);
 
-				editPanel.add(new JLabel("Type:"));
-				typeField.setText(car.getCarType());
-				editPanel.add(typeField);
+	// editPanel.add(new JLabel("Type:"));
+	// typeField.setText(car.getCarType());
+	// editPanel.add(typeField);
 
-			} else if (vehicle instanceof Motorcycle) {
-				Motorcycle motorcycle = (Motorcycle) vehicle;
+	// } else if (vehicle instanceof Motorcycle) {
+	// Motorcycle motorcycle = (Motorcycle) vehicle;
 
-				editPanel.add(new JLabel("Make:"));
-				makeField.setText(motorcycle.getMake());
-				editPanel.add(makeField);
+	// editPanel.add(new JLabel("Make:"));
+	// makeField.setText(motorcycle.getMake());
+	// editPanel.add(makeField);
 
-				editPanel.add(new JLabel("Model:"));
-				modelField.setText(motorcycle.getModel());
-				editPanel.add(modelField);
+	// editPanel.add(new JLabel("Model:"));
+	// modelField.setText(motorcycle.getModel());
+	// editPanel.add(modelField);
 
-				editPanel.add(new JLabel("Color:"));
-				colorField.setText(motorcycle.getColor());
-				editPanel.add(colorField);
+	// editPanel.add(new JLabel("Color:"));
+	// colorField.setText(motorcycle.getColor());
+	// editPanel.add(colorField);
 
-				editPanel.add(new JLabel("Year:"));
-				yearField.setText(String.valueOf(motorcycle.getYear()));
-				editPanel.add(yearField);
+	// editPanel.add(new JLabel("Year:"));
+	// yearField.setText(String.valueOf(motorcycle.getYear()));
+	// editPanel.add(yearField);
 
-				editPanel.add(new JLabel("Price:"));
-				priceField.setText(String.valueOf(motorcycle.getPrice()));
-				editPanel.add(priceField);
+	// editPanel.add(new JLabel("Price:"));
+	// priceField.setText(String.valueOf(motorcycle.getPrice()));
+	// editPanel.add(priceField);
 
-				editPanel.add(new JLabel("Handlebar Type:"));
-				handlebarField.setText(motorcycle.getHandlebarType());
-				editPanel.add(handlebarField);
-			}
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(null, "Invalid input. Please enter a valid integer.");
-		}
-	}
+	// editPanel.add(new JLabel("Handlebar Type:"));
+	// handlebarField.setText(motorcycle.getHandlebarType());
+	// editPanel.add(handlebarField);
+	// }
+	// } catch (NumberFormatException e) {
+	// JOptionPane.showMessageDialog(null, "Invalid input. Please enter a valid
+	// integer.");
+	// }
+	// }
 
 	// int option = JOptionPane.showConfirmDialog(null, editPanel, "Edit Vehicle",
 	// JOptionPane.OK_CANCEL_OPTION);
@@ -668,31 +677,34 @@ public class inventoryPage {
 		}
 	}
 
-	private void removeVehicleMenu() {
-		try {
-			String idString = JOptionPane.showInputDialog(null, "Enter the id of the vehicle:");
-			if (idString == null) { // checks if no input
-				return;
-			}
-			int id = Integer.parseInt(idString);
+	// private void removeVehicleMenu() {
+	// try {
+	// String idString = JOptionPane.showInputDialog(null, "Enter the id of the
+	// vehicle:");
+	// if (idString == null) { // checks if no input
+	// return;
+	// }
+	// int id = Integer.parseInt(idString);
 
-			Vehicle vehicle = controller.searchVehicleByID(id);
+	// Vehicle vehicle = controller.searchVehicleByID(id);
 
-			if (vehicle == null) {
-				JOptionPane.showMessageDialog(null, "Vehicle not found!");
-			} else {
-				int confirm = JOptionPane.showConfirmDialog(null,
-						"Are you sure you want to delete this vehicle\nwith id: " + id, "Confirm Deletion",
-						JOptionPane.YES_NO_OPTION);
-				if (confirm == JOptionPane.YES_OPTION) {
-					controller.removeVehicle(vehicle);
-					JOptionPane.showMessageDialog(null, "Vehicle removed successfully.");
-				}
-			}
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(null, "Invalid input. Please enter a valid integer.");
-		}
-	}
+	// if (vehicle == null) {
+	// JOptionPane.showMessageDialog(null, "Vehicle not found!");
+	// } else {
+	// int confirm = JOptionPane.showConfirmDialog(null,
+	// "Are you sure you want to delete this vehicle\nwith id: " + id, "Confirm
+	// Deletion",
+	// JOptionPane.YES_NO_OPTION);
+	// if (confirm == JOptionPane.YES_OPTION) {
+	// controller.removeVehicle(vehicle);
+	// JOptionPane.showMessageDialog(null, "Vehicle removed successfully.");
+	// }
+	// }
+	// } catch (NumberFormatException e) {
+	// JOptionPane.showMessageDialog(null, "Invalid input. Please enter a valid
+	// integer.");
+	// }
+	// }
 
 	public void addCarMenu() {
 		JTextField makeField = new JTextField();

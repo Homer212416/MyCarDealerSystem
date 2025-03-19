@@ -48,6 +48,7 @@ public class DBManager {
 		var stmt = m_connection.createStatement();
 		int result = stmt.executeUpdate(sql);
 		m_connection.commit();
+		System.out.println("Result: " + result);
 		return result;
 	}
 

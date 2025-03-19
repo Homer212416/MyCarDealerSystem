@@ -11,7 +11,9 @@ public class Inventory {
 
     public Inventory() {
         this.vehicleDAO = new VehicleDAO();
+        System.out.println("VehicleDAO is created");
         this.vehicles = vehicleDAO.getAll();
+        System.out.println("Vehicle list is gotten");
     }
 
     // the number of all vehicles

@@ -11,23 +11,25 @@ public class Dealership {
     private int capacity;
     private DAOInterface<Dealership> dealershipDAO;
 
-    public Dealership() {
-        dealershipDAO = new DealershipDAO();
-        ArrayList<Dealership> infoList = dealershipDAO.getAll();
-        name = infoList.get(0).getName();
-        location = infoList.get(0).getLocation();
-        capacity = infoList.get(0).getCapacity();
-    }
-
     public Dealership(String name, String location, int capacity) {
         this.name = name;
         this.location = location;
         this.capacity = capacity;
         dealershipDAO = new DealershipDAO();
-        save();
     }
 
-    private void save() {
+    public Dealership() {
+        dealershipDAO = new DealershipDAO();
+        System.out.println("an instance of dealership is created");
+        ArrayList<Dealership> infoList = dealershipDAO.getAll();
+        System.out.println("info list is gotten");
+        name = infoList.get(0).getName();
+        location = infoList.get(0).getLocation();
+        capacity = infoList.get(0).getCapacity();
+        System.out.println("an instance of dealership is created");
+    }
+
+    public void save() {
         dealershipDAO.insert(this);
     }
 

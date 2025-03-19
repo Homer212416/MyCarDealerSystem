@@ -7,7 +7,8 @@ public class FirstLaunchPageController {
 
     public boolean createDealership(String name, String location, int capacity) {
         try {
-            new Dealership(name, location, capacity);
+            Dealership dealership = new Dealership(name, location, capacity);
+            dealership.save();
             return true;
         } catch (IllegalCapacityException e) {
             return false;

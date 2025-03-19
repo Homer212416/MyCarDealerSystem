@@ -9,21 +9,6 @@ import SE.project.carDealership.Dealership;
 public class DealershipDAO implements DAOInterface<Dealership> {
 
     public DealershipDAO() {
-        createTable();
-    }
-
-    // Create the table if it does not exist
-    private void createTable() {
-        String dealershipSQL = "CREATE TABLE IF NOT EXISTS dealerships ("
-                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "name TEXT NOT NULL, "
-                + "location TEXT NOT NULL, "
-                + "capacity INTEGER NOT NULL);";
-        try {
-            DBManager.getInstance().runInsert(dealershipSQL);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -44,6 +29,7 @@ public class DealershipDAO implements DAOInterface<Dealership> {
     @Override
     public ArrayList<Dealership> getAll() {
         try {
+            System.out.println("will run query to get all dealerships");
             String query = "SELECT * FROM dealerships";
             ResultSet resultSet = DBManager.getInstance().runQuery(query);
             ArrayList<Dealership> dealerships = new ArrayList<>();

@@ -11,8 +11,14 @@ public class dealerShipInfoPage {
 	private DealershipInfoPageController dealershipInfoPageController;
 
 	public dealerShipInfoPage() {
-		this.dealershipInfoPageController = new DealershipInfoPageController();
-		prepareInventoryGUI();
+		try {
+			this.dealershipInfoPageController = new DealershipInfoPageController();
+			prepareInventoryGUI(); // Ensure this method does not throw exceptions
+		} catch (Exception e) {
+			e.printStackTrace(); // Log any exceptions for debugging
+			JOptionPane.showMessageDialog(null, "Failed to initialize Dealership Info page.", "Error",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void prepareInventoryGUI() {

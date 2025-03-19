@@ -8,7 +8,10 @@ public class InventoryPageController {
     private Inventory inventory;
 
     public InventoryPageController() {
+        // to create an instance of inventory
+        System.out.println("InventoryPageController is created");
         this.inventory = new Inventory();
+        System.out.println("Inventory is created");
     }
 
     public int getTotalVehicleCount() {
@@ -32,7 +35,9 @@ public class InventoryPageController {
     }
 
     public Vehicle searchVehicleByID(int id) {
-        return inventory.searchVehicleByID(id);
+        // placeholder
+        return null;
+        // return inventory.searchVehicleByID(id);
     }
 
     public void sellVehicle(int vehicleID, String buyerName, String buyerContact) {
