@@ -34,6 +34,8 @@ public class loginPage{
       //loginPage.showEventDemo();       
 	}
 	private void prepareLoginGUI(){
+		
+		//create window
 		mainFrame = new JFrame("Login");
 		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
 		mainFrame.setBounds(0, 0, 300, 400);
@@ -43,13 +45,15 @@ public class loginPage{
             System.exit(0);
 			}        
 		});    
-      
+		
+		//main panel to hold layout of panels
 		JPanel controlPanel = new JPanel();
 		controlPanel.setBackground(new Color(230, 230, 230));
 		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		controlPanel.setBounds(0, 0, 300, 400);
 		controlPanel.setLayout(null);
 		
+		//header car Image
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setBackground(Color.RED);
 		lblNewLabel_1.setOpaque(true);
@@ -59,6 +63,7 @@ public class loginPage{
 		lblNewLabel_1.setBounds(0, -68, 300, 168);
 		controlPanel.add(lblNewLabel_1);
 		
+		//panel to hold all labels and text boxes
 		JPanel gridA = new JPanel();
 		gridA.setBackground(new Color(230, 230, 230));
 		gridA.setBounds(0, 100, 280, 250);
@@ -89,7 +94,6 @@ public class loginPage{
 		
 		gbcA.gridx = 0;
 		gbcA.gridy = 2;
-		//gbcA.insets = new Insets(20,20,0,0);
 		gridA.add(passwordBar,gbcA);
 		
 		JButton forgotButton = new JButton("Forgot Password?");
@@ -107,33 +111,16 @@ public class loginPage{
 		
 		
 		JButton submitButton = new JButton("Submit");
-		//gbcA.insets = new Insets(10,-80,0,0);
 		gbcA.anchor = GridBagConstraints.WEST;
 		gbcA.gridwidth= 1;
 		gbcA.gridx = 1;
 		gbcA.gridy = 3;
 		gbcA.weightx = .5;
-		//gbcA.weighty = .2;
-		//gbcA.insets = new Insets(10,130,0,0);
 		gridA.add(submitButton,gbcA);
 		
 		mainFrame.setContentPane(controlPanel);
 		mainFrame.setVisible(true);
-		
-		
-		
-		//set actions
-		forgotButton.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            requestPasswordPage();
-         }          
-		});
-		
-		submitButton.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            inventoryPage myInventory = new inventoryPage();
-         }          
-		});
+
 	}
 	
 	private void requestPasswordPage(){
@@ -173,7 +160,6 @@ public class loginPage{
 		GridBagConstraints gbcI = new GridBagConstraints();
 		controlPanel.add(infoBG);
 		
-		//JLabel announcement = new JLabel("Please fill out all the information below and a new temporary password will be sent to your email shortly");
 		JTextArea announcement = new JTextArea(2, 20);
 		announcement.setForeground(Color.BLACK);
 		announcement.setText("Please fill out all the information below and a new temporary password will be sent to your email shortly");
@@ -261,14 +247,10 @@ public class loginPage{
 		requestPmainFrame.setContentPane(controlPanel);
 		requestPmainFrame.setVisible(true);
 		
-		//add button functions
-		requestB.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            resetPasswordPage();
-			requestPmainFrame.dispose();
-         }          
-		});
+		
 	}
+	
+	
 	private void resetPasswordPage(){
 		resetPmainFrame = new JFrame("Reset Password");
 		resetPmainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
@@ -306,7 +288,6 @@ public class loginPage{
 		GridBagConstraints gbcI = new GridBagConstraints();
 		controlPanel.add(infoBG);
 		
-		//JLabel announcement = new JLabel("Please fill out all the information below and a new temporary password will be sent to your email shortly");
 		JTextArea announcement = new JTextArea(2, 20);
 		announcement.setForeground(Color.BLACK);
 		announcement.setText("Please fill out all the information below to reset your password. This must be done after recieving a temporary password from an admin.");
@@ -315,14 +296,12 @@ public class loginPage{
 		announcement.setOpaque(false);
 		announcement.setEditable(false);
 		announcement.setFocusable(false);
-		//gbcA.anchor = GridBagConstraints.SOUTHWEST;
 		gbcA.fill = GridBagConstraints.BOTH;
 		gbcA.weighty = 1;
 		gbcA.gridx = 0;
 		gbcA.gridy = 0;
 		announcementBG.add(announcement, gbcA);
 		
-		//request first and last name, job title, email 
 		JLabel userNameL = new JLabel("Username: ");
 		gbcI.anchor = GridBagConstraints.EAST;
 		gbcI.weighty = .5;
@@ -385,11 +364,7 @@ public class loginPage{
 		resetPmainFrame.setVisible(true);
 		
 		//set functions
-		requestB.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            resetPmainFrame.dispose();
-         }          
-		});
+		
 		
 	}
 }

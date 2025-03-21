@@ -23,12 +23,15 @@ public class pastSalesPage{
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
+	private pastSalesPageController controller;
+	
 
-	public pastSalesPage(){
+	public pastSalesPage(pastSalesPageController controller){
+		this.controller = controller;
 		prepareInventoryGUI();
 	}
 	public static void main(String[] args){
-      pastSalesPage pastSalesPage = new pastSalesPage();
+      //pastSalesPage pastSalesPage = new pastSalesPage();
       //pastSalesPage.showEventDemo();
 	}
 	@SuppressWarnings("unchecked")
@@ -95,21 +98,16 @@ public class pastSalesPage{
 		controlPanel.add(inventoryBG);
 		
 		//page menu in upper right hand corner
-		final DefaultComboBoxModel pageMenuDD = new DefaultComboBoxModel();
-		pageMenuDD.addElement("");
-		pageMenuDD.addElement("Inventory");
-		pageMenuDD.addElement("Dealership Info");
-		pageMenuDD.addElement("Sales History");
-		pageMenuDD.addElement("Manage User Accounts");
-		pageMenuDD.addElement("Sign Out");
+		JComboBox pageMenuDD = new JComboBox();
+		controller.fillPageElements(pageMenuDD);
+		DefaultListSelectionModel pageMenuModel = new DefaultListSelectionModel();
+		EnabledJComboBoxRenderer pageMenuEnableRender = new EnabledJComboBoxRenderer(pageMenuModel);
+		pageMenuDD.setRenderer(pageMenuEnableRender);
+		pageMenuDD.setBounds(450, 20, 200, 25);
+		controlPanel.add(pageMenuDD);
+
 		
-		final JComboBox pageMenuDDB = new JComboBox(pageMenuDD);    
-		pageMenuDDB.setSelectedIndex(0);
-		JScrollPane pageMenuDDP = new JScrollPane(pageMenuDDB);  
-		pageMenuDDP.setBounds(450, 20, 200, 25);
-		controlPanel.add(pageMenuDDP);
-		
-		pageMenuDDB.addActionListener(new ActionListener() {
+	/* 	pageMenuDDB.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
 		    if (pageMenuDDB.getSelectedIndex() == 1){
 				inventoryPage inventory = new inventoryPage();
@@ -125,8 +123,10 @@ public class pastSalesPage{
 				mainFrame.dispose();
 			}
          }          
-		});
-		//display options
+		}); */
+		
+		
+		/* //display options
 		gbcD.anchor = GridBagConstraints.NORTHWEST;
 		final JCheckBox dAll = new JCheckBox("Display All");
 		dAll.setBackground(new Color(230, 230, 230));
@@ -134,40 +134,39 @@ public class pastSalesPage{
 		dMoto.setBackground(new Color(230, 230, 230));
 		final JCheckBox dCar = new JCheckBox("Cars Only");
 		dCar.setBackground(new Color(230, 230, 230));
-		//gbcD.insets = new Insets(0,-50,0,0);
 		gbcD.weightx = .5;
 		gbcD.gridwidth = 1;
 		gbcD.gridx = 0;
 		gbcD.gridy = 0;
-		displayBG.add(dAll, gbcD);
+		//displayBG.add(dAll, gbcD);
 		gbcD.insets = new Insets(0,-70,0,0);
 		gbcD.weightx = .9;
 		gbcD.gridx = 1;
 		gbcD.gridy = 0;
-		displayBG.add(dMoto, gbcD);
+		//displayBG.add(dMoto, gbcD);
 		gbcD.insets = new Insets(0,-115,0,0);
 		gbcD.weightx= .9;
 		gbcD.gridx = 2;
 		gbcD.gridy = 0;
 		gbcD.ipady = 0;
 		gbcD.ipadx = 10;
-		displayBG.add(dCar, gbcD);
-
-		//inventory list
-		final DefaultListModel inventoryModel = new DefaultListModel();
-
-		inventoryModel.addElement("Blue Honda Accord 2013");
-		inventoryModel.addElement("Red BMW Series One 2020");
-		inventoryModel.addElement("Yellow Volkswagon Beetle 1960");
+		//displayBG.add(dCar, gbcD);
+ */
+		//sales list
+		
+		final DefaultListModel salesModel = new DefaultListModel();
 
 
+		String[] sales = controller.getAllSales();
+		for(String sale : sales){
+			salesModel.addElement(sale);
+		}
 
-		final JList inventoryList = new JList(inventoryModel);
+		final JList inventoryList = new JList(salesModel);
 		inventoryList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		inventoryList.setSelectedIndex(0);
 		inventoryList.setVisibleRowCount(19);
 		JScrollPane inventoryListScrollPane = new JScrollPane(inventoryList);       
-		JButton showButton2 = new JButton("Show");
 		gbcI.gridx = 0;
 		gbcI.gridy = 1;
 		gbcI.gridwidth = 3;

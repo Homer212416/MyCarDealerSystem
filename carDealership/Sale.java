@@ -6,6 +6,7 @@ import java.time.LocalDate;
 public class Sale implements Serializable {
 	private static final long serialVersionUID = -7473395562909124471L;
 	private Vehicle vehicle;
+	private int vehicleID;
 	private String buyerName;
 	private String buyerContact;
 	private LocalDate saleDate;
@@ -15,12 +16,17 @@ public class Sale implements Serializable {
 		this.buyerName = buyerName;
 		this.buyerContact = buyerContact;
 		this.saleDate = saleDate;
+		//add vehicleID to contructor
+		this.vehicleID = 1;
 	}
 
 	public Vehicle getVehicle() {
 		return vehicle;
 	}
-
+	
+	public int getVehicleID() {
+		return vehicleID;
+	}
 	public void setVehicle(Vehicle vehicle) {
 		this.vehicle = vehicle;
 	}

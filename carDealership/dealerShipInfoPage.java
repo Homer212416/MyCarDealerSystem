@@ -24,18 +24,26 @@ public class dealerShipInfoPage{
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
-
-	public dealerShipInfoPage(){
+	private Image carImage;
+	private Image carImageHeader;
+	public JComboBox pageMenuDD;
+	private dealerShipInfoPageController controller;
+	
+	
+	public dealerShipInfoPage(dealerShipInfoPageController controller){
+		this.controller = controller;
+		carImage = Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg"));
+		carImageHeader = Toolkit.getDefaultToolkit().getImage(dealerShipInfoPage.class.getResource("/images/backgroundd.jpg"));
 		prepareInventoryGUI();
 	}
 	public static void main(String[] args){
-      dealerShipInfoPage dealerShipInfoPage = new dealerShipInfoPage();
+      //dealerShipInfoPage dealerShipInfoPage = new dealerShipInfoPage();
       //dealerShipInfoPage.showEventDemo();
 	}
 	@SuppressWarnings("unchecked")
 	private void prepareInventoryGUI(){
 		mainFrame = new JFrame("Dealership Information");
-		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+		mainFrame.setIconImage(carImage);
 		mainFrame.setBounds(0, 0, 650, 650);
 		mainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
@@ -55,7 +63,7 @@ public class dealerShipInfoPage{
 		JLabel carImage = new JLabel("");
 		carImage.setBackground(Color.BLACK);
 		carImage.setOpaque(true);
-		carImage.setIcon(new ImageIcon(dealerShipInfoPage.class.getResource("/images/backgroundd.jpg")));
+		carImage.setIcon(new ImageIcon(carImageHeader));
 		carImage.setBounds(0, -50, 650, 200);
 		controlPanel.add(carImage);
 		
@@ -66,7 +74,6 @@ public class dealerShipInfoPage{
 		searchBarBG.setLayout(layoutS);
 		GridBagConstraints gbcS = new GridBagConstraints();
 		searchBarBG.setBounds(0, 150, 650, 50);
-		//controlPanel.add(searchBarBG);
 		
 		JPanel filterBG = new JPanel();
 		filterBG.setBackground(new Color(230, 230, 230));
@@ -86,80 +93,39 @@ public class dealerShipInfoPage{
 		GridBagConstraints gbcD = new GridBagConstraints();
 		controlPanel.add(displayBG);
 		
-		JPanel inventoryBG = new JPanel();
-		inventoryBG.setBackground(Color.WHITE);
-		inventoryBG.setLayout(new GridBagLayout());
+		JPanel dealershipBG = new JPanel();
+		dealershipBG.setBackground(Color.WHITE);
+		dealershipBG.setLayout(new GridBagLayout());
 		GridBagLayout layoutI = new GridBagLayout();
-		inventoryBG.setLayout(layoutI);
+		dealershipBG.setLayout(layoutI);
 		GridBagConstraints gbcI = new GridBagConstraints();
-		inventoryBG.setBounds(10, 175, 440, 430);
-		controlPanel.add(inventoryBG);
+		dealershipBG.setBounds(10, 175, 440, 430);
+		controlPanel.add(dealershipBG);
 		
 		//page menu in upper right hand corner
-		final DefaultComboBoxModel pageMenuDD = new DefaultComboBoxModel();
-		pageMenuDD.addElement("");
-		pageMenuDD.addElement("Inventory");
-		pageMenuDD.addElement("Dealership Info");
-		pageMenuDD.addElement("Sales History");
-		pageMenuDD.addElement("Manage User Accounts");
-		pageMenuDD.addElement("Sign Out");
-		
-		final JComboBox pageMenuDDB = new JComboBox(pageMenuDD);    
-		pageMenuDDB.setSelectedIndex(0);
-		JScrollPane pageMenuDDP = new JScrollPane(pageMenuDDB);  
-		pageMenuDDP.setBounds(450, 20, 200, 25);
-		controlPanel.add(pageMenuDDP);
-		
-		pageMenuDDB.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            if (pageMenuDDB.getSelectedIndex() == 1){
-				inventoryPage inventory = new inventoryPage();
-				mainFrame.dispose();
-			}else if(pageMenuDDB.getSelectedIndex() == 3){
-				pastSalesPage sales = new pastSalesPage();
-				mainFrame.dispose();
-			}else if(pageMenuDDB.getSelectedIndex() == 4){
-				accountManagePage accounts = new accountManagePage();
-				mainFrame.dispose();
-			}else if(pageMenuDDB.getSelectedIndex() == 5){
-				loginPage login = new loginPage();
-				mainFrame.dispose();
-			}
-         }          
-		});
-		
-		//add and delete dealer button
-		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		JButton addDealer = new JButton("Add Dealership");
-		//addDealer.setEnabled(false);
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
-		gbcF.weighty = .1;
-		gbcF.insets = new Insets(7, 0, 0, 0);
-		gbcF.gridx = 0;
-		gbcF.gridy = 0;
-		filterBG.add(addDealer, gbcF);
-		
+		pageMenuDD = new JComboBox();
+		controller.fillPageElements(pageMenuDD);
+		DefaultListSelectionModel pageMenuModel = new DefaultListSelectionModel();
+		EnabledJComboBoxRenderer pageMenuEnableRender = new EnabledJComboBoxRenderer(pageMenuModel);
+		pageMenuDD.setRenderer(pageMenuEnableRender);
+		pageMenuDD.setBounds(450, 20, 200, 25);
+		controlPanel.add(pageMenuDD);
+
+		//delete button/////////////////////////////////////////////
 		JButton deleteDealer = new JButton("Delete Dealership");
-		//deleteDealer.setEnabled(false);
+		//enable delete button based on user permissions
+		controller.setDeleteEnabled(deleteDealer);
+		gbcF.anchor = GridBagConstraints.NORTH;
 		gbcF.weighty = .9;
 		gbcF.gridx = 0;
-		gbcF.gridy = 1;
+		gbcF.gridy = 0;
 		filterBG.add(deleteDealer, gbcF);
 		
-		//System.out.println(Main.m_dealership.getInfoGUI());
-		//inventory list
+
+		//DealershipInformationList list///////////////////////////////////////////
 		final DefaultListModel inventoryModel = new DefaultListModel();
 
-		/* inventoryModel.addElement("Fake Dealership");
-		inventoryModel.addElement("1000 Rainbow Road, Montreal, QC");
-		inventoryModel.addElement("Capacity: 100");
-		inventoryModel.addElement("Cars Sold: 10");
-		inventoryModel.addElement("Cars Available: 10");
-		inventoryModel.addElement("Motocycles Sold: 10");
-		inventoryModel.addElement("Motocycles Available: 10");
-		inventoryModel.addElement("Profit: 10.10"); */
-		
-		String[] dealer = Main.m_dealership.getInfoGUI();
+		String[] dealer = controller.getDealershipInfo();
 		inventoryModel.addElement("Name: " + dealer[0]);
 		inventoryModel.addElement("Location: " + dealer[1]);
 		inventoryModel.addElement("Inventory Capacity: " + dealer[2]);
@@ -173,7 +139,6 @@ public class dealerShipInfoPage{
 		inventoryList.setSelectedIndex(0);
 		inventoryList.setVisibleRowCount(19);
 		JScrollPane inventoryListScrollPane = new JScrollPane(inventoryList);       
-		JButton showButton2 = new JButton("Show");
 		gbcI.gridx = 0;
 		gbcI.gridy = 1;
 		gbcI.gridwidth = 3;
@@ -183,7 +148,7 @@ public class dealerShipInfoPage{
 		//gbcI.weighty = .4;
 		gbcI.fill = GridBagConstraints.BOTH;
 		gbcI.insets = new Insets(5,0,0,0);
-		inventoryBG.add(inventoryListScrollPane, gbcI);
+		dealershipBG.add(inventoryListScrollPane, gbcI);
 		mainFrame.setContentPane(controlPanel);
 		mainFrame.setVisible(true);
 	}

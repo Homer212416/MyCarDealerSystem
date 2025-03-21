@@ -8,7 +8,7 @@ public class Car extends Vehicle {
 		super(make, model, color, year, price);
 		this.type = type;
 	}
-
+	
 	public Car(Car c) {
 		this(c.make, c.model, c.color, c.year, c.price, c.type);
 	}

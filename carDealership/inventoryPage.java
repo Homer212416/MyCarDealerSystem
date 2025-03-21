@@ -3,6 +3,7 @@ package carDealership;
 import java.util.Scanner;
 
 import persistance.DealershipLayer;
+import persistance.UserLayer;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -11,42 +12,9 @@ import java.util.List;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.Color;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.ImageIcon;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.SQLException;
-import java.awt.Toolkit;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import javax.swing.border.*;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+
 public class inventoryPage{
 	private static final long serialVersionUID = -4235592661347719465L;
 	private JFrame mainFrame;
@@ -57,16 +25,46 @@ public class inventoryPage{
 	private int maxyear = 2025;
 	private double minPrice = 0;
 	private double maxPrice = 50000;
-
-	public inventoryPage(){
+	private JPanel vehicle;
+	private JPanel inventoryBG;
+	private JPanel filterBG;
+	private GridBagConstraints gbcF;
+	private GridBagConstraints gbcI;
+	private JScrollPane filterScroll;
+	private inventoryPageController controller;
+	public static DefaultListSelectionModel pageMenuModel;
+	public static JComboBox pageMenuDD;
+	
+	//page elements
+	private static String[] sortMenuElements;
+	private static String[] pageElements;
+	private static String[] editInventoryElements;
+	private static Image carIconImage;
+	private static Image newCarImage;
+	public Color bgColor = new Color(230, 230, 230);
+	
+	public inventoryPage(inventoryPageController controller){
+		//this.controller = new inventoryPageController();
+		carIconImage = (Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/icon.jpg")));
+		newCarImage = carIconImage.getScaledInstance(80, 70,Image.SCALE_DEFAULT);
+		sortMenuElements = new String[]{"Sort By","Price Descending" ,"Price Ascending", "Make","Model", "Year Descending","Year Ascending" };	
+		pageElements = new String[]{"", "Inventory", "Dealership Info", "Sales History", "Manage User Accounts","Sign Out"};
+		editInventoryElements = new String[]{"", "Add Car", "Add Motorcycle", "Edit Vehicle", "Sell vehicle","Remove Vehicle"};
+		this.controller = controller;
 		prepareInventoryGUI();
+		
 	}
 	public static void main(String[] args){
-      inventoryPage inventoryPage = new inventoryPage();
-      //inventoryPage.showEventDemo();
+		//inventoryPage inventoryPage = new inventoryPage();
+		//inventoryPage.showEventDemo();
 	}
 	@SuppressWarnings("unchecked")
 	private void prepareInventoryGUI(){
+		//set standard font 
+		UIManager.put("Label.font", new Font("HP Simplified Hans", Font.BOLD, 12));
+        UIManager.put("Button.font", new Font("HP Simplified Hans", Font.BOLD, 12));
+        UIManager.put("TextField.font", new Font("HP Simplified Hans", Font.BOLD, 12));
+		//create window called mainFrame
 		mainFrame = new JFrame("Inventory");
 		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/icon.jpg")));
 		mainFrame.setBounds(0, 0, 665, 665);
@@ -76,8 +74,9 @@ public class inventoryPage{
 			}        
 		});
 		
-		JPanel controlPanel = new JPanel();
-		controlPanel.setBackground(new Color(230, 230, 230));
+		///create layout of panels/////////////////////////////////////////////////////////
+		controlPanel = new JPanel();
+		controlPanel.setBackground(bgColor);
 		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		controlPanel.setBounds(0, 0, 665, 665);
 		controlPanel.setLayout(new GridLayout());
@@ -94,186 +93,84 @@ public class inventoryPage{
 		
 		JPanel searchBarBG = new JPanel();
 		searchBarBG.setBackground(Color.GRAY);
-		searchBarBG.setLayout(new GridBagLayout());
 		GridBagLayout layoutS = new GridBagLayout();
 		searchBarBG.setLayout(layoutS);
 		GridBagConstraints gbcS = new GridBagConstraints();
 		searchBarBG.setBounds(0, 150, 650, 50);
 		controlPanel.add(searchBarBG);
 		
-		JPanel filterBG = new JPanel();
-		filterBG.setBackground(new Color(230, 230, 230));
-		filterBG.setLayout(new GridBagLayout());
-		GridBagLayout layoutF = new GridBagLayout();
-		filterBG.setLayout(layoutF);
-		filterBG.setBounds(450, 225, 200, 350);
-		GridBagConstraints gbcF = new GridBagConstraints();
-		controlPanel.add(filterBG);
-		
 		JPanel displayBG = new JPanel();
-		displayBG.setBackground(new Color(230, 230, 230));
-		displayBG.setLayout(new GridBagLayout());
+		displayBG.setBackground(bgColor);
 		GridBagLayout layoutD = new GridBagLayout();
 		displayBG.setLayout(layoutD);
 		displayBG.setBounds(10, 200, 440, 30);
 		GridBagConstraints gbcD = new GridBagConstraints();
 		controlPanel.add(displayBG);
+		////////////////////////////////////////////////////////////////////////////////
 		
-		JPanel inventoryBG = new JPanel();
-		inventoryBG.setBackground(Color.WHITE);
-		inventoryBG.setLayout(new GridBagLayout());
-		GridBagLayout layoutI = new GridBagLayout();
-		inventoryBG.setLayout(layoutI);
-		GridBagConstraints gbcI = new GridBagConstraints();
-		inventoryBG.setBounds(10, 225, 440, 375);
-		controlPanel.add(inventoryBG);
-		
-		//page menu in upper right hand corner
-		/* final DefaultComboBoxModel pageMenuDD = new DefaultComboBoxModel();
-		pageMenuDD.addElement("");
-		pageMenuDD.addElement("Inventory");
-		pageMenuDD.addElement("Dealership Info");
-		pageMenuDD.addElement("Sales History");
-		pageMenuDD.addElement("Manage User Accounts");
-		pageMenuDD.addElement("Sign Out");
-		
-		
-		
-		final JComboBox pageMenuDDB = new JComboBox(pageMenuDD);    
-		pageMenuDDB.setSelectedIndex(0);
-		JScrollPane pageMenuDDP = new JScrollPane(pageMenuDDB);  
-		pageMenuDDP.setBounds(450, 20, 200, 25);
-		controlPanel.add(pageMenuDDP);
-		//actions for page drop down */
-		JComboBox pageMenuDD = new JComboBox();
-		
-		pageMenuDD.addItem("");
-		pageMenuDD.addItem("Inventory");
-		pageMenuDD.addItem("Dealership Info");
-		pageMenuDD.addItem("Sales History");
-		pageMenuDD.addItem("Manage User Accounts");
-		pageMenuDD.addItem("Sign Out");
-
-		DefaultListSelectionModel pageMenuModel = new DefaultListSelectionModel();
-
-		pageMenuModel.addSelectionInterval(0, 5);
-
-		//pageMenuModel.addSelectionInterval(4, 5);
-		
-		List<Integer> available = new ArrayList<Integer>();
-		available.add(1);
-		available.add(2);
-		available.add(3);
-		available.add(4);
-		available.add(5);
-
-		EnabledJComboBoxRenderer pageMenuEnableRender = new EnabledJComboBoxRenderer(pageMenuModel);
-
-		pageMenuDD.setRenderer(pageMenuEnableRender);
-		pageMenuDD.setBounds(450, 20, 200, 25);
-		controlPanel.add(pageMenuDD);
-		//actions for page drop down */
-		System.out.println(pageMenuModel.toString());
-		pageMenuDD.addActionListener(new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-			if (available.contains(pageMenuDD.getSelectedIndex()))	{
-				if (pageMenuDD.getSelectedIndex() == 2){
-					dealerShipInfoPage dealer = new dealerShipInfoPage();
-					mainFrame.dispose();
-				}else if(pageMenuDD.getSelectedIndex() == 3){
-					pastSalesPage sales = new pastSalesPage();
-					mainFrame.dispose();
-				}else if(pageMenuDD.getSelectedIndex() == 4){
-					accountManagePage accounts = new accountManagePage();
-					mainFrame.dispose();
-				}else if(pageMenuDD.getSelectedIndex() == 5){
-					loginPage login = new loginPage();
-					mainFrame.dispose();
-				}
+		//////////create page menu drop down///////////////////////////////////////////
+			pageMenuDD = new JComboBox();
+			for(String element : pageElements){
+				pageMenuDD.addItem(element);
 			}
-			}
-		});
-		
-		int size = Main.m_dealership.getTotalVehicles();
+			pageMenuModel = new DefaultListSelectionModel();
+			EnabledJComboBoxRenderer pageMenuEnableRender = new EnabledJComboBoxRenderer(pageMenuModel);
+			pageMenuDD.setRenderer(pageMenuEnableRender);
+			pageMenuDD.setBounds(450, 20, 200, 25);
+			controlPanel.add(pageMenuDD);
+		//grey out menuItems the user does not have access to and get access list for pages
+		//controller.addPageIntervals();
+		//////////////////////////////////////////////////////////////
+
+		//////////inventory information/////////////////////////////////////////////////////
+		int size = controller.getTotalVehiclesInInventory();
 		JLabel cap = new JLabel("Size: " + size);
-		//cap.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		cap.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		cap.setBounds(30, 600, 200, 25);
 		controlPanel.add(cap);
 		
-		int totalValue = (int)Main.m_dealership.getInventoryGrossValue();
+		int totalValue = controller.getInventoryGrossValue();
 		JLabel totalV = new JLabel("Total Inventory Value: " + totalValue);
 		totalV.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		totalV.setBounds(240, 600, 200, 25);
 		controlPanel.add(totalV);
 		
+		////////////////////////////////////////////////////////////////
 		
-		//edit inventory button on search bar left hand side
+		//////edit inventory drop down menu///////////////////////////////////////////////////////////
 		JComboBox editInventoryMenu= new JComboBox();
-		
-		editInventoryMenu.addItem("");
-		editInventoryMenu.addItem("Add Car");
-		editInventoryMenu.addItem("Add Motorcycle");
-		editInventoryMenu.addItem("Edit Vehicle");
-		editInventoryMenu.addItem("Sell vehicle");
-		editInventoryMenu.addItem("Remove Vehicle");
-
+		for(String element : editInventoryElements){
+			editInventoryMenu.addItem(element);
+			}
 		DefaultListSelectionModel editInventoryModel = new DefaultListSelectionModel();
-
-		editInventoryModel.addSelectionInterval(0, 5);
-
-		//editInventoryModel.addSelectionInterval(5, 5);
-
 		EnabledJComboBoxRenderer editInventoryEnableRender = new EnabledJComboBoxRenderer(editInventoryModel);
-
 		editInventoryMenu.setRenderer(editInventoryEnableRender);
 		editInventoryMenu.setBounds(450, 20, 200, 25);
 		controlPanel.add(editInventoryMenu);
-		//actions for page drop down */
+		//set permissions for editInventoryMenu drop down
+		//controller.addEditIntervals();
 		
-		editInventoryMenu.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-			if (editInventoryMenu.getSelectedIndex() == 1){
-				addCarMenu();
-				
-			}else if(editInventoryMenu.getSelectedIndex() == 2){
-				addMotorcycleMenu();
-			}else if(editInventoryMenu.getSelectedIndex() == 3){
-				editVehicleMenu();
-			}else if(editInventoryMenu.getSelectedIndex() == 4){
-				sellVehicleMenu();
-			}else if(editInventoryMenu.getSelectedIndex() == 5){
-				removeVehicleMenu();
-			}
-			}
-		});
-
-
 		editInventoryMenu.setSelectedIndex(0);
-		//addVehicleBox.setForeground(Color.GRAY);
-		gbcS.anchor = GridBagConstraints.WEST;
-		JScrollPane addVehiclePane = new JScrollPane(editInventoryMenu);    
+		gbcS.anchor = GridBagConstraints.WEST;  
 		gbcS.gridx = 1;
 		gbcS.gridy = 0;
 		gbcS.weightx = .2;
-		searchBarBG.add(addVehiclePane, gbcS); 
+		searchBarBG.add(editInventoryMenu, gbcS); 
 		
+		//editlabel
 		gbcS.anchor = GridBagConstraints.WEST;
 		JLabel editLabel = new JLabel("Edit Inventory: ");
-		editLabel.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
 		gbcS.gridx = 0;
 		gbcS.gridy = 0;
 		gbcS.weightx = 0;
 		gbcS.insets = new Insets(0,10,0,0);
 		searchBarBG.add(editLabel, gbcS); 
-		
+		//////////////////////////////////////////////////////////////////
+			
+		///////search bar and buttonn///////////////////////////////////////////////////////////////
 		//search bar on right hand side
 		JTextField searchBar  = new JTextField("Search ID", 15);
 		searchBar.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		//gbcS.anchor = GridBagConstraints.NORTHEAST;
 		gbcS.gridx = 2;
 		gbcS.gridy = 0;
 		gbcS.insets = new Insets(0,0,0,0);
@@ -286,213 +183,19 @@ public class inventoryPage{
 		gbcS.gridx = 6;
 		gbcS.gridy = 0;
 		
-		searchBarBG.add(MagButton, gbcS);
+		///////////////////////////////////////////////////////////////////
 		
-		//filter portion right hand side
-		//make filter
-		int yBox = 0;
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel make = new JLabel("Make");
-		make.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		filterBG.add(make, gbcF);
-		
-		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
-			yBox++;
-			final JCheckBox makeName = new JCheckBox(Main.m_dealership.inventory[i].getMake());
-			makeName.setBackground(new Color(230, 230, 230));
-			makeName.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-			gbcF.gridx = 0;
-			gbcF.gridy = yBox++;
-			filterBG.add(makeName, gbcF);
-		}
-		
-		//model filter
-		gbcF.anchor = GridBagConstraints.NORTH;
-		
-		JLabel model = new JLabel("Model");
-		model.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		filterBG.add(model, gbcF);
-		
-		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
-			yBox++;
-			final JCheckBox modelName = new JCheckBox(Main.m_dealership.inventory[i].getModel());
-			modelName.setBackground(new Color(230, 230, 230));
-			modelName.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-			gbcF.gridx = 0;
-			gbcF.gridy = yBox++;
-			filterBG.add(modelName, gbcF);
-		}
-		
-		
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel color = new JLabel("Color");
-		color.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		filterBG.add(color, gbcF);
-		
-		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
-			yBox++;
-			final JCheckBox vehColor = new JCheckBox(Main.m_dealership.inventory[i].getColor());
-			vehColor.setBackground(new Color(230, 230, 230));
-			vehColor.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-			gbcF.gridx = 0;
-			gbcF.gridy = yBox++;
-			filterBG.add(vehColor, gbcF);
-		}
-		
-		//year filter
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel year = new JLabel("Year");
-		year.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		
-		filterBG.add(year, gbcF);
-		
-		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
-			if(Main.m_dealership.getTotalVehicles() > 1){
-				if(i + 1 < Main.m_dealership.getTotalVehicles()){
-					
-					if(Main.m_dealership.inventory[i].getYear() > Main.m_dealership.inventory[i+1].getYear()){
-						minyear = Main.m_dealership.inventory[i+1].getYear();
-						maxyear = Main.m_dealership.inventory[i].getYear();
-						
-					}else{
-						minyear = Main.m_dealership.inventory[i].getYear();
-						maxyear = Main.m_dealership.inventory[i+1].getYear();
-					}
-				}
-			}else{
-				minyear = Main.m_dealership.inventory[i].getYear();
-				maxyear = Main.m_dealership.inventory[i].getYear();
-			}
-				
-			
-		}
-		gbcF.anchor = GridBagConstraints.NORTH;
-		SpinnerModel yearMinSpinnerModel = new SpinnerNumberModel(minyear,minyear,maxyear, 1);//min, max,step
-		JSpinner minSpinner = new JSpinner(yearMinSpinnerModel);
-		JSpinner.NumberEditor minEditor = new JSpinner.NumberEditor(minSpinner, "#");
-		minSpinner.setEditor(minEditor);	
-		minSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox;
-		gbcF.insets = new Insets(0, 5, 0, 0);
-		filterBG.add(minSpinner, gbcF);
-
-		gbcF.anchor = GridBagConstraints.NORTHEAST;
-		SpinnerModel yearMaxSpinnerModel = new SpinnerNumberModel(maxyear,minyear, maxyear,1);
-		JSpinner maxSpinner = new JSpinner(yearMaxSpinnerModel);
-		JSpinner.NumberEditor maxEditor = new JSpinner.NumberEditor(maxSpinner, "#");
-		maxSpinner.setEditor(maxEditor);
-		maxSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 2;
-		gbcF.gridy = yBox;
-		//gbcF.insets = new Insets(0, 0, 0, 20);
-		filterBG.add(maxSpinner, gbcF);
-
-		gbcF.anchor = GridBagConstraints.NORTH;
-		gbcF.fill = GridBagConstraints.BOTH;
-		JLabel dashyear = new JLabel(" - ");
-		dashyear.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 1;
-		gbcF.gridy = yBox++;
-		gbcF.insets = new Insets(0, -15, 0, 0);
-		filterBG.add(dashyear, gbcF);
-	
-		gbcF.fill = GridBagConstraints.NONE;
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel price = new JLabel("Price");
-		price.setFont(new Font("HP Simplified Hans", Font.BOLD, 12));
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.insets = new Insets(5, 0, 0, 0);
-		filterBG.add(price, gbcF);
-		//price slider
-		for (int i = 0; i < Main.m_dealership.getTotalVehicles(); i++) {
-			if(Main.m_dealership.getTotalVehicles() > 1){
-				if(i + 1 < Main.m_dealership.getTotalVehicles()){
-					
-					if(Main.m_dealership.inventory[i].getPrice() > Main.m_dealership.inventory[i+1].getPrice()){
-						minPrice = Main.m_dealership.inventory[i+1].getPrice();
-						maxPrice = Main.m_dealership.inventory[i].getPrice();
-						
-					}else{
-						minPrice = Main.m_dealership.inventory[i].getPrice();
-						maxPrice = Main.m_dealership.inventory[i+1].getPrice();
-					}
-				}
-			}else{
-				minPrice = Main.m_dealership.inventory[i].getPrice();
-				maxPrice = Main.m_dealership.inventory[i].getPrice();
-			}
-				
-			
-		}
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JSlider priceSlider = new JSlider((int)minPrice, (int)maxPrice, (int)maxPrice);
-		priceSlider.setBackground(new Color(230, 230, 230));
-		gbcF.insets = new Insets(0, 10, 0, 0);
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
-		filterBG.add(priceSlider, gbcF);
-		
-		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		JLabel min = new JLabel(Integer.toString((int)minPrice));
-		min.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox;
-		gbcF.ipady = 0;
-		gbcF.weightx = .2;
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
-		filterBG.add(min, gbcF);
-		
-		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		JLabel max = new JLabel(Integer.toString((int)maxPrice));
-		max.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.insets = new Insets(0, -15, 0, 0);
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 3;
-		gbcF.gridy = yBox++;
-		gbcF.weighty =.2;
-		gbcF.fill = GridBagConstraints.NONE;
-		filterBG.add(max, gbcF);
-		
-		
-		
-		//display options
+		////////display options///////////////////////////////////////////////////////////////
 		gbcD.anchor = GridBagConstraints.NORTHWEST;
 		final JCheckBox dAll = new JCheckBox("Display All");
 		dAll.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
-		dAll.setBackground(new Color(230, 230, 230));
+		dAll.setBackground(bgColor);
 		final JCheckBox dMoto = new JCheckBox("Motocycles Only");
-		dMoto.setBackground(new Color(230, 230, 230));
+		dMoto.setBackground(bgColor);
 		dMoto.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		final JCheckBox dCar = new JCheckBox("Cars Only");
-		dCar.setBackground(new Color(230, 230, 230));
+		dCar.setBackground(bgColor);
 		dCar.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
-		//gbcD.insets = new Insets(0,-50,0,0);
 		gbcD.gridwidth = 1;
 		gbcD.gridx = 0;
 		gbcD.gridy = 0;
@@ -507,71 +210,105 @@ public class inventoryPage{
 		displayBG.add(dCar, gbcD);
 		
 		gbcD.anchor = GridBagConstraints.NORTHEAST;
-		final DefaultComboBoxModel sortMenu = new DefaultComboBoxModel();
-		sortMenu.addElement("Sort By");
-		sortMenu.addElement("Price Descending");
-		sortMenu.addElement("Price Ascending");
-		sortMenu.addElement("Make");
-		sortMenu.addElement("Model");
-		sortMenu.addElement("Year Descending");
-		sortMenu.addElement("Year Ascending");
-	
-
-		final JComboBox sortMenuBox = new JComboBox(sortMenu);    
-		sortMenuBox.setSelectedIndex(0);
-		sortMenuBox.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
-		JScrollPane sortMenuPane = new JScrollPane(sortMenuBox);	
+		final JComboBox sortMenu = new JComboBox();
+		//System.out.println(sortMenuElements);
+		for(String element : sortMenuElements){
+			sortMenu.addItem(element);
+		}
+		sortMenu.setSelectedIndex(0);
+		sortMenu.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		gbcD.gridwidth = 1;
 		gbcD.gridx = 3;
 		gbcD.gridy = 0;
 		gbcD.ipadx = 5;
 		gbcD.weightx = .1;
-		displayBG.add(sortMenuPane, gbcD);
+		displayBG.add(sortMenu, gbcD);
+		
+		/////////////////////////////////////////////////////////////////
 	
+		//create inventory list
+		refreshInventory();
+		mainFrame.setContentPane(controlPanel);
+		//mainFrame.setVisible(true);
+		
+	}
 	
-		//inventory list
-	/* 	final DefaultListModel inventoryModel = new DefaultListModel();
-
-		inventoryModel.addElement("Blue Honda Accord 2013");
-		inventoryModel.addElement("Red BMW Series One 2020");
-		inventoryModel.addElement("Yellow Volkswagon Beetle 1960");
-
-
-
-		
-		 */
-		
-		
+	private void refreshInventory(){
 		//inventory image list
-		JPanel carInv = new JPanel();
-		carInv.setBackground(Color.WHITE);
-		carInv.setBounds(10, 225, 440, 375);
-		carInv.setLayout(new GridBagLayout());
-		GridBagLayout layoutCarInv = new GridBagLayout();
-		carInv.setLayout(layoutCarInv);
-		GridBagConstraints gbcCarInv = new GridBagConstraints();
-		gbcCarInv.insets = new Insets(5,5,5,5);
-		gbcCarInv.anchor = GridBagConstraints.NORTHWEST;
 		
-		Image carIconImage = (Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/icon.jpg")));
-		Image newCarImage = carIconImage.getScaledInstance(80, 70,Image.SCALE_DEFAULT);
-		String[] vehicles = Main.m_dealership.displayAlls();
-		for (int i = 0; i < Main.m_dealership.getTotalVehicles() ; i++) {
-			JPanel car1 = new JPanel();
-			car1.setBackground(Color.WHITE);
-			car1.setLayout(new GridBagLayout());
+		
+		//create panels for layout////////////////////////////
+		inventoryBG = new JPanel();
+		inventoryBG.setBackground(Color.WHITE);
+		GridBagLayout layoutI = new GridBagLayout();
+		inventoryBG.setLayout(layoutI);
+		gbcI = new GridBagConstraints();
+		inventoryBG.setBounds(10, 225, 440, 375);
+		
+		filterBG = new JPanel();
+		filterBG.setBackground(bgColor);
+		GridBagLayout layoutF = new GridBagLayout();
+		filterBG.setLayout(layoutF);
+		filterBG.setPreferredSize(new Dimension(200, 365));
+		gbcF = new GridBagConstraints();
+		controlPanel.add(filterBG);
+		//make filter a scrollpane when needed
+		filterScroll = new JScrollPane(filterBG, JScrollPane. VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		filterScroll.setBounds(450, 227, 200, 370);
+		controlPanel.add(filterScroll);
+		
+		mainFrame.validate();
+		//vehicleInv is where the inventory will show on screen
+		JPanel vehicleInv = new JPanel();
+		vehicleInv.setBackground(Color.WHITE);
+		vehicleInv.setBounds(10, 225, 440, 375);
+		GridBagLayout layoutvehicleInv = new GridBagLayout();
+		vehicleInv.setLayout(layoutvehicleInv);
+		GridBagConstraints gbcvehicleInv = new GridBagConstraints();
+		gbcvehicleInv.insets = new Insets(5,5,5,5);
+		gbcvehicleInv.anchor = GridBagConstraints.NORTHWEST;
+		
+		
+		myMouseListener mml = new myMouseListener();
+		
+		int numberToShow = controller.getNumbertoDisplay();
+		//create an panel for each vehicle that should be shown and name///////////////////////
+		
+		
+		JPanel[] vehiclePanelNames= new JPanel[numberToShow];
+		System.out.println(numberToShow);
+		for (int i = 0; i < numberToShow; i++) {
+			String num = Integer.toString(i);
+			JPanel vehicle = new JPanel();
+			//add each panel to the array
+			vehiclePanelNames[i] = vehicle;
+			//name each panel so that can be called later if needed
+			vehicle.setName("car" + i);
+		}
+		
+		String[] vehicles = controller.getAllDisplayInfo();
+		for (int i = 0; i < numberToShow ; i++) {
+			//set standard layout for each panel/////
+			vehiclePanelNames[i].setBackground(Color.WHITE);
+			vehiclePanelNames[i].setLayout(new GridBagLayout());
 			GridBagLayout layoutC1 = new GridBagLayout();
-			car1.setLayout(layoutC1);
+			vehiclePanelNames[i].setLayout(layoutC1);
 			GridBagConstraints gbcC1 = new GridBagConstraints();
+			//////////////////////////////////////////
+			
+			//add image to each panel/////////////////////
 			JLabel c1Img = new JLabel("");
 			c1Img.setIcon(new ImageIcon(newCarImage));
 			gbcC1.gridx = 0;
 			gbcC1.gridy = 0;
 			gbcC1.anchor = GridBagConstraints.NORTHWEST;
-			car1.add(c1Img, gbcC1);
+			vehiclePanelNames[i].add(c1Img, gbcC1);
+			///////////////////////////////////////////////
+			
+			//add text description to each panel/////////////
 			JTextArea c1Info = new JTextArea(6, 20);
 			c1Info.setForeground(Color.BLACK);
-			c1Info.setText(Main.m_dealership.displayAlls()[i]);
+			c1Info.setText(vehicles[i]);
 			c1Info.setWrapStyleWord(true);
 			c1Info.setLineWrap(true);
 			c1Info.setOpaque(false);
@@ -582,38 +319,214 @@ public class inventoryPage{
 			gbcC1.gridy = 1;
 			gbcC1.weightx = .2;
 			gbcC1.weighty = 1;
-			car1.add(c1Info, gbcC1); 
-			gbcCarInv.insets = new Insets(5,5,5,5);
-			gbcCarInv.anchor = GridBagConstraints.NORTHWEST;
-			gbcCarInv.gridx = (int)Math.floor(i%3);
-			gbcCarInv.gridy = (int)Math.floor(i/3);
-			gbcCarInv.weightx = .9;
-			gbcCarInv.weighty = 1;
-			carInv.add(car1, gbcCarInv);
+			vehiclePanelNames[i].add(c1Info, gbcC1); 
+			
+			//have 2 vehicles per row
+			gbcvehicleInv.gridx = (int)Math.floor(i%2);
+			gbcvehicleInv.gridy = (int)Math.floor(i/2);
+			//add weight to last entry, you need weight to get anchor to work
+			if(i == controller.getNumbertoDisplay()){
+				gbcvehicleInv.weightx = .9;
+				gbcvehicleInv.weighty = 1;
+			}
+			//////////////////////////////////////////////
+			
+			//add vehicles to the scrollpane that holds the inventory
+			vehicleInv.add(vehiclePanelNames[i], gbcvehicleInv);
+			vehiclePanelNames[i].setFocusable(true);
+			vehiclePanelNames[i].addMouseListener(mml);
+			///////////////////////////////////
 		}
 		
-		/* final JList inventoryList = new JList(inventoryModel);
-		inventoryList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		inventoryList.setSelectedIndex(0);
-		inventoryList.setVisibleRowCount(19); */
-		JScrollPane inventoryListScrollPane = new JScrollPane(carInv);   
+		//adds vehicle Inventory list to a scroll pane
+		JScrollPane inventoryListScrollPane = new JScrollPane(vehicleInv);   
 		inventoryListScrollPane.setPreferredSize(new Dimension(440, 375));		
-		//inventoryList.setFont(new Font("HP Simplified Hans", Font.PLAIN, 14));
 		gbcI.gridx = 0;
 		gbcI.gridy = 1;
 		gbcI.gridwidth = 3;
 		gbcI.weightx = .9;
 		gbcI.weighty = 1;
-		gbcF.ipady = 0;
-		//gbcI.weighty = .4;
+		gbcI.ipady = 0;
 		gbcI.fill = GridBagConstraints.BOTH;
 		gbcI.insets = new Insets(5,0,0,0);
 		inventoryBG.add(inventoryListScrollPane, gbcI);
-		mainFrame.setContentPane(controlPanel);
-		mainFrame.setVisible(true);
+		//////////////////////////////////////////////////////////////////////////
 		
-	}
-	
+		//filter setup/////////////////////////////////////////////////////////
+		//make filter//////////////////////////
+		int yBox = 3;
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel makeL = new JLabel("Make");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		filterBG.add(makeL, gbcF);
+		
+		//make checkbox for eachMake
+		String[] makes = controller.getMakes();
+		for(String make : makes){
+			yBox++;
+			final JCheckBox makeName = new JCheckBox(make);
+			gbcF.anchor = GridBagConstraints.NORTHWEST;
+			makeName.setBackground(new Color(230, 230, 230));
+			gbcF.gridx = 0;
+			gbcF.gridy = yBox++;
+			makeName.setName(make + "Check");
+			filterBG.add(makeName, gbcF);
+		}
+		
+		//model filter////////////
+		gbcF.anchor = GridBagConstraints.NORTH;
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel modelL = new JLabel("Model");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		filterBG.add(modelL, gbcF);
+		
+		String[] models = controller.getModels();
+		for(String model : models){
+			yBox++;
+			final JCheckBox modelName = new JCheckBox(model);
+			gbcF.anchor = GridBagConstraints.NORTHWEST;
+			modelName.setBackground(new Color(230, 230, 230));
+			gbcF.gridx = 0;
+			gbcF.gridy = yBox++;
+			modelName.setName(model + "Check");
+			filterBG.add(modelName, gbcF);
+		}
+		///////////////////
+		
+		//color filter//////
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel colorL = new JLabel("Color");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		filterBG.add(colorL, gbcF);
+		
+		String[] colors = controller.getColors();
+		for(String color : colors){
+			yBox++;
+			final JCheckBox colorName = new JCheckBox(color);
+			gbcF.anchor = GridBagConstraints.NORTHWEST;
+			colorName.setBackground(new Color(230, 230, 230));
+			gbcF.gridx = 0;
+			gbcF.gridy = yBox++;
+			colorName.setName(color + "Check");
+			filterBG.add(colorName, gbcF);
+		}
+		////////////////////
+		
+		//year filter//////
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel year = new JLabel("Year");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		filterBG.add(year, gbcF);
+		
+		minyear = controller.getMinYear();
+		maxyear = controller.getMaxYear();
+		
+		//create spinner to set the oldest year
+		gbcF.anchor = GridBagConstraints.NORTH;
+		SpinnerModel yearMinSpinnerModel = new SpinnerNumberModel(minyear,minyear,maxyear, 1);//min, max,step
+		JSpinner minSpinner = new JSpinner(yearMinSpinnerModel);
+		JSpinner.NumberEditor minEditor = new JSpinner.NumberEditor(minSpinner, "#");
+		minSpinner.setEditor(minEditor);	
+		minSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox;
+		gbcF.insets = new Insets(0, 5, 0, 0);
+		filterBG.add(minSpinner, gbcF);
+		
+		//create spinner to set the newest year
+		gbcF.anchor = GridBagConstraints.NORTHEAST;
+		SpinnerModel yearMaxSpinnerModel = new SpinnerNumberModel(maxyear,minyear, maxyear,1);
+		JSpinner maxSpinner = new JSpinner(yearMaxSpinnerModel);
+		JSpinner.NumberEditor maxEditor = new JSpinner.NumberEditor(maxSpinner, "#");
+		maxSpinner.setEditor(maxEditor);
+		maxSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 2;
+		gbcF.gridy = yBox;
+		filterBG.add(maxSpinner, gbcF);
+		
+		//add dash between two spinners
+		gbcF.anchor = GridBagConstraints.CENTER;
+		gbcF.fill = GridBagConstraints.BOTH;
+		JLabel dashyear = new JLabel(" - ");
+		dashyear.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 1;
+		gbcF.gridy = yBox++;
+		//gbcF.insets = new Insets(0, -15, 0, 0);
+		filterBG.add(dashyear, gbcF);
+		////////////////////////////////
+		
+		//price filter///////////////////
+		gbcF.fill = GridBagConstraints.NONE;
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel price = new JLabel("Price");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.insets = new Insets(5, 0, 0, 0);
+		filterBG.add(price, gbcF);
+		//price slider
+		
+		minPrice = controller.getMinPrice();
+		maxPrice = controller.getMaxPrice();
+		
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JSlider priceSlider = new JSlider((int)minPrice, (int)maxPrice, (int)maxPrice);
+		priceSlider.setBackground(bgColor);
+		gbcF.insets = new Insets(0, 10, 0, 0);
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		gbcF.fill = GridBagConstraints.HORIZONTAL;
+		filterBG.add(priceSlider, gbcF);
+		
+		//label min price
+		gbcF.anchor = GridBagConstraints.NORTHWEST;
+		JLabel min = new JLabel(Integer.toString((int)minPrice));
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox;
+		gbcF.ipady = 0;
+		//gbcF.weightx = .2;
+		gbcF.fill = GridBagConstraints.HORIZONTAL;
+		filterBG.add(min, gbcF);
+		
+		//label max price
+		gbcF.anchor = GridBagConstraints.NORTHWEST;
+		JLabel max = new JLabel(Integer.toString((int)maxPrice));
+		gbcF.insets = new Insets(0, -15, 0, 0);
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 3;
+		gbcF.gridy = yBox++;
+		gbcF.weighty =.2;
+		gbcF.fill = GridBagConstraints.NONE;
+		filterBG.add(max, gbcF);
+		//////////////////////////////
+
+		//add inventory and filters onto page	
+		controlPanel.add(filterScroll);
+		controlPanel.add(inventoryBG);
+		inventoryListScrollPane.validate();
+		mainFrame.validate();
+		mainFrame.repaint();
+		mainFrame.setVisible(true);
+		}
+		
 	private void editVehicleMenu() {
 		try {
 			String idString = JOptionPane.showInputDialog(null, "Enter the id of the vehicle:");
@@ -624,13 +537,10 @@ public class inventoryPage{
 
 			int id = Integer.parseInt(idString);
 			
-			System.out.println(Main.m_dealership.getIndexFromId(id));
+			//check if vehicle entered exsist
+			controller.getIndexFromId(id); 
 			
-			if (Main.m_dealership.getIndexFromId(id) == -1) { // check if exist
-				JOptionPane.showMessageDialog(null, "Vehicle not found!");
-				return;
-			}
-			Vehicle vehicle = Main.m_dealership.getVehicleFromId(id);
+			Vehicle vehicle = controller.getVehicleFromId(id);
 
 			JTextField makeField = new JTextField();
 			JTextField modelField = new JTextField();
@@ -644,6 +554,7 @@ public class inventoryPage{
 			editPanel.setLayout(new GridLayout(0, 2));
 
 			if (vehicle instanceof Car) {
+				//all functions in Car.java
 				Car car = (Car) vehicle;
 
 				editPanel.add(new JLabel("Make:"));
@@ -671,6 +582,7 @@ public class inventoryPage{
 				editPanel.add(typeField);
 
 			} else if (vehicle instanceof Motorcycle) {
+				//all functions in Motorcycle.java
 				Motorcycle motorcycle = (Motorcycle) vehicle;
 
 				editPanel.add(new JLabel("Make:"));
@@ -718,11 +630,18 @@ public class inventoryPage{
 					motorcycle.setHandlebarType(handlebarField.getText());
 				}
 				JOptionPane.showMessageDialog(null, "Vehicle edited successfully.");
+				controlPanel.remove(inventoryBG);
+				controlPanel.remove(filterScroll);
+				controlPanel.validate();
+				controlPanel.repaint();
+				mainFrame.validate();
+				refreshInventory();
 			}
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(null, "Invalid input. Year and price must be numeric values.");
 		}
 	}
+	
 	private void sellVehicleMenu() {
 		try {
 			String idString = JOptionPane.showInputDialog(null, "Enter the id of the vehicle:");
@@ -730,16 +649,22 @@ public class inventoryPage{
 				return;
 			}
 			int id = Integer.parseInt(idString);
-			if (Main.m_dealership.getIndexFromId(id) == -1) {
+			if (controller.vehicleExsist(id) == false) {
 				JOptionPane.showMessageDialog(null, "Vehicle not found!");
 				return;
 			}
 			String buyerName = JOptionPane.showInputDialog(null, "Enter the buyer's name:");
 			String buyerContact = JOptionPane.showInputDialog(null, "Enter the buyer's contact:");
-			Vehicle vehicle = Main.m_dealership.getVehicleFromId(id);
+			Vehicle vehicle = controller.getVehicleFromId(id);
 
-			if (Main.m_dealership.sellVehicle(vehicle, buyerName, buyerContact)) {
+			if (controller.sellVehicle(vehicle, buyerName, buyerContact)) {
 				JOptionPane.showMessageDialog(null, "Vehicle sold successfully.");
+				controlPanel.remove(inventoryBG);
+				controlPanel.remove(filterScroll);
+				controlPanel.validate();
+				controlPanel.repaint();
+				mainFrame.validate();
+				refreshInventory();
 			} else {
 				JOptionPane.showMessageDialog(null, "Couldn't sell vehicle.");
 			}
@@ -756,16 +681,22 @@ public class inventoryPage{
 			}
 			int id = Integer.parseInt(idString);
 
-			if (Main.m_dealership.getIndexFromId(id) == -1) {
+			if (controller.vehicleExsist(id) == false) {
 				JOptionPane.showMessageDialog(null, "Vehicle not found!");
 			} else {
-				Vehicle vehicle = Main.m_dealership.getVehicleFromId(id);
+				Vehicle vehicle = controller.getVehicleFromId(id);
 				int confirm = JOptionPane.showConfirmDialog(null,
 						"Are you sure you want to delete this vehicle\nwith id: " + id, "Confirm Deletion",
 						JOptionPane.YES_NO_OPTION);
 				if (confirm == JOptionPane.YES_OPTION) {
 					if (Main.m_dealership.removeVehicle(vehicle)) {
 						JOptionPane.showMessageDialog(null, "Vehicle removed successfully.");
+						controlPanel.remove(inventoryBG);
+						controlPanel.remove(filterScroll);
+						controlPanel.validate();
+						controlPanel.repaint();
+						mainFrame.validate();
+						refreshInventory();
 					} else {
 						JOptionPane.showMessageDialog(null, "Couldn't remove vehicle.");
 					}
@@ -816,16 +747,22 @@ public class inventoryPage{
 
 			String type = carTypeField.getText();
 
-			if (Main.m_dealership.addVehicle(new Car(make, model, color, year, price, type))){
+			if (controller.addVehicle(new Car(make, model, color, year, price, type))){
 				JOptionPane.showMessageDialog(null, "Car has been added successfully.");
-				
+				//Main.m_dealership.addVehicle(new Car("BMW", "accord", "red", 2012, 8000, "4 door"));
+				controlPanel.remove(inventoryBG);
+				controlPanel.remove(filterScroll);
+				controlPanel.validate();
+				controlPanel.repaint();
+				mainFrame.validate();
+				refreshInventory();
+				//System.out .println("reload");
 			}else{
 			JOptionPane.showMessageDialog(null, "Sorry, the car has not been added.");}
 		}
-		mainFrame.invalidate();
-		mainFrame.validate();
-		mainFrame.repaint();
+		controlPanel.repaint();
 	}
+	
 	public void addMotorcycleMenu() {
 		JTextField makeField = new JTextField();
 		JTextField modelField = new JTextField();
@@ -867,11 +804,47 @@ public class inventoryPage{
 
 			String handlebarType = handlebarTypeField.getText();
 
-			if (Main.m_dealership.addVehicle(new Motorcycle(make, model, color, year, price, handlebarType)))
+			if (Main.m_dealership.addVehicle(new Motorcycle(make, model, color, year, price, handlebarType))){
 				JOptionPane.showMessageDialog(null, "Motorcycle has been added successfully.");
-			else
+				controlPanel.remove(inventoryBG);
+				controlPanel.remove(filterScroll);
+				controlPanel.validate();
+				controlPanel.repaint();
+				mainFrame.validate();
+				refreshInventory();
+			}
+			else{
 				JOptionPane.showMessageDialog(null, "Sorry, the motorcycle has not been added.");
-
+			}
 		}
 	}
+	
+}
+
+class myMouseListener implements MouseListener {
+	private Component previous;
+    @Override
+    public void mouseClicked(MouseEvent arg0) { 
+       //System.out .println("img presses");
+	   if(arg0.getSource() instanceof JPanel ){
+		   if(previous != null){
+			   previous.setBackground(Color.WHITE);
+		   }
+		   arg0.getComponent().setBackground(Color.RED);
+		   previous = arg0.getComponent();
+		}
+     }
+
+     @Override
+     public void mouseEntered(MouseEvent arg0) { }
+
+     @Override
+     public void mouseExited(MouseEvent arg0) { }
+
+     @Override
+     public void mousePressed(MouseEvent arg0) { }
+
+     @Override
+     public void mouseReleased(MouseEvent arg0) { }
+
 }
