@@ -34,5 +34,5 @@ public class Motorcycle extends Vehicle {
 
 		return super.toString() + "\nHandelbarType: " + handlebarType;
 	}
-
+	
 }

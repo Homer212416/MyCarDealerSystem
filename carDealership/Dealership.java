@@ -1,7 +1,10 @@
 package carDealership;
 
 import persistance.DealershipLayer;
+import persistance.DealershipDAO;
+import persistance.DAOInterface;
 
+import java.util.ArrayList;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
@@ -14,7 +17,19 @@ public class Dealership {
 	private Sale[] sales;
 	private int nextId;
 	private DealershipLayer m_dealershipLayer;
-
+    private int capacity;
+    private DAOInterface<Dealership> dealershipDAO;
+	//change all DealershipLayers to DealershipDAO if we keep this class
+	
+	public Dealership(){
+        System.out.println("dealership");
+		dealershipDAO = new DealershipDAO();
+        ArrayList<Dealership> infoList = dealershipDAO.getAll();
+        name = infoList.get(0).getName();
+        location = infoList.get(0).getLocation();
+        capacity = infoList.get(0).getCapacity();
+    }
+	
 	public Dealership(String name, String location, int maxInventory) throws SQLException {
 		this.name = name;
 		this.location = location;
@@ -23,18 +38,19 @@ public class Dealership {
 		nv = 0;
 		ns = 0;
 		nextId = 0;
-
+		//change all DealershipLayers to DealershipDAO if we keep this class
 		m_dealershipLayer = new DealershipLayer(name, location, maxInventory);
 	}
 
 	public void getInfo() {
-		System.out.printf("Name: [%s]\nLocation: [%s]\nInventory Size: [%d]\n", name, location, inventory.length);
+		//System.out.printf("Name: [%s]\nLocation: [%s]\nInventory Size: [%d]\n", name, location, inventory.length);
 
 	}
 
 	public String[] getInfoGUI() { // for gui
-
+		
 		;
+		System.out.println("getInfoGUI Method Ran");
 		/* return "Dealership name: [" + name + "]\nLocation: [" + location + "]\nInventory Size: [" + inventory.length
 				+ "]\n\n" + "Available space: " + (inventory.length - nv) + "\nTotal Cars: " + getTotalCars()
 				+ "\nTotal Motorcycles: " + getTotalMotorcycles() + "\n\nTotal sales profit: " + salesProfit()
@@ -51,6 +67,7 @@ public class Dealership {
 		} else
 			for (int i = 0; i < ns; i++) {
 				total += sales[i].getVehicle().getPrice();
+				//this is in sale.java
 			}
 		return total;
 	}
@@ -64,7 +81,7 @@ public class Dealership {
 			Car c = new Car((Car) vehicle);
 			c.setId(nextId++);
 			inventory[nv++] = c;
-			System.out.println(nv);
+
 		}
 
 		if (vehicle instanceof Motorcycle) {
@@ -208,6 +225,7 @@ public class Dealership {
 		}
 		for (int i = 0; i < ns; i++) {
 			System.out.println("-------------------");
+			//all these functions are in Sale.java
 			sales[i].getVehicle().displayInfo();
 			System.out.println("Buyer Name: " + sales[i].getBuyerName());
 			System.out.println("Buyer Contact: " + sales[i].getBuyerContact());
@@ -225,6 +243,7 @@ public class Dealership {
 
 		for (int i = 0; i < ns; i++) {
 			string += "-------------------\n";
+			//all in Sales.java
 			string += sales[i].getVehicle().toString() + "\n";
 			string += "\nBuyer Name: " + sales[i].getBuyerName() + "\n";
 			string += "Buyer Contact: " + sales[i].getBuyerContact() + "\n";
@@ -288,5 +307,32 @@ public class Dealership {
 	}
 
 	// Dealership End
+	public String getName() {
+        return name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public boolean exists() throws SQLException{
+        return DealershipDAO.exists();
+    }
+
+    public String[] displayAllInfo() {
+        String[] info = new String[3];
+        info[0] = name;
+        info[1] = location;
+        info[2] = Integer.toString(capacity);
+        return info;
+    }
+
+    public boolean deleteDealership() {
+        return DealershipDAO.deleteAll();
+    }
 
 }

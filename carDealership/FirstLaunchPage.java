@@ -25,7 +25,7 @@ public class FirstLaunchPage extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public FirstLaunchPage() {
+	public FirstLaunchPage(FirstLaunchPageController controller) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FirstLaunchPage.class.getResource("/images/icon.jpg")));
 		setTitle("Dealership System");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -110,7 +110,7 @@ public class FirstLaunchPage extends JFrame {
 					Main.createDealership(textField.getText(), textField_2.getText(),
 							Integer.valueOf(textField_1.getText()));
 					dispose();
-					Frame myFrame = new Frame();
+					loginPage myFrame = new loginPage	();
 				} catch (NumberFormatException ex) {
 					textField_1.setText("");
 					lblNewLabel_4.setVisible(false);
