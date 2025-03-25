@@ -43,6 +43,14 @@ public class DBManager {
 			m_connection = DriverManager.getConnection(url);
 			System.out.println("Connection to SQLite has been established.");
 			m_connection.setAutoCommit(false);
+			//this prints out tables in the database use to check for new tables
+			/*
+			DatabaseMetaData md = m_connection.getMetaData();
+			ResultSet rs = md.getTables(null, null, "%", null);
+			while (rs.next()) {
+			  System.out.println(rs.getString(3));
+			  */
+			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -78,6 +86,11 @@ public class DBManager {
 				+ "firstName text NOT NULL, lastName text NOT NULL, jobTitle text not NULL, email text NOT NULL, password NOT NULL, editSecurity INTEGER NOT NULL, pageSecurity INTEGER NOT NULL)";
 				
 		stmt.execute(users);
+		
+		var vehicles = "CREATE TABLE IF NOT EXISTS vehicles (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "model text NOT NULL, make text NOT NULL, color text NOT NULL, year INTEGER, price INTEGER, type String, handleBarType String)";
+				
+		stmt.execute(vehicles);
 		
 		var addAdminRoleSQL = "INSERT INTO roles (role) VALUES ('Admin');";
 		stmt.execute(addAdminRoleSQL);
