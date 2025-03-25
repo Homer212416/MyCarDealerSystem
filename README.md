@@ -14,6 +14,9 @@ getPageSecurity(int userID) now functioning
 UserLayer: 
 getPageSecurity(int userID) now functioning
 
+DBManager:
+Now has vehicleTable
+
 All Controllers except for firstLaunchPageController and loginPageController now take UserID as a paramater.
 Right now it is manual but when function should get userID from login info
 
