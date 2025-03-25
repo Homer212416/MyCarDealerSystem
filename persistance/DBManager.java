@@ -5,7 +5,7 @@ import java.nio.file.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DBManager {
 
@@ -106,4 +106,7 @@ public class DBManager {
 				+ "firstName text NOT NULL, lastName text NOT NULL, jobTitle text not NULL, email text NOT NULL, password NOT NULL)";
 		//stmt.execute(users);
 	}
+	
+	
+
 }
