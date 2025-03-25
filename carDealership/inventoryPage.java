@@ -17,7 +17,7 @@ import javax.swing.border.*;
 
 public class inventoryPage{
 	private static final long serialVersionUID = -4235592661347719465L;
-	private JFrame mainFrame;
+	private JFrame invMainFrame;
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
@@ -64,11 +64,11 @@ public class inventoryPage{
 		UIManager.put("Label.font", new Font("HP Simplified Hans", Font.BOLD, 12));
         UIManager.put("Button.font", new Font("HP Simplified Hans", Font.BOLD, 12));
         UIManager.put("TextField.font", new Font("HP Simplified Hans", Font.BOLD, 12));
-		//create window called mainFrame
-		mainFrame = new JFrame("Inventory");
-		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/icon.jpg")));
-		mainFrame.setBounds(0, 0, 665, 665);
-		mainFrame.addWindowListener(new WindowAdapter() {
+		//create window called invMainFrame
+		invMainFrame = new JFrame("Inventory");
+		invMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/icon.jpg")));
+		invMainFrame.setBounds(0, 0, 665, 665);
+		invMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
             System.exit(0);
 			}        
@@ -118,6 +118,13 @@ public class inventoryPage{
 			pageMenuDD.setRenderer(pageMenuEnableRender);
 			pageMenuDD.setBounds(450, 20, 200, 25);
 			controlPanel.add(pageMenuDD);
+			
+			pageMenuDD.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), invMainFrame);
+				}
+			});
 		//grey out menuItems the user does not have access to and get access list for pages
 		//controller.addPageIntervals();
 		//////////////////////////////////////////////////////////////
@@ -211,7 +218,7 @@ public class inventoryPage{
 		
 		gbcD.anchor = GridBagConstraints.NORTHEAST;
 		final JComboBox sortMenu = new JComboBox();
-		//System.out.println(sortMenuElements);
+		////System.out.println(sortMenuElements);
 		for(String element : sortMenuElements){
 			sortMenu.addItem(element);
 		}
@@ -228,8 +235,8 @@ public class inventoryPage{
 	
 		//create inventory list
 		refreshInventory();
-		mainFrame.setContentPane(controlPanel);
-		//mainFrame.setVisible(true);
+		invMainFrame.setContentPane(controlPanel);
+		//invMainFrame.setVisible(true);
 		
 	}
 	
@@ -257,7 +264,7 @@ public class inventoryPage{
 		filterScroll.setBounds(450, 227, 200, 370);
 		controlPanel.add(filterScroll);
 		
-		mainFrame.validate();
+		invMainFrame.validate();
 		//vehicleInv is where the inventory will show on screen
 		JPanel vehicleInv = new JPanel();
 		vehicleInv.setBackground(Color.WHITE);
@@ -276,7 +283,7 @@ public class inventoryPage{
 		
 		
 		JPanel[] vehiclePanelNames= new JPanel[numberToShow];
-		System.out.println(numberToShow);
+		//System.out.println(numberToShow);
 		for (int i = 0; i < numberToShow; i++) {
 			String num = Integer.toString(i);
 			JPanel vehicle = new JPanel();
@@ -522,9 +529,9 @@ public class inventoryPage{
 		controlPanel.add(filterScroll);
 		controlPanel.add(inventoryBG);
 		inventoryListScrollPane.validate();
-		mainFrame.validate();
-		mainFrame.repaint();
-		mainFrame.setVisible(true);
+		invMainFrame.validate();
+		invMainFrame.repaint();
+		invMainFrame.setVisible(true);
 		}
 		
 	private void editVehicleMenu() {
@@ -634,7 +641,7 @@ public class inventoryPage{
 				controlPanel.remove(filterScroll);
 				controlPanel.validate();
 				controlPanel.repaint();
-				mainFrame.validate();
+				invMainFrame.validate();
 				refreshInventory();
 			}
 		} catch (NumberFormatException e) {
@@ -663,7 +670,7 @@ public class inventoryPage{
 				controlPanel.remove(filterScroll);
 				controlPanel.validate();
 				controlPanel.repaint();
-				mainFrame.validate();
+				invMainFrame.validate();
 				refreshInventory();
 			} else {
 				JOptionPane.showMessageDialog(null, "Couldn't sell vehicle.");
@@ -695,7 +702,7 @@ public class inventoryPage{
 						controlPanel.remove(filterScroll);
 						controlPanel.validate();
 						controlPanel.repaint();
-						mainFrame.validate();
+						invMainFrame.validate();
 						refreshInventory();
 					} else {
 						JOptionPane.showMessageDialog(null, "Couldn't remove vehicle.");
@@ -754,7 +761,7 @@ public class inventoryPage{
 				controlPanel.remove(filterScroll);
 				controlPanel.validate();
 				controlPanel.repaint();
-				mainFrame.validate();
+				invMainFrame.validate();
 				refreshInventory();
 				//System.out .println("reload");
 			}else{
@@ -810,7 +817,7 @@ public class inventoryPage{
 				controlPanel.remove(filterScroll);
 				controlPanel.validate();
 				controlPanel.repaint();
-				mainFrame.validate();
+				invMainFrame.validate();
 				refreshInventory();
 			}
 			else{

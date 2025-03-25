@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.awt.Toolkit;
 
 public class dealerShipInfoPage{
-	private JFrame mainFrame;
+	private JFrame dealerMainFrame;
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
@@ -42,10 +42,10 @@ public class dealerShipInfoPage{
 	}
 	@SuppressWarnings("unchecked")
 	private void prepareInventoryGUI(){
-		mainFrame = new JFrame("Dealership Information");
-		mainFrame.setIconImage(carImage);
-		mainFrame.setBounds(0, 0, 650, 650);
-		mainFrame.addWindowListener(new WindowAdapter() {
+		dealerMainFrame = new JFrame("Dealership Information");
+		dealerMainFrame.setIconImage(carImage);
+		dealerMainFrame.setBounds(0, 0, 650, 650);
+		dealerMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
             System.exit(0);
 			}        
@@ -110,7 +110,14 @@ public class dealerShipInfoPage{
 		pageMenuDD.setRenderer(pageMenuEnableRender);
 		pageMenuDD.setBounds(450, 20, 200, 25);
 		controlPanel.add(pageMenuDD);
-
+		
+		pageMenuDD.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), dealerMainFrame);
+			}
+		});
+		
 		//delete button/////////////////////////////////////////////
 		JButton deleteDealer = new JButton("Delete Dealership");
 		//enable delete button based on user permissions
@@ -149,7 +156,7 @@ public class dealerShipInfoPage{
 		gbcI.fill = GridBagConstraints.BOTH;
 		gbcI.insets = new Insets(5,0,0,0);
 		dealershipBG.add(inventoryListScrollPane, gbcI);
-		mainFrame.setContentPane(controlPanel);
-		mainFrame.setVisible(true);
+		dealerMainFrame.setContentPane(controlPanel);
+		dealerMainFrame.setVisible(true);
 	}
 }

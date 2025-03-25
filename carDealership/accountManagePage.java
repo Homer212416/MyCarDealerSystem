@@ -19,11 +19,11 @@ import java.sql.SQLException;
 import java.awt.Toolkit;
 
 public class accountManagePage{
-	private JFrame mainFrame;
-	private JFrame auMainFrame;
-	private JFrame euMainFrame;
-	private JFrame deleteUserMainFrame;
-	private JFrame AddUserMainFrame;
+	private JFrame accountMainFrame;
+	private JFrame auaccountMainFrame;
+	private JFrame euaccountMainFrame;
+	private JFrame deleteUseraccountMainFrame;
+	private JFrame AddUseraccountMainFrame;
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
@@ -50,10 +50,10 @@ public class accountManagePage{
 	}
 	@SuppressWarnings("unchecked")
 	private void prepareInventoryGUI(){
-		mainFrame = new JFrame("Manage Users Accounts");
-		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
-		mainFrame.setBounds(0, 0, 650, 650);
-		mainFrame.addWindowListener(new WindowAdapter() {
+		accountMainFrame = new JFrame("Manage Users Accounts");
+		accountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+		accountMainFrame.setBounds(0, 0, 650, 650);
+		accountMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
             System.exit(0);
 			}        
@@ -122,6 +122,12 @@ public class accountManagePage{
 		pageMenuDD.setBounds(450, 20, 200, 25);
 		controlPanel.add(pageMenuDD);
 		
+		pageMenuDD.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), accountMainFrame);
+			}
+		});
 		//add user
 		JButton addUser = new JButton("Add New User");
 		addUser.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
@@ -245,17 +251,17 @@ public class accountManagePage{
 			inventoryBG.add(emailT, gbcI);
 		}
 			
-		mainFrame.setContentPane(controlPanel);
-		mainFrame.setVisible(true);
+		accountMainFrame.setContentPane(controlPanel);
+		accountMainFrame.setVisible(true);
 	}
 	
 	private void addUserLoginPage(){
-		AddUserMainFrame = new JFrame("Create New User?");
-		AddUserMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
-		AddUserMainFrame.setBounds(0, 0, 400, 200);
-		AddUserMainFrame.addWindowListener(new WindowAdapter() {
+		AddUseraccountMainFrame = new JFrame("Create New User?");
+		AddUseraccountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+		AddUseraccountMainFrame.setBounds(0, 0, 400, 200);
+		AddUseraccountMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
-            AddUserMainFrame.dispose();
+            AddUseraccountMainFrame.dispose();
 			}        
 		});
 		
@@ -338,20 +344,20 @@ public class accountManagePage{
 		gbcI.weightx = .9;
 		gbcI.weighty = .3;
 		infoBG.add(submitB, gbcI);
-		AddUserMainFrame.setContentPane(controlPanel);
-		AddUserMainFrame.setVisible(true);
+		AddUseraccountMainFrame.setContentPane(controlPanel);
+		AddUseraccountMainFrame.setVisible(true);
 		
 		
 	}
 	
 	
 	private void addUserPage(){
-		auMainFrame = new JFrame("Create New User");
-		auMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
-		auMainFrame.setBounds(0, 0, 315, 335);
-		auMainFrame.addWindowListener(new WindowAdapter() {
+		auaccountMainFrame = new JFrame("Create New User");
+		auaccountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+		auaccountMainFrame.setBounds(0, 0, 315, 335);
+		auaccountMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
-            auMainFrame.dispose();
+            auaccountMainFrame.dispose();
 			}        
 		});
 		
@@ -472,17 +478,17 @@ public class accountManagePage{
 		gbcI.gridx = 2;
 		gbcI.gridy = 5;
 		infoBG.add(submitB, gbcI);
-		auMainFrame.setContentPane(controlPanel);
-		auMainFrame.setVisible(true);
+		auaccountMainFrame.setContentPane(controlPanel);
+		auaccountMainFrame.setVisible(true);
 	}
 	
 	private void editUserPage(){
-		euMainFrame = new JFrame("Edit User Info");
-		euMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
-		euMainFrame.setBounds(0, 0, 400, 200);
-		euMainFrame.addWindowListener(new WindowAdapter() {
+		euaccountMainFrame = new JFrame("Edit User Info");
+		euaccountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+		euaccountMainFrame.setBounds(0, 0, 400, 200);
+		euaccountMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
-            euMainFrame.dispose();
+            euaccountMainFrame.dispose();
 			}        
 		});
 		
@@ -565,18 +571,18 @@ public class accountManagePage{
 		gbcI.weightx = .9;
 		gbcI.weighty = .3;
 		infoBG.add(submitB, gbcI);
-		euMainFrame.setContentPane(controlPanel);
-		euMainFrame.setVisible(true);
+		euaccountMainFrame.setContentPane(controlPanel);
+		euaccountMainFrame.setVisible(true);
 		
 	}
 	
 	private void deleteUserLoginPage(){
-		deleteUserMainFrame = new JFrame("Delete User");
-		deleteUserMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
-		deleteUserMainFrame.setBounds(0, 0, 400, 200);
-		deleteUserMainFrame.addWindowListener(new WindowAdapter() {
+		deleteUseraccountMainFrame = new JFrame("Delete User");
+		deleteUseraccountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+		deleteUseraccountMainFrame.setBounds(0, 0, 400, 200);
+		deleteUseraccountMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
-            deleteUserMainFrame.dispose();
+            deleteUseraccountMainFrame.dispose();
 			}        
 		});
 		
@@ -658,8 +664,8 @@ public class accountManagePage{
 		gbcI.weightx = .9;
 		gbcI.weighty = .3;
 		infoBG.add(submitB, gbcI);
-		deleteUserMainFrame.setContentPane(controlPanel);
-		deleteUserMainFrame.setVisible(true);
+		deleteUseraccountMainFrame.setContentPane(controlPanel);
+		deleteUseraccountMainFrame.setVisible(true);
 		
 		
 		

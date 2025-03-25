@@ -8,7 +8,9 @@ import javax.swing.border.*;
 
 public class loginPageController{
 	
-	public static void loginPageController(){}
+	public loginPageController(){
+		loginPage login = new loginPage(this);
+	}
 
 	//set actions
 	public void forgotPressed(){

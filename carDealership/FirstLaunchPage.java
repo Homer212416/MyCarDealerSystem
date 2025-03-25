@@ -110,7 +110,7 @@ public class FirstLaunchPage extends JFrame {
 					Main.createDealership(textField.getText(), textField_2.getText(),
 							Integer.valueOf(textField_1.getText()));
 					dispose();
-					loginPage myFrame = new loginPage	();
+					loginPageController myFrame = new loginPageController();
 				} catch (NumberFormatException ex) {
 					textField_1.setText("");
 					lblNewLabel_4.setVisible(false);

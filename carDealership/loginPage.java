@@ -25,12 +25,14 @@ public class loginPage{
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
+	private loginPageController controller;
 	
-	public loginPage(){
-      prepareLoginGUI();
+	public loginPage(loginPageController controller){
+      this.controller = controller;
+	  prepareLoginGUI();
 	}
 	public static void main(String[] args){
-      loginPage loginPage = new loginPage();  
+      //loginPage loginPage = new loginPage();  
       //loginPage.showEventDemo();       
 	}
 	private void prepareLoginGUI(){
