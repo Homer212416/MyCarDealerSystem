@@ -4,26 +4,18 @@ https://drive.google.com/drive/folders/1Wgdptkqnu7HH3_lLd_BGixPG3tOHt2Id
 Original Version
 https://github.com/fhm-nzh/car-dealership-system
 
-**demo0.31 updates:**
-it can add cars now although has some other issues
+**linked mainPages update**
+Main:
+makes sure atleast on user is in usersInfo table so that program cann run properly
 
-**demo0.29 updates:**
+User: 
+getPageSecurity(int userID) now functioning
 
-dealershipInfoPage:
-  - only keep delete button
-  - added listener for delete button
-      - add confirmation dialog in listen
-  - reset dealership info source to Dealership class
+UserLayer: 
+getPageSecurity(int userID) now functioning
 
-dealership:
-  - added a default constructor
-  - added exists()
-  - added bufferAllInfo()
-  - added getInfoGUI()
-  - added delete()
-  - deleted existsAndSet()
+All Controllers except for firstLaunchPageController and loginPageController now take UserID as a paramater.
+Right now it is manual but when function should get userID from login info
 
-DBManager:
-  - cleaned up constructor
-  - cleaned up initDB()
-  - changed dealerships table
+Inventory, PastSales, DealershipInfo, and accountManage page are now linked and page drop down functions
+
