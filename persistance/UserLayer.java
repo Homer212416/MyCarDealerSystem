@@ -19,15 +19,12 @@ public class UserLayer {
 	
 	public UserLayer() {
 		try{
-			if(!existsAndSet()){
 				var users = "CREATE TABLE IF NOT EXISTS usersInfo (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ "firstName text NOT NULL, lastName text NOT NULL, jobTitle text not NULL, email text NOT NULL, password NOT NULL, editSecurity INTEGER NOT NULL, pageSecurity INTEGER NOT NULL)";
 				DBManager.getInstance().runInsert(users);
-			}
 		}catch (SQLException e) {
 			System.out.println(e.getMessage());
-		}
-				
+		}	
 	}
 
 	public UserLayer(int ID, String firstName, String lastName, String jobTitle, String email, String password, int editSecurity, int pageSecurity) throws SQLException {
