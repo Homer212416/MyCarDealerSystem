@@ -5,11 +5,14 @@ import carDealership.Car;
 import carDealership.Motorcycle;
 import carDealership.Vehicle;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
-public class VehicleDAO implements DAOInterface<Vehicle> {
 
+
+public class VehicleDAO implements DAOInterface<Vehicle> {
+	private int count = 0;
+	
     public VehicleDAO() {
         createTable();
     }
@@ -17,7 +20,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
     // Create the table if it does not exist
     private void createTable() {
         String vehiclesSQL = "CREATE TABLE IF NOT EXISTS vehicles (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ "model text NOT NULL, make text NOT NULL, color text NOT NULL, year INTEGER, price INTEGER, type String, handleBarType String)";
+				+ "model text NOT NULL, make text NOT NULL, color text NOT NULL, year INTEGER, price INTEGER, carType String, handleBarType String)";
 				
         // carType and handlebarType can be null because they are only used for cars and
         // motorcycles respectively
@@ -32,7 +35,8 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
     @Override
     public boolean insert(Vehicle vehicle) {
         try {
-            String query = "INSERT INTO vehicles (make, model, color, year, price, type, handlebarType, inInventory) VALUES ('"
+				
+			String query = "INSERT INTO vehicles (make, model, color, year, price,carType, handlebarType, inInventory) VALUES ('"
                     + vehicle.getMake() + "', '"
                     + vehicle.getModel() + "', '"
                     + vehicle.getColor() + "', "
@@ -56,8 +60,8 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
             String query = "SELECT * FROM vehicles";
             ResultSet resultSet = DBManager.getInstance().runQuery(query);
             ArrayList<Vehicle> vehicles = new ArrayList<>();
-            while (resultSet.next()) {
-                String carType = resultSet.getString("type");
+			while (resultSet.next()) {
+                String carType = resultSet.getString("carType");
                 String handlebarType = resultSet.getString("handlebarType");
                 if (carType != null) {
                     vehicles.add(new Car(
@@ -66,7 +70,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
                             resultSet.getString("color"),
                             resultSet.getInt("year"),
                             resultSet.getInt("price"),
-                            resultSet.getString("type")));
+                            resultSet.getString("carType")));
                 } else if (handlebarType != null) {
                     vehicles.add(new Motorcycle(
                             resultSet.getString("make"),
@@ -83,7 +87,49 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
             return new ArrayList<>();
         }
     }
-
+	
+	
+	
+	public int getTotalVehiclesInInventory(){
+		count = 0;
+		System.out.println("count = " + count);
+		try{
+			
+			ResultSet rs3 = DBManager.getInstance().runQuery("SELECT COUNT(*) AS count FROM vehicles");
+			while(rs3.next()){
+				this.count = rs3.getInt("count");
+				}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		System.out.println("count = " + count);
+		return count;
+	}
+	
+	public String[][] getAllDisplayInfo(){
+		String[][] displayInfo = new String[count][];
+		try {
+            String query = "SELECT * FROM vehicles";
+            ResultSet resultSet = DBManager.getInstance().runQuery(query);
+            ArrayList<Vehicle> vehicles = new ArrayList<>();
+			int x = 0;
+			while (resultSet.next()) {
+				String make = resultSet.getString("make");
+				String model = resultSet.getString("model");
+				String color = resultSet.getString("color");
+				int year = resultSet.getInt("year");
+                int price = resultSet.getInt("price");
+                String carType = resultSet.getString("carType");
+				String handleBarType = resultSet.getString("handleBarType");
+				String[] vehicle = {make, model, color, model, Integer.toString(year), Integer.toString(price), carType, handleBarType}; 
+				displayInfo[x] = vehicle;
+				x++;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+        return displayInfo;      
+	}
     // extra method for changing the inInventory status of a vehicle to false
     // when it is sold
     public static boolean removeFromInventory(int id) {
@@ -96,6 +142,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
             return false;
         }
     }
+	
 	
 	public static String[] getAllMakes(){
 		//return list of allMakes with no duplicates
