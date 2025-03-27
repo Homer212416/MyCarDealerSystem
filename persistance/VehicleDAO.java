@@ -92,7 +92,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 	
 	public int getTotalVehiclesInInventory(){
 		count = 0;
-		System.out.println("count = " + count);
+
 		try{
 			
 			ResultSet rs3 = DBManager.getInstance().runQuery("SELECT COUNT(*) AS count FROM vehicles");
@@ -102,7 +102,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
-		System.out.println("count = " + count);
+	
 		return count;
 	}
 	
@@ -114,6 +114,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
             ArrayList<Vehicle> vehicles = new ArrayList<>();
 			int x = 0;
 			while (resultSet.next()) {
+				int ID = resultSet.getInt("ID");
 				String make = resultSet.getString("make");
 				String model = resultSet.getString("model");
 				String color = resultSet.getString("color");

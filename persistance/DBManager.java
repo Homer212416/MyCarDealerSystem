@@ -29,7 +29,6 @@ public class DBManager {
 	}
 
 	public ResultSet runQuery(String query) throws SQLException {
-		System.out.println("runQuery Method Ran");
 		System.out.println("Will run query: " + query);
 		var stmt = m_connection.createStatement();
 		return stmt.executeQuery(query);
@@ -64,7 +63,6 @@ public class DBManager {
 	}
 
 	private void createTables() throws SQLException {
-		System.out.println("Creating the dealerships table");
 		var dealershipSQL = "CREATE TABLE IF NOT EXISTS dealerships (id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ " name text NOT NULL, location text NOT NULL, capacity INTEGER);";
 
@@ -113,12 +111,6 @@ public class DBManager {
 		return m_dbManager;
 	}
 	
-	private void createUserTables() throws SQLException {
-		var stmt = m_connection.createStatement();
-		var users = "CREATE TABLE IF NOT EXISTS usersInfo (ID PRIMARY KEY AUTOINCREMENT,"
-				+ "firstName text NOT NULL, lastName text NOT NULL, jobTitle text not NULL, email text NOT NULL, password NOT NULL)";
-		//stmt.execute(users);
-	}
 	
 	
 

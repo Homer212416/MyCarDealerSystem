@@ -1,7 +1,7 @@
 package persistance;
 
 import java.sql.SQLException;
-
+import java.sql.ResultSet;
 public class UserLayer {
 	private int u_ID;
 	private String u_firstName;
@@ -36,7 +36,7 @@ public class UserLayer {
 		u_password = password; 
 		u_pageSecurity = pageSecurity;
 		u_editSecurity = editSecurity;
-		System.out.println("newUSer : " + u_pageSecurity);
+		
 		DBManager.getInstance().runInsert("INSERT INTO usersInfo " + "(firstName, lastName, jobTitle, email, password, editSecurity, pageSecurity) " + "VALUES" + " ('" + firstName + "', '" + lastName + "', '" + jobTitle + "', '" + email + "', '" + password + "', " + editSecurity + ", " +pageSecurity +");");
 	}
 	
@@ -54,7 +54,7 @@ public class UserLayer {
 			u_password = resultSet.getString("password");
 			u_pageSecurity = resultSet.getInt("pageSecurity");
 			u_editSecurity = resultSet.getInt("editSecurity");
-			System.out.println("User : " + u_pageSecurity);
+			
 		}
 
 		return usersFound;
@@ -71,7 +71,7 @@ public class UserLayer {
 	}
 	
 	public int getPageSecurity(int userID) throws SQLException{
-		System.out.println(userID);
+		
 		try{
 			var pageS = DBManager.getInstance().runQuery("SELECT ID, jobTitle, pageSecurity FROM usersInfo WHERE ID =" + userID + "");
 			while (pageS.next()) {
@@ -85,7 +85,55 @@ public class UserLayer {
 		return id_pageSecurity;
 	}
 	
+	public int getEditSecurity(int userID) throws SQLException{
+		
+		try{
+			var pageS = DBManager.getInstance().runQuery("SELECT ID, jobTitle, editSecurity FROM usersInfo WHERE ID =" + userID + "");
+			while (pageS.next()) {
+				id_jobTitle = pageS.getString("jobTitle");
+				id_userID = pageS.getString("ID");
+				id_pageSecurity = pageS.getInt("pageSecurity");
+			}
+		}catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return id_pageSecurity;
+	}
 	
+	public String[][] getAllUsers(){
+		int count = 0;
+
+		try{
+			
+			ResultSet rs3 = DBManager.getInstance().runQuery("SELECT COUNT(*) AS count FROM usersInfo");
+			while(rs3.next()){
+				count = rs3.getInt("count");
+				}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+		String[][] usersInfo = new String[count][];
+		try {
+            String query = "SELECT * FROM usersInfo";
+            ResultSet resultSet = DBManager.getInstance().runQuery(query);
+			int x = 0;
+			while (resultSet.next()) {
+				String first = resultSet.getString("firstName");
+				String last = resultSet.getString("lastName");
+				String job = resultSet.getString("jobTitle");
+				String email = resultSet.getString("email");
+				String ID = Integer.toString(resultSet.getInt("ID"));
+				String[] user = {first, last, job, email, ID}; 
+				
+				usersInfo[x] = user;
+				x++;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+        return usersInfo;      
+	}
 	/*
 	public boolean validateUserLogin(String username){
 		if(userName exsist){
