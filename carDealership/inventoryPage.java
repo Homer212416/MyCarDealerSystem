@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.*;
 
 
 public class inventoryPage{
@@ -34,6 +35,7 @@ public class inventoryPage{
 	private inventoryPageController controller;
 	public static DefaultListSelectionModel pageMenuModel;
 	public static JComboBox pageMenuDD;
+	private Component previousDisplay;
 	
 	//page elements
 	private static String[] sortMenuElements;
@@ -74,7 +76,7 @@ public class inventoryPage{
 			}        
 		});
 		
-		///create layout of panels/////////////////////////////////////////////////////////
+		///create layout of panels DON'T CHANGE/////////////////////////////////////////////////////////
 		controlPanel = new JPanel();
 		controlPanel.setBackground(bgColor);
 		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -106,27 +108,39 @@ public class inventoryPage{
 		displayBG.setBounds(10, 200, 440, 30);
 		GridBagConstraints gbcD = new GridBagConstraints();
 		controlPanel.add(displayBG);
+		
+		//filter panel
+		filterBG = new JPanel();
+		filterBG.setBackground(bgColor);
+		GridBagLayout layoutF = new GridBagLayout();
+		filterBG.setLayout(layoutF);
+		filterBG.setPreferredSize(new Dimension(200, 365));
+		gbcF = new GridBagConstraints();
+		controlPanel.add(filterBG);
+		//make filter a scrollpane when needed
+		filterScroll = new JScrollPane(filterBG, JScrollPane. VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		filterScroll.setBounds(450, 230, 200, 370);
+		controlPanel.add(filterScroll);
 		////////////////////////////////////////////////////////////////////////////////
 		
 		//////////create page menu drop down///////////////////////////////////////////
-			pageMenuDD = new JComboBox();
-			for(String element : pageElements){
-				pageMenuDD.addItem(element);
+		pageMenuDD = new JComboBox();
+		for(String element : pageElements){
+			pageMenuDD.addItem(element);
+		}
+		pageMenuModel = new DefaultListSelectionModel();
+		EnabledJComboBoxRenderer pageMenuEnableRender = new EnabledJComboBoxRenderer(pageMenuModel);
+		pageMenuDD.setRenderer(pageMenuEnableRender);
+		pageMenuDD.setBounds(450, 20, 200, 25);
+		controlPanel.add(pageMenuDD); //grey out menuItems the user does not have access to and get access list for pages
+		controller.setDisabledPages(pageMenuModel);
+		pageMenuDD.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), invMainFrame);
 			}
-			pageMenuModel = new DefaultListSelectionModel();
-			EnabledJComboBoxRenderer pageMenuEnableRender = new EnabledJComboBoxRenderer(pageMenuModel);
-			pageMenuDD.setRenderer(pageMenuEnableRender);
-			pageMenuDD.setBounds(450, 20, 200, 25);
-			controlPanel.add(pageMenuDD);
-			
-			pageMenuDD.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), invMainFrame);
-				}
-			});
-		//grey out menuItems the user does not have access to and get access list for pages
-		//controller.addPageIntervals();
+		});
+		
 		//////////////////////////////////////////////////////////////
 
 		//////////inventory information/////////////////////////////////////////////////////
@@ -151,6 +165,7 @@ public class inventoryPage{
 			}
 		DefaultListSelectionModel editInventoryModel = new DefaultListSelectionModel();
 		EnabledJComboBoxRenderer editInventoryEnableRender = new EnabledJComboBoxRenderer(editInventoryModel);
+		controller.setDisabledEdits(editInventoryModel); //disable menu items based on job security
 		editInventoryMenu.setRenderer(editInventoryEnableRender);
 		editInventoryMenu.setBounds(450, 20, 200, 25);
 		controlPanel.add(editInventoryMenu);
@@ -189,20 +204,49 @@ public class inventoryPage{
 		gbcS.insets = new Insets(0,0,0,10);
 		gbcS.gridx = 6;
 		gbcS.gridy = 0;
+		searchBarBG.add(MagButton, gbcS);
 		
+		ActionListener searchListen = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String searchString = searchBar.getText();
+				
+				controller.search(searchString);
+			}
+		};
+		MagButton.addActionListener(searchListen);
+		searchBar.addActionListener(searchListen);
+		//clear out placeholder text 
+		searchBar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String text = searchBar.getText(); 
+				if(text.matches("Search ID")){	
+					searchBar.setText("");
+				}
+			}
+			});
 		///////////////////////////////////////////////////////////////////
 		
 		////////display options///////////////////////////////////////////////////////////////
 		gbcD.anchor = GridBagConstraints.NORTHWEST;
-		final JCheckBox dAll = new JCheckBox("Display All");
+		ButtonGroup G = new ButtonGroup();
+		JRadioButton dAll = new JRadioButton("Display All"); 
+		JRadioButton dMoto = new JRadioButton("Motocycles Only");
+		JRadioButton dCar = new JRadioButton("Cars Only");
+		G.add(dAll);
+		G.add(dMoto);
+		G.add(dCar);
+		dAll.setName("dAll");
 		dAll.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		dAll.setBackground(bgColor);
-		final JCheckBox dMoto = new JCheckBox("Motocycles Only");
+		dMoto.setName("dMoto");
 		dMoto.setBackground(bgColor);
 		dMoto.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
-		final JCheckBox dCar = new JCheckBox("Cars Only");
+		dCar.setName("dCar");
 		dCar.setBackground(bgColor);
 		dCar.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
+		dAll.setSelected(true);
 		gbcD.gridwidth = 1;
 		gbcD.gridx = 0;
 		gbcD.gridy = 0;
@@ -216,9 +260,29 @@ public class inventoryPage{
 		gbcD.ipadx = 10;
 		displayBG.add(dCar, gbcD);
 		
+		ActionListener displayListen = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String displayString = "";
+				if(dCar.isSelected()){
+					displayString = "car";
+				}if(dMoto.isSelected()){
+					displayString = "motorcycle";
+				}if(dCar.isSelected()){
+					displayString = "all";
+				}
+				controller.getDisplayDisplay(displayString);
+			}
+		};
+		
+		dCar.addActionListener(displayListen);
+		dMoto.addActionListener(displayListen);
+		dAll.addActionListener(displayListen);
 		gbcD.anchor = GridBagConstraints.NORTHEAST;
 		final JComboBox sortMenu = new JComboBox();
-		////System.out.println(sortMenuElements);
+		
+		
+		////sort menu//////////////////////////////////////////
 		for(String element : sortMenuElements){
 			sortMenu.addItem(element);
 		}
@@ -231,8 +295,283 @@ public class inventoryPage{
 		gbcD.weightx = .1;
 		displayBG.add(sortMenu, gbcD);
 		
+		sortMenu.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					controller.sortMenuSelect(sortMenu.getSelectedIndex());
+				}
+			});
 		/////////////////////////////////////////////////////////////////
-	
+		
+		
+		//filter setup/////////////////////////////////////////////////////////
+		//make filter//////////////////////////
+		int yBox = 3;
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel makeL = new JLabel("Make");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		filterBG.add(makeL, gbcF);
+		
+		//make checkbox for eachMake
+		String[] makes = controller.getMakes();
+		JCheckBox[] makesCheck = new JCheckBox[makes.length];
+		int m = 0;
+		for(String make : makes){
+			yBox++;
+			final JCheckBox makeName = new JCheckBox(make);
+			gbcF.anchor = GridBagConstraints.NORTHWEST;
+			makeName.setBackground(new Color(230, 230, 230));
+			gbcF.gridx = 0;
+			gbcF.gridy = yBox++;
+			makeName.setName(make + "Check");
+			filterBG.add(makeName, gbcF);
+			makesCheck[m] = (makeName);
+			m++;
+		}
+		
+		ItemListener makesListener = new ItemListener(){
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					String makeSel = "";
+					for(JCheckBox makeC : makesCheck){
+						if(makeC.isSelected()){
+							makeSel += (" '" + makeC.getText() + "', ");
+						}
+						
+					}
+					makeSel = makeSel.replaceAll(", $", "");
+
+					controller.filterMakes(makeSel);
+				}
+			};
+			
+		for(JCheckBox makeC : makesCheck){
+			makeC.addItemListener(makesListener);
+		}
+		
+		
+		//model filter////////////
+		gbcF.anchor = GridBagConstraints.NORTH;
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel modelL = new JLabel("Model");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		filterBG.add(modelL, gbcF);
+		
+		String[] models = controller.getModels();
+		JCheckBox[] modelsCheck = new JCheckBox[models.length];
+		int mo = 0;
+		for(String model : models){
+			yBox++;
+			final JCheckBox modelName = new JCheckBox(model);
+			gbcF.anchor = GridBagConstraints.NORTHWEST;
+			modelName.setBackground(new Color(230, 230, 230));
+			gbcF.gridx = 0;
+			gbcF.gridy = yBox++;
+			modelName.setName(model + "Check");
+			filterBG.add(modelName, gbcF);
+			modelsCheck[mo] = modelName;
+			mo++;
+		}
+		
+		ItemListener modelsListener = new ItemListener(){
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					String modelSel = "";
+					for(JCheckBox modelC : modelsCheck){
+						if(modelC.isSelected()){
+							modelSel += (" '" + modelC.getText() + "', ");
+						}
+						
+					}
+					modelSel = modelSel.replaceAll(", $", "");
+					
+					controller.filterModels(modelSel);
+				}
+			};
+			
+		for(JCheckBox modelC : modelsCheck){
+			modelC.addItemListener(modelsListener);
+		}
+		///////////////////
+		
+		//color filter//////
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel colorL = new JLabel("Color");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		filterBG.add(colorL, gbcF);
+		
+		String[] colors = controller.getColors();
+		JCheckBox[] colorsCheck = new JCheckBox[colors.length];
+		int c = 0;
+		for(String color : colors){
+			yBox++;
+			final JCheckBox colorName = new JCheckBox(color);
+			gbcF.anchor = GridBagConstraints.NORTHWEST;
+			colorName.setBackground(new Color(230, 230, 230));
+			gbcF.gridx = 0;
+			gbcF.gridy = yBox++;
+			colorName.setName(color + "Check");
+			filterBG.add(colorName, gbcF);
+			colorsCheck[c] = colorName;
+			c++;
+		}
+		
+		ItemListener colorsListener = new ItemListener(){
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					String colorSel = "";
+					for(JCheckBox colorC : colorsCheck){
+						if(colorC.isSelected()){
+							colorSel += (" '" + colorC.getText() + "', ");
+						}
+						
+					}
+					colorSel = colorSel.replaceAll(", $", "");
+					
+					controller.filterColors(colorSel);
+				}
+			};
+			
+		for(JCheckBox colorC : colorsCheck){
+			colorC.addItemListener(colorsListener);
+		}
+		////////////////////
+		
+		//year filter//////
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel year = new JLabel("Year");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		filterBG.add(year, gbcF);
+		
+		minyear = controller.getMinYear();
+		maxyear = controller.getMaxYear();
+		
+		//create spinner to set the oldest year
+		gbcF.anchor = GridBagConstraints.NORTH;
+		SpinnerModel yearMinSpinnerModel = new SpinnerNumberModel(minyear,minyear,maxyear, 1);//min, max,step
+		JSpinner minSpinner = new JSpinner(yearMinSpinnerModel);
+		JSpinner.NumberEditor minEditor = new JSpinner.NumberEditor(minSpinner, "#");
+		minSpinner.setEditor(minEditor);	
+		minSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox;
+		gbcF.insets = new Insets(0, 5, 0, 0);
+		filterBG.add(minSpinner, gbcF);
+		
+		//create spinner to set the newest year
+		gbcF.anchor = GridBagConstraints.NORTHEAST;
+		SpinnerModel yearMaxSpinnerModel = new SpinnerNumberModel(maxyear,minyear, maxyear,1);
+		JSpinner maxSpinner = new JSpinner(yearMaxSpinnerModel);
+		JSpinner.NumberEditor maxEditor = new JSpinner.NumberEditor(maxSpinner, "#");
+		maxSpinner.setEditor(maxEditor);
+		maxSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 2;
+		gbcF.gridy = yBox;
+		filterBG.add(maxSpinner, gbcF);
+		
+		//add dash between two spinners
+		gbcF.anchor = GridBagConstraints.CENTER;
+		gbcF.fill = GridBagConstraints.BOTH;
+		JLabel dashyear = new JLabel(" - ");
+		dashyear.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 1;
+		gbcF.gridy = yBox++;
+		//gbcF.insets = new Insets(0, -15, 0, 0);
+		filterBG.add(dashyear, gbcF);
+		
+		ChangeListener yearListener = new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e){
+				int minYear = (int) minSpinner.getValue();
+				int maxYear = (int)maxSpinner.getValue();
+				controller.filterYears(minYear, maxYear);
+			}
+		};
+		
+		minSpinner.addChangeListener(yearListener);
+		maxSpinner.addChangeListener(yearListener);
+		
+		////////////////////////////////
+		
+		//price filter///////////////////
+		gbcF.fill = GridBagConstraints.NONE;
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JLabel price = new JLabel("Price");
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.insets = new Insets(5, 0, 0, 0);
+		filterBG.add(price, gbcF);
+		//price slider
+		
+		minPrice = controller.getMinPrice();
+		maxPrice = controller.getMaxPrice();
+		
+		gbcF.anchor = GridBagConstraints.NORTH;
+		JSlider priceSlider = new JSlider((int)minPrice, (int)maxPrice, (int)maxPrice);
+		priceSlider.setBackground(bgColor);
+		gbcF.insets = new Insets(0, 10, 0, 0);
+		gbcF.gridwidth = 3;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		gbcF.fill = GridBagConstraints.HORIZONTAL;
+		filterBG.add(priceSlider, gbcF);
+		
+		//label min price
+		gbcF.anchor = GridBagConstraints.NORTHWEST;
+		JLabel min = new JLabel(Integer.toString((int)minPrice));
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 0;
+		gbcF.gridy = yBox;
+		gbcF.ipady = 0;
+		//gbcF.weightx = .2;
+		gbcF.fill = GridBagConstraints.HORIZONTAL;
+		filterBG.add(min, gbcF);
+		
+		//label max price
+		gbcF.anchor = GridBagConstraints.NORTHWEST;
+		JLabel max = new JLabel(Integer.toString((int)maxPrice));
+		gbcF.insets = new Insets(0, -15, 0, 0);
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 3;
+		gbcF.gridy = yBox++;
+		gbcF.weighty =.2;
+		gbcF.fill = GridBagConstraints.NONE;
+		filterBG.add(max, gbcF);
+		
+		
+		ChangeListener priceListener = new ChangeListener(){
+			@Override
+			public void stateChanged(ChangeEvent e){
+				int newMaxPrice = (int) priceSlider.getValue();
+				max.setText(Integer.toString(newMaxPrice));
+				controller.filterPrice((int)minPrice, newMaxPrice);
+			}
+		};
+		
+		priceSlider.addChangeListener(priceListener);
+		//////////////////////////////
+
+		//add inventory and filters onto page	
+		controlPanel.add(filterScroll);
+		
+		
 		//create inventory list
 		refreshInventory();
 		invMainFrame.setContentPane(controlPanel);
@@ -252,17 +591,7 @@ public class inventoryPage{
 		gbcI = new GridBagConstraints();
 		inventoryBG.setBounds(10, 225, 440, 375);
 		
-		filterBG = new JPanel();
-		filterBG.setBackground(bgColor);
-		GridBagLayout layoutF = new GridBagLayout();
-		filterBG.setLayout(layoutF);
-		filterBG.setPreferredSize(new Dimension(200, 365));
-		gbcF = new GridBagConstraints();
-		controlPanel.add(filterBG);
-		//make filter a scrollpane when needed
-		filterScroll = new JScrollPane(filterBG, JScrollPane. VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		filterScroll.setBounds(450, 227, 200, 370);
-		controlPanel.add(filterScroll);
+		
 		
 		invMainFrame.validate();
 		//vehicleInv is where the inventory will show on screen
@@ -332,7 +661,7 @@ public class inventoryPage{
 			gbcvehicleInv.gridx = (int)Math.floor(i%2);
 			gbcvehicleInv.gridy = (int)Math.floor(i/2);
 			//add weight to last entry, you need weight to get anchor to work
-			if(i == controller.getNumbertoDisplay()){
+			if(i == controller.getNumbertoDisplay()-1){
 				gbcvehicleInv.weightx = .9;
 				gbcvehicleInv.weighty = 1;
 			}
@@ -358,175 +687,6 @@ public class inventoryPage{
 		gbcI.insets = new Insets(5,0,0,0);
 		inventoryBG.add(inventoryListScrollPane, gbcI);
 		//////////////////////////////////////////////////////////////////////////
-		
-		//filter setup/////////////////////////////////////////////////////////
-		//make filter//////////////////////////
-		int yBox = 3;
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel makeL = new JLabel("Make");
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		filterBG.add(makeL, gbcF);
-		
-		//make checkbox for eachMake
-		String[] makes = controller.getMakes();
-		for(String make : makes){
-			yBox++;
-			final JCheckBox makeName = new JCheckBox(make);
-			gbcF.anchor = GridBagConstraints.NORTHWEST;
-			makeName.setBackground(new Color(230, 230, 230));
-			gbcF.gridx = 0;
-			gbcF.gridy = yBox++;
-			makeName.setName(make + "Check");
-			filterBG.add(makeName, gbcF);
-		}
-		
-		//model filter////////////
-		gbcF.anchor = GridBagConstraints.NORTH;
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel modelL = new JLabel("Model");
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		filterBG.add(modelL, gbcF);
-		
-		String[] models = controller.getModels();
-		for(String model : models){
-			yBox++;
-			final JCheckBox modelName = new JCheckBox(model);
-			gbcF.anchor = GridBagConstraints.NORTHWEST;
-			modelName.setBackground(new Color(230, 230, 230));
-			gbcF.gridx = 0;
-			gbcF.gridy = yBox++;
-			modelName.setName(model + "Check");
-			filterBG.add(modelName, gbcF);
-		}
-		///////////////////
-		
-		//color filter//////
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel colorL = new JLabel("Color");
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		filterBG.add(colorL, gbcF);
-		
-		String[] colors = controller.getColors();
-		for(String color : colors){
-			yBox++;
-			final JCheckBox colorName = new JCheckBox(color);
-			gbcF.anchor = GridBagConstraints.NORTHWEST;
-			colorName.setBackground(new Color(230, 230, 230));
-			gbcF.gridx = 0;
-			gbcF.gridy = yBox++;
-			colorName.setName(color + "Check");
-			filterBG.add(colorName, gbcF);
-		}
-		////////////////////
-		
-		//year filter//////
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel year = new JLabel("Year");
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		filterBG.add(year, gbcF);
-		
-		minyear = controller.getMinYear();
-		maxyear = controller.getMaxYear();
-		
-		//create spinner to set the oldest year
-		gbcF.anchor = GridBagConstraints.NORTH;
-		SpinnerModel yearMinSpinnerModel = new SpinnerNumberModel(minyear,minyear,maxyear, 1);//min, max,step
-		JSpinner minSpinner = new JSpinner(yearMinSpinnerModel);
-		JSpinner.NumberEditor minEditor = new JSpinner.NumberEditor(minSpinner, "#");
-		minSpinner.setEditor(minEditor);	
-		minSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox;
-		gbcF.insets = new Insets(0, 5, 0, 0);
-		filterBG.add(minSpinner, gbcF);
-		
-		//create spinner to set the newest year
-		gbcF.anchor = GridBagConstraints.NORTHEAST;
-		SpinnerModel yearMaxSpinnerModel = new SpinnerNumberModel(maxyear,minyear, maxyear,1);
-		JSpinner maxSpinner = new JSpinner(yearMaxSpinnerModel);
-		JSpinner.NumberEditor maxEditor = new JSpinner.NumberEditor(maxSpinner, "#");
-		maxSpinner.setEditor(maxEditor);
-		maxSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 2;
-		gbcF.gridy = yBox;
-		filterBG.add(maxSpinner, gbcF);
-		
-		//add dash between two spinners
-		gbcF.anchor = GridBagConstraints.CENTER;
-		gbcF.fill = GridBagConstraints.BOTH;
-		JLabel dashyear = new JLabel(" - ");
-		dashyear.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 1;
-		gbcF.gridy = yBox++;
-		//gbcF.insets = new Insets(0, -15, 0, 0);
-		filterBG.add(dashyear, gbcF);
-		////////////////////////////////
-		
-		//price filter///////////////////
-		gbcF.fill = GridBagConstraints.NONE;
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JLabel price = new JLabel("Price");
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.insets = new Insets(5, 0, 0, 0);
-		filterBG.add(price, gbcF);
-		//price slider
-		
-		minPrice = controller.getMinPrice();
-		maxPrice = controller.getMaxPrice();
-		
-		gbcF.anchor = GridBagConstraints.NORTH;
-		JSlider priceSlider = new JSlider((int)minPrice, (int)maxPrice, (int)maxPrice);
-		priceSlider.setBackground(bgColor);
-		gbcF.insets = new Insets(0, 10, 0, 0);
-		gbcF.gridwidth = 3;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox++;
-		gbcF.ipady = 0;
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
-		filterBG.add(priceSlider, gbcF);
-		
-		//label min price
-		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		JLabel min = new JLabel(Integer.toString((int)minPrice));
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 0;
-		gbcF.gridy = yBox;
-		gbcF.ipady = 0;
-		//gbcF.weightx = .2;
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
-		filterBG.add(min, gbcF);
-		
-		//label max price
-		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		JLabel max = new JLabel(Integer.toString((int)maxPrice));
-		gbcF.insets = new Insets(0, -15, 0, 0);
-		gbcF.gridwidth = 1;
-		gbcF.gridx = 3;
-		gbcF.gridy = yBox++;
-		gbcF.weighty =.2;
-		gbcF.fill = GridBagConstraints.NONE;
-		filterBG.add(max, gbcF);
-		//////////////////////////////
-
-		//add inventory and filters onto page	
-		controlPanel.add(filterScroll);
 		controlPanel.add(inventoryBG);
 		inventoryListScrollPane.validate();
 		invMainFrame.validate();
@@ -827,6 +987,7 @@ public class inventoryPage{
 	}
 	
 }
+
 
 class myMouseListener implements MouseListener {
 	private Component previous;

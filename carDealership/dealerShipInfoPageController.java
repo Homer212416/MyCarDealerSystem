@@ -65,12 +65,19 @@ public class dealerShipInfoPageController{
 		return(Main.m_dealership.getInfoGUI());
 	}
 	
-	public void setDeleteEnabled(JButton button){
+	public boolean setDeleteEnabled(){
 		//get info from UserDAO
-		button.setEnabled(true);
+		for(int num: security){
+			if(num == 4){
+				return true;
+			}
+		}
+		return false;
+		
 		//set up to be true if admin false if else
 	}
 
-	public void deletePressed(){//route to DealershipDAO
+	public void deleteDealer(String name){//route to DealershipDAO
+		//use name to find dealership in database and remove
 	}
 }

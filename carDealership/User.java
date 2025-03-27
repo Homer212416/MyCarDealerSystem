@@ -49,15 +49,16 @@ public class User {
 		
 	}
 	
-	public int getEditSecurity(int ID){
+	public int getEditSecurity(int ID) throws SQLException{
+		int edittingSecurity = u_UserLayer.getEditSecurity(ID);
+		return edittingSecurity;
 		
-		return(1);//return actual editSecurity
 	}
 	
 	public int[] getPageSecurity(int ID) throws SQLException{
-		System.out.println(ID);
+		
 		int security = u_UserLayer.getPageSecurity(ID);
-		System.out.println(security);
+		
 		int[] list = new int[5];
 		switch(security){
 			case 1:
@@ -76,6 +77,8 @@ public class User {
 		
 		return(list);//return actual editSecurity
 	}
+	
+	
 	/*
 	public boolean validateUserLogin(String username){
 		return(u_UserLayer.validateUserLogin(username));

@@ -7,6 +7,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.sql.SQLException;
+import java.sql.*;
+import persistance.VehicleDAO;
 
 public class inventoryPageController{
 	private static List<Integer> pageAccess;
@@ -14,6 +16,7 @@ public class inventoryPageController{
 	private int numberToShow;
 	private inventoryPage inventory;
 	private User user;
+	private VehicleDAO vehicleDAO;
 	private int[] security;
 	private int editSecurity;
 	private int userID;
@@ -22,7 +25,7 @@ public class inventoryPageController{
 			
 			JComboBox pageMenuDD = inventoryPage.pageMenuDD;
 			this.numberToShow=0;
-			int size = getTotalVehiclesInInventory();
+			
 			user = new User();
 			//set up user ID retrieval or pass between each controller from LoginContext
 			//but for testing am just using 1
@@ -36,6 +39,7 @@ public class inventoryPageController{
 			}catch(SQLException e){
 				System.out.println(e.getMessage());
 			}
+			this.vehicleDAO = new VehicleDAO();
 			inventory = new inventoryPage(this);
 		}
 	
@@ -45,6 +49,34 @@ public class inventoryPageController{
 	
 	
 	public String[] getAllDisplayInfo(){
+		String[][] displayInfo = vehicleDAO.getAllDisplayInfo();
+		String[] vehicles = new String[displayInfo.length];
+		int x = 0;
+		for(String[] vehicle: displayInfo){
+			if(vehicle[6] != null){
+				String vehicleInfo = ("ID: " + vehicle[0] + "\n" 
+					+ "Make: " + vehicle[1] + "\n"
+					+ "Model: " + vehicle[2] + "\n"
+					+ "Color: " + vehicle[3] + "\n" 
+					+ "Year: " + vehicle[4] + "\n" 
+					+ "Price: " + vehicle[5] + "\n"
+					+ "Type: " + vehicle[6] + "\n"); 
+				vehicles[x] = vehicleInfo;
+				x++;
+			}else{
+				String vehicleInfo = ("ID: " + vehicle[0] + "\n" 
+					+ "Make: " + vehicle[1] + "\n"
+					+ "Model: " + vehicle[2] + "\n"
+					+ "Color: " + vehicle[3] + "\n" 
+					+ "Year: " + vehicle[4] + "\n" 
+					+ "Price: " + vehicle[5] + "\n"
+					+ "Handlebar Type: " + vehicle[7] + "\n"); 
+				vehicles[x] = vehicleInfo;
+				x++;
+				}
+			}
+		
+	
 		//currently in Dealership.java
 		//rerout to VehicleDAO
 		/*
@@ -52,8 +84,8 @@ public class inventoryPageController{
 		if search diplay is null
 		get intersection of getFilterDisplay and getDiplayDisplay
 		*/
-		String[] vehicles = Main.m_dealership.displayAlls();
-		this.numberToShow = vehicles.length;
+		
+		this.numberToShow = displayInfo.length;
 		return vehicles;
 		
 	}
@@ -65,30 +97,58 @@ public class inventoryPageController{
 		}
 		return numberToShow;
 	}
-	/*
-	public String[] getFilterDisplay(){ get intersection of all filters}
 	
-	public String[] getDiplayDisplay(){}
+	// public String[] getFilterDisplay(){ get intersection of all filters}
 	
-	public String[] getSearchDisplay(){}
+	public String getDisplayDisplay(String display){return display;}
 	
-	public String[] filterMakes(String makes){}
+	// public String[] getSearchDisplay(){}
 	
-	public String[] filterModels(String models){}
+	public String filterMakes(String makes){return makes;}
 	
-	public String[] filterColor(String colors){}
+	public String filterModels(String models){return models;}
 	
-	public String[] filterYear(int minyear, int maxyear){}
+	public String filterColors(String colors){return colors;}
 	
-	public String[] filterPrice(int minPrice, int maxPrice){}
+	public int filterYears(int minyear, int maxyear){return minyear;}
 	
-	public String sortOrder(){}
-	*/
+	public int filterPrice(int minPrice, int maxPrice){return minPrice;}
 	
-	public static int getTotalVehiclesInInventory() {
+	public String sortMenuSelect(int sortSel){
+		String sorted = "";
+		switch(sortSel){
+			case 1:
+				sorted = "price DESC";
+				break;
+			case 2:
+				sorted = "price ASC";
+				break;
+			case 3:
+				sorted = "make";
+				break;
+			case 4:
+				sorted = "model";
+				break;	
+			case 5:
+				sorted = "year DESC";
+				break;
+			case 6:
+				sorted = "year ASC";
+				break;	
+		}
+		return sorted;
+	}
+	
+	public String search(String search){
+		return search;
+		}
+	
+	
+	public int getTotalVehiclesInInventory() {
 		//currently in Dealership.java
 		//rerout to VehicleDAO.java
-		return(Main.m_dealership.getTotalVehicles());//add actually query here
+		int count = vehicleDAO.getTotalVehiclesInInventory();
+		return(count);//add actually query here
 	}
 		
 	public static void addPageIntervals(){
@@ -168,6 +228,25 @@ public class inventoryPageController{
 		int maxPrice = 2005;
 		return maxPrice;
 	}
+	
+	public void setDisabledPages(DefaultListSelectionModel ddb){
+		if(editSecurity == 1){
+			ddb.addSelectionInterval(0, 5);
+		}else{
+			ddb.addSelectionInterval(0, 3);
+			ddb.addSelectionInterval(5, 5);
+		}
+	}
+	
+	public void setDisabledEdits(DefaultListSelectionModel ddb){
+		
+		if(security.length == 5){
+			ddb.addSelectionInterval(0, 5);
+		}else{
+			ddb.addSelectionInterval(4, 4);
+		}
+	}
+	
 	public void pageMenuSelect(int sel, JFrame mainFrame){
 		boolean contains = false;
 		
@@ -175,8 +254,8 @@ public class inventoryPageController{
 			if(sel == page)
 				contains = true;
 		}
+		
 		if(contains){
-			System.out.print(contains);
 			if (sel== 1){
 				inventoryPageController inv = new inventoryPageController(userID);
 				mainFrame.dispose();
