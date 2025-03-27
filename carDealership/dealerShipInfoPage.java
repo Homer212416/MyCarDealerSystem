@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.awt.Toolkit;
 
 public class dealerShipInfoPage{
-	private JFrame mainFrame;
+	private JFrame dealerMainFrame;
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
@@ -42,15 +42,15 @@ public class dealerShipInfoPage{
 	}
 	@SuppressWarnings("unchecked")
 	private void prepareInventoryGUI(){
-		mainFrame = new JFrame("Dealership Information");
-		mainFrame.setIconImage(carImage);
-		mainFrame.setBounds(0, 0, 650, 650);
-		mainFrame.addWindowListener(new WindowAdapter() {
+		dealerMainFrame = new JFrame("Dealership Information");
+		dealerMainFrame.setIconImage(carImage);
+		dealerMainFrame.setBounds(0, 0, 650, 650);
+		dealerMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
             System.exit(0);
 			}        
 		});
-		
+		//setup panel layout DONT CHANGE///////////////////////////////////////////////
 		JPanel controlPanel = new JPanel();
 		controlPanel.setBackground(new Color(230, 230, 230));
 		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -101,8 +101,11 @@ public class dealerShipInfoPage{
 		GridBagConstraints gbcI = new GridBagConstraints();
 		dealershipBG.setBounds(10, 175, 440, 430);
 		controlPanel.add(dealershipBG);
+		///////////////////////////////////////////////////////////////////////////////////////////////
 		
-		//page menu in upper right hand corner
+		
+		
+		//page menu in upper right hand corner//////////////////////////////////////////////////////////
 		pageMenuDD = new JComboBox();
 		controller.fillPageElements(pageMenuDD);
 		DefaultListSelectionModel pageMenuModel = new DefaultListSelectionModel();
@@ -110,22 +113,42 @@ public class dealerShipInfoPage{
 		pageMenuDD.setRenderer(pageMenuEnableRender);
 		pageMenuDD.setBounds(450, 20, 200, 25);
 		controlPanel.add(pageMenuDD);
-
-		//delete button/////////////////////////////////////////////
+		
+		pageMenuDD.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), dealerMainFrame);
+			}
+		});
+		
+		//all dealershipInfo
+		String[] dealer = controller.getDealershipInfo();
+		
+		
+		//delete button///////////////////////////////////////////////////////////////////////////////
 		JButton deleteDealer = new JButton("Delete Dealership");
 		//enable delete button based on user permissions
-		controller.setDeleteEnabled(deleteDealer);
+		Boolean enable = controller.setDeleteEnabled();
+		if(!enable){deleteDealer.setEnabled(false);}
+		gbcF.insets = new Insets(5,0,0,0);
 		gbcF.anchor = GridBagConstraints.NORTH;
 		gbcF.weighty = .9;
 		gbcF.gridx = 0;
 		gbcF.gridy = 0;
 		filterBG.add(deleteDealer, gbcF);
 		
+		deleteDealer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.deleteDealer(dealer[0]);//gives name of dealership
+			}
+		});
+		
 
 		//DealershipInformationList list///////////////////////////////////////////
 		final DefaultListModel inventoryModel = new DefaultListModel();
 
-		String[] dealer = controller.getDealershipInfo();
+		
 		inventoryModel.addElement("Name: " + dealer[0]);
 		inventoryModel.addElement("Location: " + dealer[1]);
 		inventoryModel.addElement("Inventory Capacity: " + dealer[2]);
@@ -149,7 +172,7 @@ public class dealerShipInfoPage{
 		gbcI.fill = GridBagConstraints.BOTH;
 		gbcI.insets = new Insets(5,0,0,0);
 		dealershipBG.add(inventoryListScrollPane, gbcI);
-		mainFrame.setContentPane(controlPanel);
-		mainFrame.setVisible(true);
+		dealerMainFrame.setContentPane(controlPanel);
+		dealerMainFrame.setVisible(true);
 	}
 }

@@ -5,7 +5,7 @@ import java.nio.file.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DBManager {
 
@@ -29,7 +29,6 @@ public class DBManager {
 	}
 
 	public ResultSet runQuery(String query) throws SQLException {
-		System.out.println("runQuery Method Ran");
 		System.out.println("Will run query: " + query);
 		var stmt = m_connection.createStatement();
 		return stmt.executeQuery(query);
@@ -43,9 +42,17 @@ public class DBManager {
 			m_connection = DriverManager.getConnection(url);
 			System.out.println("Connection to SQLite has been established.");
 			m_connection.setAutoCommit(false);
+			//this prints out tables in the database use to check for new tables
+			/*
+			DatabaseMetaData md = m_connection.getMetaData();
+			ResultSet rs = md.getTables(null, null, "%", null);
+			while (rs.next()) {
+			  System.out.println(rs.getString(3));
+			}*/
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		
 
 		if (!mustCreateTables) {
 			System.out.println("DB file " + m_dbPath + " already exists. Not creating the database.");
@@ -56,7 +63,6 @@ public class DBManager {
 	}
 
 	private void createTables() throws SQLException {
-		System.out.println("Creating the dealerships table");
 		var dealershipSQL = "CREATE TABLE IF NOT EXISTS dealerships (id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ " name text NOT NULL, location text NOT NULL, capacity INTEGER);";
 
@@ -79,6 +85,11 @@ public class DBManager {
 				
 		stmt.execute(users);
 		
+		var vehicles = "CREATE TABLE IF NOT EXISTS vehicles (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "model text NOT NULL, make text NOT NULL, color text NOT NULL, year INTEGER, price INTEGER, carType String, handleBarType String, inInventory BOOLEAN)";
+				
+		stmt.execute(vehicles);
+		
 		var addAdminRoleSQL = "INSERT INTO roles (role) VALUES ('Admin');";
 		stmt.execute(addAdminRoleSQL);
 
@@ -100,10 +111,7 @@ public class DBManager {
 		return m_dbManager;
 	}
 	
-	private void createUserTables() throws SQLException {
-		var stmt = m_connection.createStatement();
-		var users = "CREATE TABLE IF NOT EXISTS usersInfo (ID PRIMARY KEY AUTOINCREMENT,"
-				+ "firstName text NOT NULL, lastName text NOT NULL, jobTitle text not NULL, email text NOT NULL, password NOT NULL)";
-		//stmt.execute(users);
-	}
+	
+	
+
 }

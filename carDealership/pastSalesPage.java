@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.awt.Toolkit;
 
 public class pastSalesPage{
-	private JFrame mainFrame;
+	private JFrame salesMainFrame;
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
@@ -36,10 +36,10 @@ public class pastSalesPage{
 	}
 	@SuppressWarnings("unchecked")
 	private void prepareInventoryGUI(){
-		mainFrame = new JFrame("Past Sales");
-		mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
-		mainFrame.setBounds(0, 0, 650, 650);
-		mainFrame.addWindowListener(new WindowAdapter() {
+		salesMainFrame = new JFrame("Past Sales");
+		salesMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+		salesMainFrame.setBounds(0, 0, 650, 650);
+		salesMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
             System.exit(0);
 			}        
@@ -106,24 +106,13 @@ public class pastSalesPage{
 		pageMenuDD.setBounds(450, 20, 200, 25);
 		controlPanel.add(pageMenuDD);
 
-		
-	/* 	pageMenuDDB.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-		    if (pageMenuDDB.getSelectedIndex() == 1){
-				inventoryPage inventory = new inventoryPage();
-				mainFrame.dispose();
-			}else if(pageMenuDDB.getSelectedIndex() == 2){
-				dealerShipInfoPage dealer = new dealerShipInfoPage();
-				mainFrame.dispose();
-			}else if(pageMenuDDB.getSelectedIndex() == 4){
-				accountManagePage accounts = new accountManagePage();
-				mainFrame.dispose();
-			}else if(pageMenuDDB.getSelectedIndex() == 5){
-				loginPage login = new loginPage();
-				mainFrame.dispose();
+		pageMenuDD.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), salesMainFrame);
 			}
-         }          
-		}); */
+		});
+
 		
 		
 		/* //display options
@@ -177,7 +166,7 @@ public class pastSalesPage{
 		gbcI.fill = GridBagConstraints.BOTH;
 		gbcI.insets = new Insets(5,0,0,0);
 		inventoryBG.add(inventoryListScrollPane, gbcI);
-		mainFrame.setContentPane(controlPanel);
-		mainFrame.setVisible(true);
+		salesMainFrame.setContentPane(controlPanel);
+		salesMainFrame.setVisible(true);
 	}
 }

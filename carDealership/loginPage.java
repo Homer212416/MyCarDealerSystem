@@ -25,12 +25,14 @@ public class loginPage{
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
+	private loginPageController controller;
 	
-	public loginPage(){
-      prepareLoginGUI();
+	public loginPage(loginPageController controller){
+      this.controller = controller;
+	  prepareLoginGUI();
 	}
 	public static void main(String[] args){
-      loginPage loginPage = new loginPage();  
+      //loginPage loginPage = new loginPage();  
       //loginPage.showEventDemo();       
 	}
 	private void prepareLoginGUI(){
@@ -118,12 +120,32 @@ public class loginPage{
 		gbcA.weightx = .5;
 		gridA.add(submitButton,gbcA);
 		
+		
+		submitButton.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String userName = usernameBar.getText();
+				char[] password = passwordBar.getPassword();
+				
+				controller.submitPressed(mainFrame, userName, password);
+			}
+		});
+		
+		forgotButton.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				controller.forgotPressed(mainFrame);
+			}
+		});
+		
+		
 		mainFrame.setContentPane(controlPanel);
 		mainFrame.setVisible(true);
 
 	}
 	
-	private void requestPasswordPage(){
+	public void requestPasswordPage(){
 		requestPmainFrame = new JFrame("Request New Password");
 		requestPmainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
 		requestPmainFrame.setBounds(0, 0, 315, 335);
@@ -247,11 +269,17 @@ public class loginPage{
 		requestPmainFrame.setContentPane(controlPanel);
 		requestPmainFrame.setVisible(true);
 		
-		
+		requestB.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				controller.requestSubmitPressed(requestPmainFrame);
+			}
+		});
 	}
 	
 	
-	private void resetPasswordPage(){
+	public void resetPasswordPage(){
 		resetPmainFrame = new JFrame("Reset Password");
 		resetPmainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
 		resetPmainFrame.setBounds(0, 0, 315, 335);
@@ -364,7 +392,13 @@ public class loginPage{
 		resetPmainFrame.setVisible(true);
 		
 		//set functions
-		
+		requestB.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				controller.newPasswordSubmitPressed(resetPmainFrame);
+			}
+		});
 		
 	}
 }

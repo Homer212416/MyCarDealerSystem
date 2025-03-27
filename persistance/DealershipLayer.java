@@ -14,7 +14,6 @@ public class DealershipLayer {
 		m_name = name;
 		m_location = location;
 		m_capacity = capacity;
-
 		DBManager.getInstance().runInsert("INSERT INTO dealerships " + "(name, location, capacity) " + "VALUES ('"
 				+ name + "', '" + location + "', " + Integer.toString(capacity) + ");");
 	}

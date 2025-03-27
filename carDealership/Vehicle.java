@@ -72,6 +72,10 @@ public abstract class Vehicle implements Serializable {
 	public int getId() {
 		return id;
 	}
+	
+	public boolean getInInventory() {
+		return true;
+	}
 
 	public void setId(int id) {
 		this.id = id;

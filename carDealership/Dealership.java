@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+
 public class Dealership {
 	private String name;
 	private String location;
