@@ -6,6 +6,16 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+
+import carDealership.Car;
+import carDealership.Main;
+import carDealership.Motorcycle;
+import carDealership.User;
+import carDealership.accountManagePageController;
+import carDealership.dealerShipInfoPageController;
+import carDealership.loginPageController;
+import carDealership.pastSalesPageController;
+
 import java.sql.SQLException;
 import java.sql.*;
 import persistance.VehicleDAO;
@@ -98,7 +108,95 @@ public class inventoryPageController{
 		return numberToShow;
 	}
 	
-	// public String[] getFilterDisplay(){ get intersection of all filters}
+public void filterQuery(String makeSel, String modelSel, String colorSel, Integer minYear,
+	Integer maxYear, Integer maxPrice, String sortSel, String typeSel) {
+// Base SQL query
+StringBuilder query = new StringBuilder("SELECT * FROM Inventory WHERE ");
+
+// Make
+if (makeSel != null && !makeSel.isEmpty()) {
+query.append("make IN (").append(makeSel).append(") ");
+}
+
+// Model
+if (modelSel != null && !modelSel.isEmpty()) {
+if (query.length() > "SELECT * FROM Inventory WHERE ".length()) {
+query.append("AND ");
+}
+query.append("model IN (").append(modelSel).append(") ");
+}
+
+// Color
+if (colorSel != null && !colorSel.isEmpty()) {
+if (query.length() > "SELECT * FROM Inventory WHERE ".length()) {
+query.append("AND ");
+}
+query.append("color IN (").append(colorSel).append(") ");
+}
+
+// Year
+if (minYear != null) {
+if (query.length() > "SELECT * FROM Inventory WHERE ".length()) {
+query.append("AND ");
+}
+query.append("year > ").append(minYear).append(" ");
+}
+
+if (maxYear != null) {
+if (query.length() > "SELECT * FROM Inventory WHERE ".length()) {
+query.append("AND ");
+}
+query.append("year < ").append(maxYear).append(" ");
+}
+
+// Price
+if (maxPrice != null) {
+if (query.length() > "SELECT * FROM Inventory WHERE ".length()) {
+query.append("AND ");
+}
+query.append("price <= ").append(maxPrice).append(" ");
+}
+
+// Type
+if (typeSel != null && !typeSel.isEmpty()) {
+if (query.length() > "SELECT * FROM Inventory WHERE ".length()) {
+query.append("AND ");
+}
+query.append("type = '").append(typeSel).append("' ");
+}
+
+//  ORDER BY 
+if (sortSel != null) {
+String sorted = "";
+	switch (sortSel) {
+	case "1":
+	sorted = "price DESC";
+	break;
+	case "2":
+	sorted = "price ASC";
+	break;
+	case "3":
+	sorted = "make";
+	break;
+	case "4":
+	sorted = "model";
+	break;
+	case "5":
+	sorted = "year DESC";
+	break;
+	case "6":
+	sorted = "year ASC";
+	break;
+	}
+query.append("ORDER BY ").append(sorted).append(";");
+}
+
+// Print to test
+System.out.println(query.toString()); 
+
+// return query.toString();
+}
+
 	
 	public String getDisplayDisplay(String display){return display;}
 	
@@ -109,6 +207,7 @@ public class inventoryPageController{
 	public String filterModels(String models){return models;}
 	
 	public String filterColors(String colors){return colors;}
+	
 	
 	public int filterYears(int minyear, int maxyear){return minyear;}
 	
