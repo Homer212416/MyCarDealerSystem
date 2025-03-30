@@ -63,6 +63,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 			while (resultSet.next()) {
                 String carType = resultSet.getString("carType");
                 String handlebarType = resultSet.getString("handlebarType");
+				
                 if (carType != null) {
                     vehicles.add(new Car(
                             resultSet.getString("make"),
@@ -71,6 +72,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
                             resultSet.getInt("year"),
                             resultSet.getInt("price"),
                             resultSet.getString("carType")));
+							
                 } else if (handlebarType != null) {
                     vehicles.add(new Motorcycle(
                             resultSet.getString("make"),
@@ -98,7 +100,9 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 			ResultSet rs3 = DBManager.getInstance().runQuery("SELECT COUNT(*) AS count FROM vehicles");
 			while(rs3.next()){
 				this.count = rs3.getInt("count");
+				
 				}
+			
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
@@ -187,4 +191,77 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 		int maxPrice = 2025;
 		return(maxPrice);
 	}
+	
+	public boolean exsist(int id){
+		boolean exsists = false;
+		
+		try {
+			String query = "SELECT * FROM vehicles WHERE ID = " + id + "";
+			ResultSet resultSet = DBManager.getInstance().runQuery(query);
+			while (resultSet.next()){ 
+				exsists = true;
+			}
+		}catch(SQLException e){e.printStackTrace();}
+		
+		return exsists;
+	}
+
+	public static String[] getIndexFromId(int id){
+		String[] vehicle = new String[7];
+		try {
+            String query = "SELECT * FROM vehicles WHERE ID = " + id + "";
+            ResultSet resultSet = DBManager.getInstance().runQuery(query);
+			while (resultSet.next()){ 
+				vehicle[0] = resultSet.getString("make");
+				vehicle[1] = resultSet.getString("model");
+				vehicle[2] = resultSet.getString("color");
+				vehicle[3] = Integer.toString(resultSet.getInt("year"));
+                vehicle[4] = Integer.toString(resultSet.getInt("price"));
+                if(resultSet.getString("carType") != null){
+					vehicle[5] = resultSet.getString("carType");
+					vehicle[6] = "car";
+				}else{
+					vehicle[5] = resultSet.getString("handleBarType");
+					vehicle[6] = "motorcycle";
+				}
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+        return vehicle;      
+	
+	}
+	
+	public boolean editCar(String[] car){
+		int id = Integer.valueOf(car[0]);
+		//INSERT INTO vehicles (make, model, color, year, price,carType, handlebarType, inInventory) VALUES ('"
+		
+		try{
+            String query = "UPDATE vehicles SET make = '" + car[1] + "', model = '" + car[2] + "', color = '" + car[3] + "',year = " + Integer.valueOf(car[4]) + ", price = " + Integer.valueOf(car[5]) + ", carType = '" + car[6] + "' WHERE id = " + id;
+			//+", model = " + car[2] + ", color = " + car[3] + ",year = " + Integer.valueOf(car[4]) + ", price = " + Integer.valueOf(car[5]) + ", carType = " + car[6] + " WHERE id = " + id;
+            DBManager.getInstance().runInsert(query);
+            return true;
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	
+	public boolean editMotorcycle(String[] moto){
+		int id = Integer.valueOf(moto[0]);
+		//INSERT INTO vehicles (make, model, color, year, price,motoType, handlebarType, inInventory) VALUES ('"
+		
+		try{
+            String query = "UPDATE vehicles SET make = " + moto[1] +", model = " + moto[2] + ", color" + moto[3] + ",year = "  
+							+ Integer.valueOf(moto[4]) + ", price = " + Integer.valueOf(moto[5]) + ", handleBarType = " + moto[6] + " WHERE id = " + id;
+            DBManager.getInstance().runInsert(query);
+            return true;
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	
+	
 }
+ 
