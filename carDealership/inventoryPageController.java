@@ -86,6 +86,7 @@ public class inventoryPageController{
 
 	public String getFilterDisplay(){ 
 		     // Base query
+			 System.out.println ("It worked");
     String qry = "SELECT * FROM Inventory";
     
     // Initialize the WHERE clause
@@ -137,10 +138,6 @@ public class inventoryPageController{
 			makeFilter = " make IN(makes) ";
 		}
 	}
-
-
-	
-	
 	
 	public String getDisplayDisplay(String display){
 		return display;
@@ -150,15 +147,26 @@ public class inventoryPageController{
 		return search;
 	}
 	
-	public String filterModels(String models){}
+	public String filterModels(String models){
+		return models;
+	}
 	
-	public String filterColor(String colors){}
+	public String filterColors(String colors){
+
+		return colors;
+	}
 	
-	public String filterYear(int minyear, int maxyear){}
+	public Integer filterYears(int minyear, int maxyear){
+
+		return maxyear;
+	}
 	
-	public String filterPrice(int minPrice, int maxPrice){}
+	public Integer filterPrice(int minPrice, int maxPrice){
+		return maxPrice;
+	}
 	
-	public Int sortMenuSelect(Int sort){
+	public Integer sortMenuSelect(Integer sort){
+		return sort;
 
 	}
 	

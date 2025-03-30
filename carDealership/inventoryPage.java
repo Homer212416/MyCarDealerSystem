@@ -343,6 +343,7 @@ public class inventoryPage{
 					makeSel = makeSel.replaceAll(", $", "");
 					System.out.println(makeSel);
 					controller.filterMakes(makeSel);
+					controller.getFilterDisplay();
 				}
 			};
 			
@@ -390,6 +391,7 @@ public class inventoryPage{
 					modelSel = modelSel.replaceAll(", $", "");
 					System.out.println(modelSel);
 					controller.filterModels(modelSel);
+					controller.getFilterDisplay();
 				}
 			};
 			
@@ -436,6 +438,7 @@ public class inventoryPage{
 					colorSel = colorSel.replaceAll(", $", "");
 					System.out.println(colorSel);
 					controller.filterColors(colorSel);
+					controller.getFilterDisplay();
 				}
 			};
 			
@@ -498,6 +501,7 @@ public class inventoryPage{
 				int minYear = (int) minSpinner.getValue();
 				int maxYear = (int)maxSpinner.getValue();
 				controller.filterYears(minYear, maxYear);
+				controller.getFilterDisplay();
 			}
 		};
 		
@@ -560,6 +564,7 @@ public class inventoryPage{
 				int newMaxPrice = (int) priceSlider.getValue();
 				max.setText(Integer.toString(newMaxPrice));
 				controller.filterPrice((int)minPrice, newMaxPrice);
+				controller.getFilterDisplay();
 			}
 		};
 		
