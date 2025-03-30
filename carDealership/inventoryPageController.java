@@ -17,6 +17,8 @@ import carDealership.loginPageController;
 import carDealership.pastSalesPageController;
 
 import java.sql.SQLException;
+import java.sql.*;
+import persistance.VehicleDAO;
 
 public class inventoryPageController{
 	private static List<Integer> pageAccess;
@@ -24,6 +26,7 @@ public class inventoryPageController{
 	private int numberToShow;
 	private inventoryPage inventory;
 	private User user;
+	private VehicleDAO vehicleDAO;
 	private int[] security;
 	private int editSecurity;
 	private int userID;
@@ -36,11 +39,11 @@ public class inventoryPageController{
 	private String priceFilter = "";
 	private String sortOrder = "";
 	
-	public inventoryPageController(int ID){ 
+	
+public inventoryPageController(int ID){ 
 			
 			JComboBox pageMenuDD = inventoryPage.pageMenuDD;
 			this.numberToShow=0;
-			int size = getTotalVehiclesInInventory();
 			user = new User();
 			//set up user ID retrieval or pass between each controller from LoginContext
 			//but for testing am just using 1
@@ -54,15 +57,43 @@ public class inventoryPageController{
 			}catch(SQLException e){
 				System.out.println(e.getMessage());
 			}
+			this.vehicleDAO = new VehicleDAO();
 			inventory = new inventoryPage(this);
 		}
 	
 	public void inventoryRefresh(){
 		//will refresh the displayed inventory anytime a filter or display option is clicked
 	}
-	
-	
+
 	public String[] getAllDisplayInfo(){
+		String[][] displayInfo = vehicleDAO.getAllDisplayInfo();
+		String[] vehicles = new String[displayInfo.length];
+		int x = 0;
+		for(String[] vehicle: displayInfo){
+			if(vehicle[6] != null){
+				String vehicleInfo = ("ID: " + vehicle[0] + "\n" 
+					+ "Make: " + vehicle[1] + "\n"
+					+ "Model: " + vehicle[2] + "\n"
+					+ "Color: " + vehicle[3] + "\n" 
+					+ "Year: " + vehicle[4] + "\n" 
+					+ "Price: " + vehicle[5] + "\n"
+					+ "Type: " + vehicle[6] + "\n"); 
+				vehicles[x] = vehicleInfo;
+				x++;
+			}else{
+				String vehicleInfo = ("ID: " + vehicle[0] + "\n" 
+					+ "Make: " + vehicle[1] + "\n"
+					+ "Model: " + vehicle[2] + "\n"
+					+ "Color: " + vehicle[3] + "\n" 
+					+ "Year: " + vehicle[4] + "\n" 
+					+ "Price: " + vehicle[5] + "\n"
+					+ "Handlebar Type: " + vehicle[7] + "\n"); 
+				vehicles[x] = vehicleInfo;
+				x++;
+				}
+			}
+		
+	
 		//currently in Dealership.java
 		//rerout to VehicleDAO
 		/*
@@ -70,13 +101,13 @@ public class inventoryPageController{
 		if search diplay is null
 		get intersection of getFilterDisplay and getDiplayDisplay
 		*/
-		String[] vehicles = Main.m_dealership.displayAlls();
-		this.numberToShow = vehicles.length;
+		
+		this.numberToShow = displayInfo.length;
 		return vehicles;
 		
 	}
-	
-	public int getNumbertoDisplay(){
+
+public int getNumbertoDisplay(){
 		//return number that will be shown after filters apply;
 		if(this.numberToShow == 0){
 			this.numberToShow = getAllDisplayInfo().length;
@@ -139,51 +170,51 @@ public class inventoryPageController{
 		}
 	}
 	
-	public String getDisplayDisplay(String display){
-		return display;
-	}
+	public String getDisplayDisplay(String display){return display;}
 	
 	public String search(String search){
 		return search;
 	}
 	
-	public String filterModels(String models){
-		return models;
-	}
 	
-	public String filterColors(String colors){
+	public String filterModels(String models){return models;}
+	
+	public String filterColors(String colors){return colors;}
+	
+	public int filterYears(int minyear, int maxyear){return minyear;}
+	
+	public int filterPrice(int minPrice, int maxPrice){return minPrice;}
+	
+	public String sortMenuSelect(int sortSel){
+		String sorted = "";
+		switch(sortSel){
+			case 1:
+				sorted = "price DESC";
+				break;
+			case 2:
+				sorted = "price ASC";
+				break;
+			case 3:
+				sorted = "make";
+				break;
+			case 4:
+				sorted = "model";
+				break;	
+			case 5:
+				sorted = "year DESC";
+				break;
+			case 6:
+				sorted = "year ASC";
+				break;	
+		}
+		return sorted;
+	}
 
-		return colors;
-	}
-	
-	public Integer filterYears(int minyear, int maxyear){
-
-		return maxyear;
-	}
-	
-	public Integer filterPrice(int minPrice, int maxPrice){
-		return maxPrice;
-	}
-	
-	public Integer sortMenuSelect(Integer sort){
-		return sort;
-
-	}
-	
-	
-	public static int getTotalVehiclesInInventory() {
+	public int getTotalVehiclesInInventory() {
 		//currently in Dealership.java
 		//rerout to VehicleDAO.java
-		return(Main.m_dealership.getTotalVehicles());//add actually query here
-	}
-		
-	public static void addPageIntervals(){
-		inventoryPage.pageMenuModel.addSelectionInterval(0, 5);
-		List<Integer> available = new ArrayList<Integer>();
-		//add page numbers to list if page is available
-		available.add(1);
-		//editAccess to be used in actionListener for pageMenuDD
-		pageAccess = available;
+		int count = vehicleDAO.getTotalVehiclesInInventory();
+		return(count);//add actually query here
 	}
 		
 	public static int getInventoryGrossValue(){
@@ -194,14 +225,6 @@ public class inventoryPageController{
 		
 	}
 	
-	public static void addEditIntervals(){
-		inventoryPage.pageMenuModel.addSelectionInterval(0, 5);
-		List<Integer> available = new ArrayList<Integer>();
-		//add page numbers to list if page is available
-		available.add(1);
-		//editAccess to be used in actionListener for pageMenuDD
-		editAccess = available;
-	}
 	
 	public static String[] getMakes(){
 		//return distinct makes
@@ -254,6 +277,25 @@ public class inventoryPageController{
 		int maxPrice = 2005;
 		return maxPrice;
 	}
+	
+	public void setDisabledPages(DefaultListSelectionModel ddb){
+		if(editSecurity == 1){
+			ddb.addSelectionInterval(0, 5);
+		}else{
+			ddb.addSelectionInterval(0, 3);
+			ddb.addSelectionInterval(5, 5);
+		}
+	}
+	
+	public void setDisabledEdits(DefaultListSelectionModel ddb){
+		
+		if(security.length == 5){
+			ddb.addSelectionInterval(0, 5);
+		}else{
+			ddb.addSelectionInterval(4, 4);
+		}
+	}
+	
 	public void pageMenuSelect(int sel, JFrame mainFrame){
 		boolean contains = false;
 		
@@ -261,8 +303,8 @@ public class inventoryPageController{
 			if(sel == page)
 				contains = true;
 		}
+		
 		if(contains){
-			System.out.print(contains);
 			if (sel== 1){
 				inventoryPageController inv = new inventoryPageController(userID);
 				mainFrame.dispose();
@@ -281,35 +323,27 @@ public class inventoryPageController{
 			}
 		}
 	}
-		/*
-		//actions for page drop down
-		editInventoryMenu.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-			if (editInventoryMenu.getSelectedIndex() == 1){
-				addCarMenu();
-				mainFrame.repaint(5,0, 0, 665, 665);
-			}else if(editInventoryMenu.getSelectedIndex() == 2){
-				addMotorcycleMenu();
-			}else if(editInventoryMenu.getSelectedIndex() == 3){
-				editVehicleMenu();
-			}else if(editInventoryMenu.getSelectedIndex() == 4){
-				sellVehicleMenu();
-			}else if(editInventoryMenu.getSelectedIndex() == 5){
-				removeVehicleMenu();
-			}
-			}
-		});
-		searchBarBG.add(MagButton, gbcS);
-		MagButton.addActionListener(new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-			
+	public void editMenuSelect(int sel){
+		boolean contains = false;
+		
+		for(int edit: security){
+			if(sel == edit)
+				contains = true;
 		}
-		});
-*/
-	
+		if(contains){
+			if (sel== 1){
+				inventory.addCarMenu();
+			}else if (sel== 2){
+				inventory.addMotorcycleMenu();
+			}else if(sel== 3){
+				inventory.editVehicleMenu();
+			}else if(sel== 4){
+				inventory.sellVehicleMenu();
+			}else if(sel== 5){
+				inventory.removeVehicleMenu();
+			}
+		}
+	}
 	
 	
 	//actions for editInventory Pages///////////////////////////////////////////////////////
@@ -339,22 +373,31 @@ public class inventoryPageController{
 		//was in InventoryPage
 		//show error message if car does not exsist
 		// == false) { // check if exist
-		JOptionPane.showMessageDialog(null, "Vehicle not found!");
-		
 	}
 	
 	public boolean vehicleExsist(int id){
-		//show error message if car does not exsist
-		//JOptionPane.showMessageDialog(null, "Vehicle not found!");
-		//doesn't exsist can do here or put in VehicleDAO
-		return false;
+		boolean exsist = vehicleDAO.exsist(id);
+		if (exsist == false) {
+				JOptionPane.showMessageDialog(null, "Vehicle not found!");
+				return false;
+		}else{
+			return false;
+		}
 	}
 	
-	public Vehicle getVehicleFromId(int id){
+	public String[] getVehicleFromId(int id){
 		//currently in dealership.java
 		//rerout to VehicleDAO.java
-		Vehicle vehicle = Main.m_dealership.getVehicleFromId(id);
-		return vehicle;
+		boolean exsist = vehicleDAO.exsist(id);
+		if(!exsist){
+			JOptionPane.showMessageDialog(null, "Vehicle not found!");
+			String [] noVehicle = {};
+			return noVehicle;
+			}
+		else{
+			String [] vehicleDetails = vehicleDAO.getIndexFromId(id);
+			return vehicleDetails;
+		}
 	}
 	
 	public void getVehicleType(Vehicle vehicle, JPanel editPanel){
@@ -426,11 +469,12 @@ public class inventoryPageController{
 			*/
 	}
 	
-	public boolean sellVehicle(Vehicle vehicle, String buyerName, String buyerContact){
+	public boolean sellVehicle(String[] vehicle, String buyerName, String buyerContact){
 		//return if able to successfully sellVehicle
 		//currently in dealership.java
 		//reroute to SaleDAO.java
-		Main.m_dealership.sellVehicle(vehicle, buyerName, buyerContact);
+		//VehicleDAO.sellVehicle(vehicle, buyerName, buyerContant);
+		//Main.m_dealership.sellVehicle(vehicle, buyerName, buyerContact);
 		return true;
 	}
 	
@@ -457,5 +501,16 @@ public class inventoryPageController{
 		Main.m_dealership.addVehicle(new Motorcycle(make, model, color, year, price, handlebarType));
 		return true;
 	}
+	
+	public boolean editCar(String[] car){
+		boolean editS = vehicleDAO.editCar(car);
+		return editS;
+	}
+	
+	public boolean editMotorcycle(String[] Motorcycle){
+		boolean editS = vehicleDAO.editMotorcycle(Motorcycle);
+		return editS;
+	}
+
 
 }

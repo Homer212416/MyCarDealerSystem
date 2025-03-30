@@ -28,12 +28,16 @@ public class dealerShipInfoPage{
 	private Image carImageHeader;
 	public JComboBox pageMenuDD;
 	private dealerShipInfoPageController controller;
+	private static Image newCarHeaderImage;
+	private GridBagConstraints gbcC;
 	
 	
 	public dealerShipInfoPage(dealerShipInfoPageController controller){
 		this.controller = controller;
 		carImage = Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg"));
 		carImageHeader = Toolkit.getDefaultToolkit().getImage(dealerShipInfoPage.class.getResource("/images/backgroundd.jpg"));
+		newCarHeaderImage = carImageHeader.getScaledInstance(300, 150,Image.SCALE_DEFAULT);
+		
 		prepareInventoryGUI();
 	}
 	public static void main(String[] args){
@@ -58,14 +62,16 @@ public class dealerShipInfoPage{
 		controlPanel.setLayout(new GridLayout());
 		
 		GridBagLayout layout = new GridBagLayout();
-		controlPanel.setLayout(null);	
+		controlPanel.setLayout(layout);	
+		gbcC = new GridBagConstraints();
+		
 		
 		JLabel carImage = new JLabel("");
 		carImage.setBackground(Color.BLACK);
 		carImage.setOpaque(true);
-		carImage.setIcon(new ImageIcon(carImageHeader));
+		carImage.setIcon(new ImageIcon(newCarHeaderImage));
 		carImage.setBounds(0, -50, 650, 200);
-		controlPanel.add(carImage);
+	
 		
 		JPanel searchBarBG = new JPanel();
 		searchBarBG.setBackground(Color.GRAY);
@@ -73,7 +79,14 @@ public class dealerShipInfoPage{
 		GridBagLayout layoutS = new GridBagLayout();
 		searchBarBG.setLayout(layoutS);
 		GridBagConstraints gbcS = new GridBagConstraints();
+		
 		searchBarBG.setBounds(0, 150, 650, 50);
+		gbcC.anchor = GridBagConstraints.NORTH;  
+		gbcC.fill = GridBagConstraints.BOTH;
+		gbcC.gridx = 0;
+		gbcC.gridwidth = 2;
+		gbcC.gridy = 1;
+		controlPanel.add(searchBarBG,gbcC);
 		
 		JPanel filterBG = new JPanel();
 		filterBG.setBackground(new Color(230, 230, 230));
@@ -82,7 +95,11 @@ public class dealerShipInfoPage{
 		filterBG.setLayout(layoutF);
 		filterBG.setBounds(450, 175, 200, 450);
 		GridBagConstraints gbcF = new GridBagConstraints();
-		controlPanel.add(filterBG);
+		gbcC.anchor = GridBagConstraints.NORTH;  
+		gbcC.gridx = 2;
+		gbcC.gridwidth = 1;
+		gbcC.gridy = 4;
+		controlPanel.add(filterBG,gbcC);
 		
 		JPanel displayBG = new JPanel();
 		displayBG.setBackground(new Color(230, 230, 230));
@@ -91,7 +108,10 @@ public class dealerShipInfoPage{
 		displayBG.setLayout(layoutD);
 		displayBG.setBounds(0, 150, 450, 30);
 		GridBagConstraints gbcD = new GridBagConstraints();
-		controlPanel.add(displayBG);
+		gbcC.gridx = 1;
+		gbcC.gridwidth = 2;
+		gbcC.gridy = 3;
+		controlPanel.add(displayBG,gbcC);
 		
 		JPanel dealershipBG = new JPanel();
 		dealershipBG.setBackground(Color.WHITE);
@@ -100,7 +120,13 @@ public class dealerShipInfoPage{
 		dealershipBG.setLayout(layoutI);
 		GridBagConstraints gbcI = new GridBagConstraints();
 		dealershipBG.setBounds(10, 175, 440, 430);
-		controlPanel.add(dealershipBG);
+		gbcC.insets = new Insets(5,0,0,0);
+		gbcC.gridx = 1;
+		gbcC.gridwidth = 1;
+		gbcC.gridy = 4;
+		gbcC.weightx = .6;
+		gbcC.weighty= .6;
+		controlPanel.add(dealershipBG,gbcC);
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		
 		
@@ -124,6 +150,21 @@ public class dealerShipInfoPage{
 		//all dealershipInfo
 		String[] dealer = controller.getDealershipInfo();
 		
+		gbcC.anchor = GridBagConstraints.NORTHEAST;
+		gbcC.fill = GridBagConstraints.NONE; 
+		gbcC.insets = new Insets(0,0,0,0);
+		gbcC.gridx = 0;
+		gbcC.gridwidth = 3;
+		gbcC.gridy = 0;
+		gbcC.weightx = 0;
+		gbcC.weighty= 0;
+		controlPanel.add(pageMenuDD,gbcC);
+		
+		gbcC.anchor = GridBagConstraints.NORTH;
+		gbcC.fill = GridBagConstraints.BOTH;
+		gbcC.gridx = 0;
+		gbcC.gridy = 0;
+		controlPanel.add(carImage,gbcC);
 		
 		//delete button///////////////////////////////////////////////////////////////////////////////
 		JButton deleteDealer = new JButton("Delete Dealership");
@@ -170,7 +211,7 @@ public class dealerShipInfoPage{
 		gbcF.ipady = 0;
 		//gbcI.weighty = .4;
 		gbcI.fill = GridBagConstraints.BOTH;
-		gbcI.insets = new Insets(5,0,0,0);
+		gbcI.insets = new Insets(-5,0,0,0);
 		dealershipBG.add(inventoryListScrollPane, gbcI);
 		dealerMainFrame.setContentPane(controlPanel);
 		dealerMainFrame.setVisible(true);
