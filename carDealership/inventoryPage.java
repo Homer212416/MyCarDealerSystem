@@ -91,6 +91,7 @@ public class inventoryPage{
 		controlPanel.setLayout(layout);	
 		gbcC = new GridBagConstraints();
 		
+		
 		JLabel carImage = new JLabel("");
 		carImage.setBackground(Color.BLACK);
 		carImage.setOpaque(true);
@@ -277,7 +278,6 @@ public class inventoryPage{
 				String searchString = searchBar.getText();
 				
 				controller.search(searchString);
-				controller.getFilterDisplay();
 			}
 		};
 		MagButton.addActionListener(searchListen);
@@ -365,7 +365,6 @@ public class inventoryPage{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					controller.sortMenuSelect(sortMenu.getSelectedIndex());
-					controller.getFilterDisplay();
 				}
 			});
 		/////////////////////////////////////////////////////////////////
@@ -674,13 +673,13 @@ public class inventoryPage{
 		
 		myMouseListener mml = new myMouseListener();
 		
-		int numberToShow = controller.getNumbertoDisplay();
+		//int numberToShow = controller.getNumbertoDisplay();
 		//create an panel for each vehicle that should be shown and name///////////////////////
 		
 		
-		JPanel[] vehiclePanelNames= new JPanel[numberToShow];
+		JPanel[] vehiclePanelNames= new JPanel[controller.getNumbertoDisplay()];
 		//System.out.println(numberToShow);
-		for (int i = 0; i < numberToShow; i++) {
+		for (int i = 0; i < controller.getNumbertoDisplay(); i++) {
 			String num = Integer.toString(i);
 			JPanel vehicle = new JPanel();
 			//add each panel to the array
@@ -690,7 +689,7 @@ public class inventoryPage{
 		}
 		
 		String[] vehicles = controller.getAllDisplayInfo();
-		for (int i = 0; i < numberToShow ; i++) {
+		for (int i = 0; i < controller.getNumbertoDisplay() -1 ; i++) {
 			//set standard layout for each panel/////
 			vehiclePanelNames[i].setBackground(Color.WHITE);
 			vehiclePanelNames[i].setLayout(new GridBagLayout());
@@ -876,11 +875,13 @@ public class inventoryPage{
 					if(editS){
 						JOptionPane.showMessageDialog(null, "Vehicle edited successfully.");
 						controlPanel.remove(inventoryBG);
+						controlPanel.remove(filterBG);
 						controlPanel.validate();
 						controlPanel.repaint();
 						invMainFrame.validate();
+						
 						refreshInventory();
-					}
+					}else{System.out.println("edit error");}
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -899,6 +900,7 @@ public class inventoryPage{
 				return;
 			}
 			id = Integer.parseInt(idString);
+			System.out.println("sell" + controller.vehicleExsist(id));
 			if(controller.vehicleExsist(id)){
 				buyerName = JOptionPane.showInputDialog(null, "Enter the buyer's name:");
 				buyerContact = JOptionPane.showInputDialog(null, "Enter the buyer's contact:");
@@ -908,7 +910,7 @@ public class inventoryPage{
 			if (controller.sellVehicle(vehicle, buyerName, buyerContact)) {
 				JOptionPane.showMessageDialog(null, "Vehicle sold successfully.");
 				controlPanel.remove(inventoryBG);
-				controlPanel.remove(filterScroll);
+				controlPanel.remove(filterBG);
 				controlPanel.validate();
 				controlPanel.repaint();
 				invMainFrame.validate();
@@ -928,7 +930,7 @@ public class inventoryPage{
 				return;
 			}
 			int id = Integer.parseInt(idString);
-
+			System.out.println("remove" + controller.vehicleExsist(id));
 			if (controller.vehicleExsist(id) == false) {
 				JOptionPane.showMessageDialog(null, "Vehicle not found!");
 			} else {
@@ -937,17 +939,17 @@ public class inventoryPage{
 						"Are you sure you want to delete this vehicle\nwith id: " + id, "Confirm Deletion",
 						JOptionPane.YES_NO_OPTION);
 				if (confirm == JOptionPane.YES_OPTION) {
-					/* if (Main.m_dealership.removeVehicle(vehicle)) {
+					if (controller.removeVehicle(id)) {
 						JOptionPane.showMessageDialog(null, "Vehicle removed successfully.");
 						controlPanel.remove(inventoryBG);
-						controlPanel.remove(filterScroll);
+						controlPanel.remove(filterBG);
 						controlPanel.validate();
 						controlPanel.repaint();
 						invMainFrame.validate();
 						refreshInventory();
 					} else {
 						JOptionPane.showMessageDialog(null, "Couldn't remove vehicle.");
-					} */
+					}
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -995,16 +997,14 @@ public class inventoryPage{
 
 			String type = carTypeField.getText();
 
-			if (controller.addVehicle(new Car(make, model, color, year, price, type))){
+			if (controller.addCar(make, model, color, year, (int) price, type)){
 				JOptionPane.showMessageDialog(null, "Car has been added successfully.");
-				//Main.m_dealership.addVehicle(new Car("BMW", "accord", "red", 2012, 8000, "4 door"));
 				controlPanel.remove(inventoryBG);
-				controlPanel.remove(filterScroll);
+				controlPanel.remove(filterBG);
 				controlPanel.validate();
 				controlPanel.repaint();
 				invMainFrame.validate();
 				refreshInventory();
-				//System.out .println("reload");
 			}else{
 			JOptionPane.showMessageDialog(null, "Sorry, the car has not been added.");}
 		}
@@ -1052,10 +1052,10 @@ public class inventoryPage{
 
 			String handlebarType = handlebarTypeField.getText();
 
-			if (Main.m_dealership.addVehicle(new Motorcycle(make, model, color, year, price, handlebarType))){
+			if (controller.addMotorcycle(make, model, color, year, (int) price, handlebarType)){
 				JOptionPane.showMessageDialog(null, "Motorcycle has been added successfully.");
 				controlPanel.remove(inventoryBG);
-				controlPanel.remove(filterScroll);
+				controlPanel.remove(filterBG);
 				controlPanel.validate();
 				controlPanel.repaint();
 				invMainFrame.validate();
