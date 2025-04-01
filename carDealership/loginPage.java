@@ -53,27 +53,40 @@ public class loginPage{
 		controlPanel.setBackground(new Color(230, 230, 230));
 		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		controlPanel.setBounds(0, 0, 300, 400);
-		controlPanel.setLayout(null);
+		controlPanel.setLayout(new GridBagLayout());
+		GridBagLayout layoutC = new GridBagLayout();
+		controlPanel.setLayout(layoutC);
+		GridBagConstraints gbcC = new GridBagConstraints();
 		
 		//header car Image
 		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setBackground(Color.RED);
+		lblNewLabel_1.setBackground(Color.BLACK);
 		lblNewLabel_1.setOpaque(true);
 		Image carIconImage = (Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/bg.jpg")));
 		Image newCarImage = carIconImage.getScaledInstance(300, 168,Image.SCALE_DEFAULT);
 		lblNewLabel_1.setIcon(new ImageIcon(newCarImage));
-		lblNewLabel_1.setBounds(0, -68, 300, 168);
-		controlPanel.add(lblNewLabel_1);
+		//lblNewLabel_1.setBounds(0, -68, 300, 168);
+		gbcC.anchor = GridBagConstraints.NORTH;
+		gbcC.fill = GridBagConstraints.HORIZONTAL;
+		gbcC.insets = new Insets(-68,0,0,0);
+		gbcC.gridx = 0;
+		gbcC.gridy = 0;
+		controlPanel.add(lblNewLabel_1,gbcC);
 		
 		//panel to hold all labels and text boxes
 		JPanel gridA = new JPanel();
 		gridA.setBackground(new Color(230, 230, 230));
-		gridA.setBounds(0, 100, 280, 250);
+		//gridA.setBounds(0, 100, 280, 250);
 		gridA.setLayout(new GridBagLayout());
 		GridBagLayout layoutA = new GridBagLayout();
 		gridA.setLayout(layoutA);	
 		GridBagConstraints gbcA = new GridBagConstraints();
-		controlPanel.add(gridA);
+		gbcC.fill = GridBagConstraints.BOTH;
+		gbcC.gridx = 0;
+		gbcC.gridy = 1;
+		gbcC.weighty = .1;
+		gbcC.weightx = .1;
+		controlPanel.add(gridA,gbcC);
 		
 		JLabel loginLabel = new JLabel("Login to your account:");  
 		loginLabel.setFont(new Font("HP Simplified Hans", Font.PLAIN, 18));
@@ -162,7 +175,8 @@ public class loginPage{
 		controlPanel.setLayout(new GridLayout());
 		
 		GridBagLayout layout = new GridBagLayout();
-		controlPanel.setLayout(null);	
+		controlPanel.setLayout(layout);	
+		GridBagConstraints gbcC = new GridBagConstraints();
 		
 		JPanel announcementBG = new JPanel();
 		announcementBG.setBackground(Color.RED);
@@ -171,7 +185,11 @@ public class loginPage{
 		announcementBG.setLayout(layoutA);
 		GridBagConstraints gbcA = new GridBagConstraints();
 		announcementBG.setBounds(0, 0, 300, 50);
-		controlPanel.add(announcementBG);
+		gbcC.anchor = GridBagConstraints.NORTH;
+		gbcC.fill = GridBagConstraints.HORIZONTAL;
+		gbcC.gridx = 0;
+		gbcC.gridy = 0;
+		controlPanel.add(announcementBG,gbcC);
 		
 		JPanel infoBG = new JPanel();
 		infoBG.setBackground(new Color(230, 230, 230));
@@ -180,7 +198,12 @@ public class loginPage{
 		infoBG.setLayout(layoutI);
 		infoBG.setBounds(10, 50, 290, 250);
 		GridBagConstraints gbcI = new GridBagConstraints();
-		controlPanel.add(infoBG);
+		gbcC.fill = GridBagConstraints.BOTH;
+		gbcC.gridx = 0;
+		gbcC.gridy = 1;
+		gbcC.weighty = .1;
+		gbcC.weightx = .1;
+		controlPanel.add(infoBG,gbcC);
 		
 		JTextArea announcement = new JTextArea(2, 20);
 		announcement.setForeground(Color.BLACK);
@@ -294,9 +317,9 @@ public class loginPage{
 		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		controlPanel.setBounds(0, 0, 315, 335);
 		controlPanel.setLayout(new GridLayout());
-		
 		GridBagLayout layout = new GridBagLayout();
-		controlPanel.setLayout(null);	
+		controlPanel.setLayout(layout);	
+		GridBagConstraints gbcC = new GridBagConstraints();
 		
 		JPanel announcementBG = new JPanel();
 		announcementBG.setBackground(Color.RED);
@@ -306,6 +329,11 @@ public class loginPage{
 		GridBagConstraints gbcA = new GridBagConstraints();
 		announcementBG.setBounds(0, 0, 300, 50);
 		controlPanel.add(announcementBG);
+		gbcC.anchor = GridBagConstraints.NORTH;
+		gbcC.fill = GridBagConstraints.HORIZONTAL;
+		gbcC.gridx = 0;
+		gbcC.gridy = 0;
+		controlPanel.add(announcementBG,gbcC);
 		
 		JPanel infoBG = new JPanel();
 		infoBG.setBackground(new Color(230, 230, 230));
@@ -314,7 +342,12 @@ public class loginPage{
 		infoBG.setLayout(layoutI);
 		infoBG.setBounds(10, 50, 290, 250);
 		GridBagConstraints gbcI = new GridBagConstraints();
-		controlPanel.add(infoBG);
+		gbcC.fill = GridBagConstraints.BOTH;
+		gbcC.gridx = 0;
+		gbcC.gridy = 1;
+		gbcC.weighty = .1;
+		gbcC.weightx = .1;
+		controlPanel.add(infoBG,gbcC);
 		
 		JTextArea announcement = new JTextArea(2, 20);
 		announcement.setForeground(Color.BLACK);

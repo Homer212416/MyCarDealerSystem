@@ -24,10 +24,15 @@ public class pastSalesPage{
 	private JLabel statusLabel;
 	private JPanel controlPanel;
 	private pastSalesPageController controller;
+	private static Image newCarHeaderImage;
+	private static Image carHeaderImage;
 	
 
 	public pastSalesPage(pastSalesPageController controller){
 		this.controller = controller;
+		carHeaderImage = Toolkit.getDefaultToolkit().getImage(dealerShipInfoPage.class.getResource("/images/backgroundd.jpg"));
+		newCarHeaderImage = carHeaderImage.getScaledInstance(300, 150,Image.SCALE_DEFAULT);
+		
 		prepareInventoryGUI();
 	}
 	public static void main(String[] args){
@@ -52,14 +57,17 @@ public class pastSalesPage{
 		controlPanel.setLayout(new GridLayout());
 		
 		GridBagLayout layout = new GridBagLayout();
-		controlPanel.setLayout(null);	
+		controlPanel.setLayout(layout);	
+		GridBagConstraints gbcC = new GridBagConstraints();
 		
 		JLabel carImage = new JLabel("");
 		carImage.setBackground(Color.BLACK);
 		carImage.setOpaque(true);
-		carImage.setIcon(new ImageIcon(dealerShipInfoPage.class.getResource("/images/backgroundd.jpg")));
+		carImage.setIcon(new ImageIcon(newCarHeaderImage));
 		carImage.setBounds(0, -50, 650, 200);
-		controlPanel.add(carImage);
+		gbcC.anchor = GridBagConstraints.NORTH;  
+		gbcC.fill = GridBagConstraints.BOTH;
+		
 		
 		JPanel searchBarBG = new JPanel();
 		searchBarBG.setBackground(Color.GRAY);
@@ -77,7 +85,12 @@ public class pastSalesPage{
 		filterBG.setLayout(layoutF);
 		filterBG.setBounds(450, 175, 200, 450);
 		GridBagConstraints gbcF = new GridBagConstraints();
-		controlPanel.add(filterBG);
+		gbcC.anchor = GridBagConstraints.NORTH;  
+		gbcC.gridx = 2;
+		gbcC.gridwidth = 1;
+		gbcC.gridy = 4;
+		gbcC.weightx = .1;
+		controlPanel.add(filterBG,gbcC);
 		
 		JPanel displayBG = new JPanel();
 		displayBG.setBackground(new Color(230, 230, 230));
@@ -86,7 +99,10 @@ public class pastSalesPage{
 		displayBG.setLayout(layoutD);
 		displayBG.setBounds(0, 150, 450, 30);
 		GridBagConstraints gbcD = new GridBagConstraints();
-		controlPanel.add(displayBG);
+		gbcC.gridx = 1;
+		gbcC.gridwidth = 2;
+		gbcC.gridy = 3;
+		controlPanel.add(displayBG,gbcC);
 		
 		JPanel inventoryBG = new JPanel();
 		inventoryBG.setBackground(Color.WHITE);
@@ -95,7 +111,13 @@ public class pastSalesPage{
 		inventoryBG.setLayout(layoutI);
 		GridBagConstraints gbcI = new GridBagConstraints();
 		inventoryBG.setBounds(10, 175, 440, 430);
-		controlPanel.add(inventoryBG);
+		gbcC.insets = new Insets(5,0,0,0);
+		gbcC.gridx = 0;
+		gbcC.gridwidth = 1;
+		gbcC.gridy = 4;
+		gbcC.weightx = .6;
+		gbcC.weighty= .6;
+		controlPanel.add(inventoryBG,gbcC);
 		
 		//page menu in upper right hand corner
 		JComboBox pageMenuDD = new JComboBox();
@@ -112,35 +134,21 @@ public class pastSalesPage{
 				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), salesMainFrame);
 			}
 		});
-
+		gbcC.anchor = GridBagConstraints.NORTHEAST;
+		gbcC.fill = GridBagConstraints.NONE; 
+		gbcC.insets = new Insets(0,0,0,0);
+		gbcC.gridx = 0;
+		gbcC.gridwidth = 3;
+		gbcC.gridy = 0;
+		gbcC.weightx = 0;
+		gbcC.weighty= 0;
+		controlPanel.add(pageMenuDD,gbcC);
 		
-		
-		/* //display options
-		gbcD.anchor = GridBagConstraints.NORTHWEST;
-		final JCheckBox dAll = new JCheckBox("Display All");
-		dAll.setBackground(new Color(230, 230, 230));
-		final JCheckBox dMoto = new JCheckBox("Motocycles Only");
-		dMoto.setBackground(new Color(230, 230, 230));
-		final JCheckBox dCar = new JCheckBox("Cars Only");
-		dCar.setBackground(new Color(230, 230, 230));
-		gbcD.weightx = .5;
-		gbcD.gridwidth = 1;
-		gbcD.gridx = 0;
-		gbcD.gridy = 0;
-		//displayBG.add(dAll, gbcD);
-		gbcD.insets = new Insets(0,-70,0,0);
-		gbcD.weightx = .9;
-		gbcD.gridx = 1;
-		gbcD.gridy = 0;
-		//displayBG.add(dMoto, gbcD);
-		gbcD.insets = new Insets(0,-115,0,0);
-		gbcD.weightx= .9;
-		gbcD.gridx = 2;
-		gbcD.gridy = 0;
-		gbcD.ipady = 0;
-		gbcD.ipadx = 10;
-		//displayBG.add(dCar, gbcD);
- */
+		gbcC.anchor = GridBagConstraints.NORTH;
+		gbcC.fill = GridBagConstraints.BOTH;
+		gbcC.gridx = 0;
+		gbcC.gridy = 0;
+		controlPanel.add(carImage,gbcC);
 		//sales list
 		
 		final DefaultListModel salesModel = new DefaultListModel();

@@ -42,10 +42,16 @@ public class accountManagePage{
 	private accountManagePageController controller;
 	private JToggleButton current;
 	private String deleteuserID;
+	private GridBagConstraints gbcC;
+	private static Image carHeaderImage;
+	private static Image newCarHeaderImage;
 	
 
 	public accountManagePage(accountManagePageController controller){
 		this.controller = controller;
+		carHeaderImage = (Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/backgroundd.jpg")));
+		newCarHeaderImage = carHeaderImage.getScaledInstance(300, 150,Image.SCALE_DEFAULT);
+		
 		prepareInventoryGUI();
 	}
 	
@@ -73,14 +79,14 @@ public class accountManagePage{
 		controlPanel.setLayout(new GridLayout());
 		
 		GridBagLayout layout = new GridBagLayout();
-		controlPanel.setLayout(null);	
+		controlPanel.setLayout(layout);
+		gbcC = new GridBagConstraints();		
 		
 		JLabel carImage = new JLabel("");
 		carImage.setBackground(Color.BLACK);
 		carImage.setOpaque(true);
-		carImage.setIcon(new ImageIcon(accountManagePage.class.getResource("/images/backgroundd.jpg")));
-		carImage.setBounds(0, -50, 650, 200);
-		controlPanel.add(carImage);
+		carImage.setIcon(new ImageIcon(newCarHeaderImage));
+		
 		
 		JPanel searchBarBG = new JPanel();
 		searchBarBG.setBackground(Color.GRAY);
@@ -89,7 +95,14 @@ public class accountManagePage{
 		searchBarBG.setLayout(layoutS);
 		GridBagConstraints gbcS = new GridBagConstraints();
 		searchBarBG.setBounds(0, 150, 650, 50);
-		controlPanel.add(searchBarBG);
+		gbcC.anchor = GridBagConstraints.NORTH;
+		gbcC.fill = GridBagConstraints.BOTH;
+		gbcC.insets = new Insets(0,0,0,0);
+		gbcC.gridx = 0;
+		gbcC.gridy = 1;
+		gbcC.gridwidth = 2;
+		gbcC.weighty =.02;
+		controlPanel.add(searchBarBG,gbcC);
 		
 		JPanel displayBG = new JPanel();
 		displayBG.setBackground(new Color(230, 230, 230));
@@ -98,7 +111,11 @@ public class accountManagePage{
 		displayBG.setLayout(layoutD);
 		displayBG.setBounds(0, 200, 650, 30);
 		GridBagConstraints gbcD = new GridBagConstraints();
-		controlPanel.add(displayBG);
+		gbcC.gridx = 0;
+		gbcC.gridy = 2;
+		gbcC.weighty = 0;
+		gbcC.gridwidth = 1;
+		controlPanel.add(displayBG,gbcC);
 		//////////////////////////////////////////////////////////////////////////////////////////
 		
 		
@@ -117,6 +134,18 @@ public class accountManagePage{
 				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), accountMainFrame);
 			}
 		});
+		gbcC.anchor = GridBagConstraints.NORTHEAST;
+		gbcC.fill = GridBagConstraints.NONE; 
+		gbcC.gridx = 0;
+		gbcC.gridwidth = 2;
+		gbcC.gridy = 0;
+		controlPanel.add(pageMenuDD,gbcC);
+		
+		gbcC.anchor = GridBagConstraints.NORTH;
+		gbcC.fill = GridBagConstraints.HORIZONTAL;
+		gbcC.gridx = 0;
+		gbcC.gridy = 0;
+		controlPanel.add(carImage,gbcC);
 		//add user Button/////////////////////////////////////////////////////////////////////////////////
 		JButton addUser = new JButton("Add New User");
 		addUser.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
@@ -137,37 +166,34 @@ public class accountManagePage{
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		//header label for user info///////////////////////////////////////////////////////////////
-		gbcD.insets = new Insets(5, 15,5, 85);
-		gbcD.anchor = GridBagConstraints.WEST;
-		JLabel fNameL = new JLabel("Name ");
+		gbcD.insets = new Insets(0, 5,0, 0);
+		gbcD.anchor = GridBagConstraints.CENTER;
+		gbcD.fill = GridBagConstraints.HORIZONTAL;
+		JLabel fNameL = new JLabel("Name        ");
 		gbcD.gridx = 0;
 		gbcD.gridy = 0;
+		gbcD.weightx = .25;
 		displayBG.add(fNameL, gbcD);
 		
-		JLabel lNameL = new JLabel("UserName ");
+		JLabel lNameL = new JLabel("UserName");
 		gbcD.gridx = 1;
 		gbcD.gridy = 0;
 		displayBG.add(lNameL, gbcD);
 		
-		gbcD.insets = new Insets(5,-10,5, 55);
-		JLabel jobTitleL = new JLabel("Job Title ");
+		
+		JLabel jobTitleL = new JLabel("Job Title  ");
 		gbcD.gridx = 2;
 		gbcD.gridy = 0;
-		
 		displayBG.add(jobTitleL, gbcD);
 		
-		gbcD.insets = new Insets(5,25,5,0);
-		JLabel emailL = new JLabel("Email ");
+	
+		JLabel emailL = new JLabel("Email       ");
 		gbcD.gridx = 3;
 		gbcD.gridy = 0;
-		gbcD.weightx = .1;
 		displayBG.add(emailL, gbcD);
 		
-		gbcD.insets = new Insets(5,0,5, 5);
-		gbcD.fill = GridBagConstraints.HORIZONTAL;
-		JLabel passwordL = new JLabel("Password ");
-		gbcD.gridx = 4;
-		gbcD.gridy = 0;
+		//gbcD.insets = new Insets(5,0,5, 5);
+	
 		////////////////////////////////////////////////////////////////////////////////////////////
 		
 		populateUsers();//need to refresh users if one is delete so it's in its own method
@@ -186,7 +212,14 @@ public class accountManagePage{
 		inventoryBG.setLayout(layoutI);
 		GridBagConstraints gbcI = new GridBagConstraints();
 		inventoryBG.setBounds(10, 230, 540, 430);
-		controlPanel.add(inventoryBG);
+		gbcC.insets = new Insets(00,0,0,0);
+		gbcC.fill = GridBagConstraints.BOTH; 
+		gbcC.gridwidth = 1;
+		gbcC.gridx = 0;
+		gbcC.gridy = 3;
+		gbcC.weightx = .9;
+		gbcC.weighty = .9;
+		controlPanel.add(inventoryBG,gbcC);
 		
 		JPanel filterBG = new JPanel();
 		filterBG.setBackground(new Color(230, 230, 230));
@@ -195,7 +228,11 @@ public class accountManagePage{
 		filterBG.setLayout(layoutF);
 		filterBG.setBounds(550, 225, 90, 435);
 		GridBagConstraints gbcF = new GridBagConstraints();
-		controlPanel.add(filterBG);
+		gbcC.gridx = 1;
+		gbcC.gridy = 3;
+		gbcC.weightx = .1;
+		gbcC.weighty = .9;
+		controlPanel.add(filterBG,gbcC);
 		//////////////////////////////////////////////////////////////////////////////////////////
 		
 		//populate user information//////////////////////////////////////////////////////////////
@@ -251,10 +288,10 @@ public class accountManagePage{
 			
 			int userGridX = 0;
 			int editGridX = 0;
-			gbcI.insets = new Insets(5, 5,5, 5);
+			gbcI.insets = new Insets(5, 5,0, 0);
 			gbcI.fill = GridBagConstraints.HORIZONTAL;
 			gbcI.anchor = GridBagConstraints.NORTHWEST;
-			gbcI.weightx = .8;
+			gbcI.weightx = .25;
 			
 			
 			fNameT = new JTextField(user[0], 15);
@@ -278,31 +315,32 @@ public class accountManagePage{
 			gbcI.gridy = userGridY;
 			inventoryBG.add(jobTitleT, gbcI);
 			
-			emailT = new JTextField(user[3], 30);
+			emailT = new JTextField(user[3], 15);
 			emailT.setName(user[4] +"_email");
 			emailT.setEditable(false);
 			gbcI.gridx = userGridX++;
 			gbcI.gridy = userGridY++;
 			
+			
 			//editDelete for each user
 			gbcF.anchor = GridBagConstraints.NORTHWEST;
 			JToggleButton editUser = new JToggleButton("Edit");
 			editUser.setName(user[4] + "_edit");
-			editUser.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
+			editUser.setFont(new Font("HP Simplified Hans", Font.PLAIN, 9));
 			editUser.addActionListener(editListener);
-			//gbcF.fill = GridBagConstraints.HORIZONTAL;
+			gbcF.anchor = GridBagConstraints.NORTHWEST;
 			//gbcF.weighty = .5;
-			gbcF.insets = new Insets(8, 5, 0, 0);
-			gbcF.weightx = .8;
+			gbcF.insets = new Insets(5, 15, 0, 0);
+			gbcF.weightx = .5;
 			editUser.setMargin(new java.awt.Insets(1, 1, 1, 1));
 			gbcF.gridx = editGridX++;
 			gbcF.gridy = userGridY;
 			filterBG.add(editUser, gbcF);
-			
+			gbcF.insets = new Insets(5, -5, 0, 0);
 			JToggleButton deleteUser = new JToggleButton("Delete");
 			deleteUser.setName(user[4] + "_Delete");
 			deleteUser.addActionListener(deleteListener);
-			deleteUser.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
+			deleteUser.setFont(new Font("HP Simplified Hans", Font.PLAIN, 9));
 			deleteUser.setMargin(new java.awt.Insets(1, 1, 1, 1));
 			//gbcF.weighty = .5;
 			gbcF.gridx = editGridX++;
@@ -310,9 +348,9 @@ public class accountManagePage{
 			
 			u++;
 			if(u >= totalUsers){
-				gbcI.weightx = .9;
+				gbcI.weightx = .25;
 				gbcI.weighty = .2;
-				gbcF.weightx = .9;
+				gbcF.weightx = .5;
 				gbcF.weighty = .2;
 			}
 			inventoryBG.add(emailT, gbcI);
