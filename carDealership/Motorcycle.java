@@ -15,7 +15,7 @@ public class Motorcycle extends Vehicle {
 
 	public void displayInfo() {
 		String motorcycleName = make + " " + model + " " + year;
-		System.out.println("ID: " + id);
+
 		System.out.println("Motorcycle: " + motorcycleName);
 		System.out.println("Color: " + color);
 		System.out.println("Handlebar type: " + handlebarType);

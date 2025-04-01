@@ -23,11 +23,11 @@ public class Car extends Vehicle {
 
 	public void displayInfo() {
 		String carName = make + " " + model + " " + year;
-		System.out.println("ID: " + id);
+		/* System.out.println("ID: " + id);
 		System.out.println("Car: " + carName);
 		System.out.println("Color: " + color);
 		System.out.println("Type: " + type);
-		System.out.println("Price: " + price + " SAR");
+		System.out.println("Price: " + price + " SAR") */;
 	}
 
 	public String toString() {

@@ -45,12 +45,15 @@ public class inventoryPage{
 	private static Image carIconImage;
 	private static Image newCarImage;
 	private static Image carHeaderImage;
+	private static Image motoImage;
 	private static Image newCarHeaderImage;
 	public Color bgColor = new Color(230, 230, 230);
 	
 	
 	public inventoryPage(inventoryPageController controller){
 		//this.controller = new inventoryPageController();
+		Image UmotoIconImage = (Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/moto.jpg")));
+		motoImage = UmotoIconImage.getScaledInstance(80, 70,Image.SCALE_DEFAULT);
 		carIconImage = (Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/icon.jpg")));
 		newCarImage = carIconImage.getScaledInstance(80, 70,Image.SCALE_DEFAULT);
 		carHeaderImage = (Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/backgroundd.jpg")));
@@ -700,7 +703,10 @@ public class inventoryPage{
 			
 			//add image to each panel/////////////////////
 			JLabel c1Img = new JLabel("");
-			c1Img.setIcon(new ImageIcon(newCarImage));
+			int index = vehicles[i].indexOf("Handlebar");
+			System.out.println("index is: " + index);
+			if(index != -1){c1Img.setIcon(new ImageIcon(motoImage));}
+			else{c1Img.setIcon(new ImageIcon(newCarImage));}
 			gbcC1.gridx = 0;
 			gbcC1.gridy = 0;
 			gbcC1.anchor = GridBagConstraints.NORTHWEST;
@@ -796,7 +802,6 @@ public class inventoryPage{
 			JPanel editPanel = new JPanel();
 			editPanel.setLayout(new GridLayout(0, 2));
 			if(vehicle.length != 0){
-				System.out.println("type: " + vehicle[6]);
 				if (vehicle[6] == "car") {
 					//all functions in Car.java
 					editPanel.add(new JLabel("Make:"));
@@ -900,7 +905,6 @@ public class inventoryPage{
 				return;
 			}
 			id = Integer.parseInt(idString);
-			System.out.println("sell" + controller.vehicleExsist(id));
 			if(controller.vehicleExsist(id)){
 				buyerName = JOptionPane.showInputDialog(null, "Enter the buyer's name:");
 				buyerContact = JOptionPane.showInputDialog(null, "Enter the buyer's contact:");
@@ -930,7 +934,6 @@ public class inventoryPage{
 				return;
 			}
 			int id = Integer.parseInt(idString);
-			System.out.println("remove" + controller.vehicleExsist(id));
 			if (controller.vehicleExsist(id) == false) {
 				JOptionPane.showMessageDialog(null, "Vehicle not found!");
 			} else {

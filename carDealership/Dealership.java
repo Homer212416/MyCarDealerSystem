@@ -51,7 +51,6 @@ public class Dealership {
 	public String[] getInfoGUI() { // for gui
 		
 		;
-		System.out.println("getInfoGUI Method Ran");
 		/* return "Dealership name: [" + name + "]\nLocation: [" + location + "]\nInventory Size: [" + inventory.length
 				+ "]\n\n" + "Available space: " + (inventory.length - nv) + "\nTotal Cars: " + getTotalCars()
 				+ "\nTotal Motorcycles: " + getTotalMotorcycles() + "\n\nTotal sales profit: " + salesProfit()
@@ -175,8 +174,6 @@ public class Dealership {
 		return nv;
 	}
 	public void displayAll() {
-		System.out.println("Inventory Details:");
-		System.out.println("Total inventory value: " + getInventoryGrossValue());
 		for (int i = 0; i < nv; i++) {
 			System.out.println("-------------------");
 			inventory[i].displayInfo();

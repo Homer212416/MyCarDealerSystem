@@ -47,7 +47,6 @@ public class accountManagePageController{
 				contains = true;
 		}
 		if(contains){
-			System.out.print(contains);
 			if (sel== 1){
 				inventoryPageController inv = new inventoryPageController(userID);
 				mainFrame.dispose();

@@ -119,7 +119,6 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 			int x = 0;
 			while (resultSet.next()) {
 				int ID = resultSet.getInt("ID");
-				System.out.println("ID: " + ID);
 				String make = resultSet.getString("make");
 				String model = resultSet.getString("model");
 				String color = resultSet.getString("color");

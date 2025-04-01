@@ -240,7 +240,6 @@ public class accountManagePage{
 		String[][] users = controller.getAllUsers();
 		int totalUsers = users.length;
 		int u = 0;
-		System.out.println("users: " + totalUsers);
 		userTextBoxes = new HashMap<JToggleButton,ArrayList<JTextField>>();
 
 		//edit button pressed
@@ -254,7 +253,6 @@ public class accountManagePage{
 
 				}if(current == previous){//if they are done editing
 					for(JTextField textBox : textBoxes){
-						//System.out.println(textBox);
 						String userID = String.valueOf(current.getName().charAt(0));
 						textBox.setEditable(false);	
 						String firstName = fNameT.getText();
