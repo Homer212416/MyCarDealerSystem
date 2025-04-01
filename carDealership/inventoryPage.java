@@ -277,6 +277,7 @@ public class inventoryPage{
 				String searchString = searchBar.getText();
 				
 				controller.search(searchString);
+				controller.getFilterDisplay();
 			}
 		};
 		MagButton.addActionListener(searchListen);
@@ -364,6 +365,7 @@ public class inventoryPage{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					controller.sortMenuSelect(sortMenu.getSelectedIndex());
+					controller.getFilterDisplay();
 				}
 			});
 		/////////////////////////////////////////////////////////////////
