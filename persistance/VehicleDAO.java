@@ -111,7 +111,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 	}
 	
 	public String[][] getAllDisplayInfo(){
-		String[][] displayInfo = new String[count][];
+		String[][] displayInfo = new String[getTotalVehiclesInInventory()][];
 		try {
             String query = "SELECT * FROM vehicles";
             ResultSet resultSet = DBManager.getInstance().runQuery(query);
@@ -119,6 +119,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 			int x = 0;
 			while (resultSet.next()) {
 				int ID = resultSet.getInt("ID");
+				System.out.println("ID: " + ID);
 				String make = resultSet.getString("make");
 				String model = resultSet.getString("model");
 				String color = resultSet.getString("color");
@@ -126,7 +127,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
                 int price = resultSet.getInt("price");
                 String carType = resultSet.getString("carType");
 				String handleBarType = resultSet.getString("handleBarType");
-				String[] vehicle = {make, model, color, model, Integer.toString(year), Integer.toString(price), carType, handleBarType}; 
+				String[] vehicle = {Integer.toString(ID), make, model, color, model, Integer.toString(year), Integer.toString(price), carType, handleBarType}; 
 				displayInfo[x] = vehicle;
 				x++;
 			}
@@ -199,10 +200,11 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 			String query = "SELECT * FROM vehicles WHERE ID = " + id + "";
 			ResultSet resultSet = DBManager.getInstance().runQuery(query);
 			while (resultSet.next()){ 
+				
 				exsists = true;
 			}
 		}catch(SQLException e){e.printStackTrace();}
-		
+		System.out.println("DAO" + exsists);
 		return exsists;
 	}
 
@@ -262,6 +264,56 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
         }
 	}
 	
+	public boolean removeVehicle(int id){
+		try{
+            String query = "DELETE FROM vehicles WHERE id = " + id;
+            DBManager.getInstance().runInsert(query);
+            return true;
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
+	
+	public boolean addCar(String make, String model, String color, int year, int price, String type) {
+		try {
+				
+			String query = "INSERT INTO vehicles (make, model, color, year, price,carType, inInventory) VALUES ('"
+                    + make + "', '"
+                    + model + "', '"
+                    + color + "', "
+                    + year + ", "
+                    + price + ", '"
+                    + type + "', '"
+                    + true
+                    + "');";
+            DBManager.getInstance().runInsert(query);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+	
+	public boolean addMotorcycle(String make, String model, String color, int year, int price, String handleBarType) {
+		try {
+				
+			String query = "INSERT INTO vehicles (make, model, color, year, price,handleBarType, inInventory) VALUES ('"
+                    + make + "', '"
+                    + model + "', '"
+                    + color + "', "
+                    + year + ", "
+                    + price + ", '"
+                    + handleBarType + "', '"
+                    + true
+                    + "');";
+            DBManager.getInstance().runInsert(query);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 	
 }
  
