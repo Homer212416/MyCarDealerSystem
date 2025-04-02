@@ -154,12 +154,28 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
     }
 	
 	
-	public String[] getAllMakes(){
-		//return list of allMakes with no duplicates
-		//System.out.println("allmakes");
-		String[] makes = {"Honda", "Mazda"};
-		return(makes);
-	}
+    public String[] getAllMakes() {
+        ArrayList<String> makesList = new ArrayList<>();
+        try {
+            // The SQL query to fetch distinct makes where the vehicle is in inventory
+            String query = "SELECT DISTINCT make FROM vehicles WHERE inInventory = 'true'";
+            
+            // Run the query 
+            ResultSet resultSet = DBManager.getInstance().runQuery(query);
+            
+            // Loop through the result set and add each make to the list
+            while (resultSet.next()) {
+                makesList.add(resultSet.getString("make"));
+            }
+
+            // Convert the ArrayList to an array and return it
+            return makesList.toArray(new String[0]);
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new String[0];  // Return an empty if error
+        }
+    }
 	
 	public static String[] getAllModels(){
 		//return list of all models with no duplicates
@@ -167,10 +183,30 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 		return(models);
 	}
 	
-	public static String[] getAllColors(){
+	public String[] getAllColors(){
 		//return list of all colors with no duplicates
-		String[] colors = {"Red", "Blue"};
-		return(colors);
+				//return list of all colors with no duplicates
+                ArrayList<String> colorsList = new ArrayList<>();
+                try {
+                    // The SQL query to fetch distinct color
+                    String query = "SELECT DISTINCT color FROM vehicles WHERE inInventory = 'true'";
+                    
+                    // Run the query 
+                    ResultSet resultSet = DBManager.getInstance().runQuery(query);
+                    
+                    // Loop through and add to list
+                    while (resultSet.next()) {
+                        colorsList.add(resultSet.getString("color"));
+                    }
+        
+                    // Convert the ArrayList to an array and return 
+                    return colorsList.toArray(new String[0]);
+                    
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return new String[0];  // Return an empty if error
+                }
+            
 	}
 	
 	public static int getMinYear(){
