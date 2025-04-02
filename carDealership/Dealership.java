@@ -134,7 +134,7 @@ public class Dealership {
 			return false;
 		}
 		// Add a sales record for the sold vehicle
-		sales[ns++] = new Sale(vehicle, buyerName, buyerContact, LocalDate.now());
+		//sales[ns++] = new Sale(vehicle, buyerName, buyerContact, LocalDate.now());
 		return true;
 	}
 

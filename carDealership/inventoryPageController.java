@@ -16,6 +16,7 @@ import carDealership.accountManagePageController;
 import carDealership.dealerShipInfoPageController;
 import carDealership.loginPageController;
 import carDealership.pastSalesPageController;
+import persistance.SaleDAO;
 
 import java.sql.SQLException;
 import java.sql.*;
@@ -28,6 +29,7 @@ public class inventoryPageController{
 	private inventoryPage inventory;
 	private User user;
 	private VehicleDAO vehicleDAO;
+	private SaleDAO saleDAO;
 	private int[] security;
 	private int editSecurity;
 	private int userID;
@@ -59,6 +61,7 @@ public inventoryPageController(int ID){
 				System.out.println(e.getMessage());
 			}
 			this.vehicleDAO = new VehicleDAO();
+			this.saleDAO = new SaleDAO();
 			inventory = new inventoryPage(this);
 		}
 	
@@ -386,8 +389,10 @@ public int getNumbertoDisplay(){
 	}
 	
 	public boolean sellVehicle(int vehicle, String buyerName, String buyerContact){
-		boolean sold = vehicleDAO.sellVehicle(vehicle);
-		return sold;
+		boolean sold = saleDAO.insert(vehicle,buyerName, buyerContact);
+		boolean notin = false;
+		if(sold){notin = vehicleDAO.sellVehicle(vehicle);}
+		return notin;
 		
 	}
 	

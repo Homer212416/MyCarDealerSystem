@@ -90,7 +90,7 @@ public class pastSalesPage{
 		gbcC.gridwidth = 1;
 		gbcC.gridy = 4;
 		gbcC.weightx = .1;
-		controlPanel.add(filterBG,gbcC);
+		//controlPanel.add(filterBG,gbcC);
 		
 		JPanel displayBG = new JPanel();
 		displayBG.setBackground(new Color(230, 230, 230));
@@ -102,7 +102,7 @@ public class pastSalesPage{
 		gbcC.gridx = 1;
 		gbcC.gridwidth = 2;
 		gbcC.gridy = 3;
-		controlPanel.add(displayBG,gbcC);
+		//controlPanel.add(displayBG,gbcC);
 		
 		JPanel inventoryBG = new JPanel();
 		inventoryBG.setBackground(Color.WHITE);
@@ -153,17 +153,27 @@ public class pastSalesPage{
 		
 		final DefaultListModel salesModel = new DefaultListModel();
 
+		String[] columnNames = {"Vehicle ID", "Buyer", "Contact", "Date"};
 
-		String[] sales = controller.getAllSales();
-		for(String sale : sales){
-			salesModel.addElement(sale);
-		}
+        // Parse the sale strings to split into 4 columns
+        String[] sales = controller.getAllSales();
+        String[][] tableData = new String[sales.length][4];
 
-		final JList inventoryList = new JList(salesModel);
-		inventoryList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		inventoryList.setSelectedIndex(0);
-		inventoryList.setVisibleRowCount(19);
-		JScrollPane inventoryListScrollPane = new JScrollPane(inventoryList);       
+        for (int i = 0; i < sales.length; i++) {
+            String sale = sales[i];
+            String[] parts = sale.split(", ");
+            for (int j = 0; j < parts.length; j++) {
+                String[] keyValue = parts[j].split(": ");
+                if (keyValue.length == 2) {
+                    tableData[i][j] = keyValue[1];
+                }
+            }
+        }
+
+        JTable salesTable = new JTable(tableData, columnNames);
+        salesTable.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(salesTable);
+		inventoryBG.add(scrollPane);
 		gbcI.gridx = 0;
 		gbcI.gridy = 1;
 		gbcI.gridwidth = 3;
@@ -172,9 +182,10 @@ public class pastSalesPage{
 		gbcF.ipady = 0;
 		//gbcI.weighty = .4;
 		gbcI.fill = GridBagConstraints.BOTH;
-		gbcI.insets = new Insets(5,0,0,0);
-		inventoryBG.add(inventoryListScrollPane, gbcI);
+		inventoryBG.add(scrollPane, gbcI);
 		salesMainFrame.setContentPane(controlPanel);
 		salesMainFrame.setVisible(true);
+		
+	
 	}
 }

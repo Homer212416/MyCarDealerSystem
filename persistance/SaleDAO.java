@@ -1,13 +1,14 @@
 package persistance;
 
+import carDealership.Sale;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-
-import carDealership.Sale;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class SaleDAO implements DAOInterface<Sale> {
-
 
     public SaleDAO() {
         createTable();
@@ -27,14 +28,14 @@ public class SaleDAO implements DAOInterface<Sale> {
         }
     }
 
-	
     @Override
     public boolean insert(Sale sale) {
         try {
-            String query = "INSERT INTO sales (vehicleID, buyerName, buyerContact) VALUES ('"
+            String query = "INSERT INTO sales (vehicleID, buyerName, buyerContact, saleDate) VALUES ('"
                     + sale.getVehicleID() + "', '"
                     + sale.getBuyerName() + "', '"
-                    + sale.getBuyerContact() + "');";
+                    + sale.getBuyerContact() + "', '"
+                    + sale.getSaleDate().toString() + "');";
             DBManager.getInstance().runInsert(query);
             return true;
         } catch (SQLException e) {
@@ -42,7 +43,23 @@ public class SaleDAO implements DAOInterface<Sale> {
             return false;
         }
     }
-
+	
+    public boolean insert(int ID, String buyerName, String buyerContact) {
+        LocalDate date = LocalDate.now();
+		try {
+            String query = "INSERT INTO sales (vehicleID, buyerName, buyerContact, saleDate) VALUES ("
+                    + ID + ", '"
+                    + buyerName + "', '"
+                    + buyerContact + "', '"
+                    + date.toString() + "');";
+            DBManager.getInstance().runInsert(query);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+	
     @Override
     public ArrayList<Sale> getAll() {
         try {
@@ -50,13 +67,12 @@ public class SaleDAO implements DAOInterface<Sale> {
             ResultSet resultSet = DBManager.getInstance().runQuery(query);
             ArrayList<Sale> sales = new ArrayList<>();
             while (resultSet.next()) {
-                //currently sale does not use VehicleID it just takes vehicle
-				/*
-				sales.add(new Sale(
+                sales.add(new Sale(
                         resultSet.getInt("vehicleId"),
                         resultSet.getString("buyerName"),
-                        resultSet.getString("buyerContact")));
-						*/
+                        resultSet.getString("buyerContact"),
+                        LocalDate.parse(resultSet.getString("saleDate"))
+                ));
             }
             return sales;
         } catch (SQLException e) {
@@ -65,4 +81,20 @@ public class SaleDAO implements DAOInterface<Sale> {
         }
     }
 
+    public void keepOnlyOneTestSale() {
+        /*try {	
+            String deleteQuery = "ELETE FROM sales
+                WHERE id NOT IN (
+                    SELECT id FROM sales
+                    WHERE buyerName = 'Test Buyer' AND buyerContact = 'buyer@email.com'
+                    ORDER BY id ASC
+                    LIMIT 1
+                );";
+            DBManager.getInstance().runInsert(deleteQuery);
+            System.out.println(" Cleaned up duplicate test sales.");
+			
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }*/
+    }
 }

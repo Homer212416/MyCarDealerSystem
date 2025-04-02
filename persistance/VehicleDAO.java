@@ -99,7 +99,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 
 		try{
 			
-			ResultSet rs3 = DBManager.getInstance().runQuery("SELECT COUNT(*) AS count FROM vehicles");
+			ResultSet rs3 = DBManager.getInstance().runQuery("SELECT COUNT(*) AS count FROM vehicles WHERE inInventory = 'true'");
 			while(rs3.next()){
 				this.count = rs3.getInt("count");
 				
@@ -115,7 +115,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 	public String[][] getAllDisplayInfo(){
 		String[][] displayInfo = new String[getTotalVehiclesInInventory()][];
 		try {
-            String query = "SELECT * FROM vehicles";
+            String query = "SELECT * FROM vehicles WHERE inInventory = 'true'";
             ResultSet resultSet = DBManager.getInstance().runQuery(query);
             ArrayList<Vehicle> vehicles = new ArrayList<>();
 			int x = 0;
@@ -129,7 +129,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
                 String carType = resultSet.getString("carType");
 				String inInventoryValue = resultSet.getString("inInventory");
 				boolean inInventory = "true".equalsIgnoreCase(inInventoryValue);
-				System.out.println(inInventory); 
+				System.out.println("there is : " + inInventory); 
 				String handleBarType = resultSet.getString("handleBarType");
 				String[] vehicle = {Integer.toString(ID), make, model, color, model, Integer.toString(year), Integer.toString(price), carType, handleBarType}; 
 				displayInfo[x] = vehicle;
