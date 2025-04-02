@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.util.Date;
 
 import carDealership.Car;
 import carDealership.Main;
@@ -381,81 +382,13 @@ public int getNumbertoDisplay(){
 	}
 	
 	public void getVehicleType(Vehicle vehicle, JPanel editPanel){
-		//currently in inventoryPage
-		//move all nonUI elements here
-		/*
-		JTextField makeField = new JTextField();
-		JTextField modelField = new JTextField();
-		JTextField colorField = new JTextField();
-		JTextField yearField = new JTextField();
-		JTextField priceField = new JTextField();
-		JTextField typeField = new JTextField();
-		JTextField handlebarField = new JTextField();
-			
-		if (vehicle instanceof Car) {
-				Car car = (Car) vehicle;
-
-				editPanel.add(new JLabel("Make:"));
-				makeField.setText(car.getMake());
-				editPanel.add(makeField);
-
-				editPanel.add(new JLabel("Model:"));
-				modelField.setText(car.getModel());
-				editPanel.add(modelField);
-
-				editPanel.add(new JLabel("Color:"));
-				colorField.setText(car.getColor());
-				editPanel.add(colorField);
-
-				editPanel.add(new JLabel("Year:"));
-				yearField.setText(String.valueOf(car.getYear()));
-				editPanel.add(yearField);
-
-				editPanel.add(new JLabel("Price:"));
-				priceField.setText(String.valueOf(car.getPrice()));
-				editPanel.add(priceField);
-
-				editPanel.add(new JLabel("Type:"));
-				typeField.setText(car.getType());
-				editPanel.add(typeField);
-
-			} else if (vehicle instanceof Motorcycle) {
-				Motorcycle motorcycle = (Motorcycle) vehicle;
-
-				editPanel.add(new JLabel("Make:"));
-				makeField.setText(motorcycle.getMake());
-				editPanel.add(makeField);
-
-				editPanel.add(new JLabel("Model:"));
-				modelField.setText(motorcycle.getModel());
-				editPanel.add(modelField);
-
-				editPanel.add(new JLabel("Color:"));
-				colorField.setText(motorcycle.getColor());
-				editPanel.add(colorField);
-
-				editPanel.add(new JLabel("Year:"));
-				yearField.setText(String.valueOf(motorcycle.getYear()));
-				editPanel.add(yearField);
-
-				editPanel.add(new JLabel("Price:"));
-				priceField.setText(String.valueOf(motorcycle.getPrice()));
-				editPanel.add(priceField);
-
-				editPanel.add(new JLabel("Handlebar Type:"));
-				handlebarField.setText(motorcycle.getHandlebarType());
-				editPanel.add(handlebarField);
-			}
-			*/
+		
 	}
 	
-	public boolean sellVehicle(String[] vehicle, String buyerName, String buyerContact){
-		//return if able to successfully sellVehicle
-		//currently in dealership.java
-		//reroute to SaleDAO.java
-		//VehicleDAO.sellVehicle(vehicle, buyerName, buyerContant);
-		//Main.m_dealership.sellVehicle(vehicle, buyerName, buyerContact);
-		return true;
+	public boolean sellVehicle(int vehicle, String buyerName, String buyerContact){
+		boolean sold = vehicleDAO.sellVehicle(vehicle);
+		return sold;
+		
 	}
 	
 	public boolean removeVehicle(Vehicle vehicle){

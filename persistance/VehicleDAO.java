@@ -7,6 +7,8 @@ import carDealership.Vehicle;
 import java.sql.ResultSet;
 import java.sql.*;
 import java.util.ArrayList;
+import java.sql.DatabaseMetaData;
+
 
 
 
@@ -20,7 +22,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
     // Create the table if it does not exist
     private void createTable() {
         String vehiclesSQL = "CREATE TABLE IF NOT EXISTS vehicles (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ "model text NOT NULL, make text NOT NULL, color text NOT NULL, year INTEGER, price INTEGER, carType String, handleBarType String)";
+				+ "model text NOT NULL, make text NOT NULL, color text NOT NULL, year INTEGER, price INTEGER, carType String, handleBarType String, inInventory BOOLEAN)";
 				
         // carType and handlebarType can be null because they are only used for cars and
         // motorcycles respectively
@@ -125,6 +127,9 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 				int year = resultSet.getInt("year");
                 int price = resultSet.getInt("price");
                 String carType = resultSet.getString("carType");
+				String inInventoryValue = resultSet.getString("inInventory");
+				boolean inInventory = "true".equalsIgnoreCase(inInventoryValue);
+				System.out.println(inInventory); 
 				String handleBarType = resultSet.getString("handleBarType");
 				String[] vehicle = {Integer.toString(ID), make, model, color, model, Integer.toString(year), Integer.toString(price), carType, handleBarType}; 
 				displayInfo[x] = vehicle;
@@ -139,7 +144,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
     // when it is sold
     public static boolean removeFromInventory(int id) {
         try {
-            String query = "UPDATE vehicles SET inInventory = FALSE WHERE id = " + id;
+            String query = "UPDATE vehicles SET inInventory = 'false' WHERE id = " + id;
             DBManager.getInstance().runInsert(query);
             return true;
         } catch (SQLException e) {
@@ -149,7 +154,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
     }
 	
 	
-	public static String[] getAllMakes(){
+	public String[] getAllMakes(){
 		//return list of allMakes with no duplicates
 		//System.out.println("allmakes");
 		String[] makes = {"Honda", "Mazda"};
@@ -283,9 +288,9 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
                     + color + "', "
                     + year + ", "
                     + price + ", '"
-                    + type + "', '"
-                    + true
-                    + "');";
+                    + type + "', "
+                    + "'true'"
+                    + ");";
             DBManager.getInstance().runInsert(query);
             return true;
         } catch (SQLException e) {
@@ -303,9 +308,9 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
                     + color + "', "
                     + year + ", "
                     + price + ", '"
-                    + handleBarType + "', '"
-                    + true
-                    + "');";
+                    + handleBarType + "', "
+                    + "'true'"
+                    + ");";
             DBManager.getInstance().runInsert(query);
             return true;
         } catch (SQLException e) {
@@ -313,6 +318,19 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
             return false;
         }
     }
+	
+	public boolean sellVehicle(int vehicle){
+		//INSERT INTO vehicles (make, model, color, year, price,motoType, handlebarType, inInventory) VALUES ('"
+		
+		try{
+            String query = "UPDATE vehicles SET inInventory = 'false' WHERE ID = " + vehicle;
+            DBManager.getInstance().runInsert(query);
+            return true;
+        }catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
 	
 }
  

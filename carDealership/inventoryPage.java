@@ -704,7 +704,6 @@ public class inventoryPage{
 			//add image to each panel/////////////////////
 			JLabel c1Img = new JLabel("");
 			int index = vehicles[i].indexOf("Handlebar");
-			System.out.println("index is: " + index);
 			if(index != -1){c1Img.setIcon(new ImageIcon(motoImage));}
 			else{c1Img.setIcon(new ImageIcon(newCarImage));}
 			gbcC1.gridx = 0;
@@ -911,7 +910,7 @@ public class inventoryPage{
 				vehicle = controller.getVehicleFromId(id);
 			}
 			
-			if (controller.sellVehicle(vehicle, buyerName, buyerContact)) {
+			if (controller.sellVehicle(id, buyerName, buyerContact)) {
 				JOptionPane.showMessageDialog(null, "Vehicle sold successfully.");
 				controlPanel.remove(inventoryBG);
 				controlPanel.remove(filterBG);

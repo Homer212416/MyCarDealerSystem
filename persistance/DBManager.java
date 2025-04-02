@@ -17,7 +17,6 @@ public class DBManager {
 	private DBManager() throws SQLException {
 		var fileSystem = FileSystems.getDefault();
 		m_dbPath = fileSystem.getPath(System.getProperty("user.home"), "dealership.sqlite3").toString();
-
 		initDB();
 	}
 
