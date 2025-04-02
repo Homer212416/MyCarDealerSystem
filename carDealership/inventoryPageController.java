@@ -230,26 +230,27 @@ public int getNumbertoDisplay(){
 	}
 	
 	
-	public static String[] getMakes(){
+	public String[] getMakes(){
 		//return distinct makes
 		//reroute to Vehicle or keep here
-		String[] makes = {"1", "2"};
+
+		String[] makes = vehicleDAO.getAllMakes();
 		return makes;
-		
 	}
 	
-	public static String[] getModels(){
+	public String[] getModels(){
 		//return distinct models
 		//reroute to Vehicle or keep here
-		String[] models = {"a", "b"};
+
+		String[] models = vehicleDAO.getAllModels();
 		return models;
 		
 	}
 	
-	public static String[] getColors(){
+	public String[] getColors(){
 		//return distinct models
 		//reroute to Vehicle or keep here
-		String[] colors = {"r", "y"};
+		String[] colors = vehicleDAO.getAllColors();
 		return colors;
 		
 	}
@@ -282,7 +283,7 @@ public int getNumbertoDisplay(){
 		return maxPrice;
 	}
 	
-	public void setDisabledPages(DefaultListSelectionModel ddb){
+	public void setDisabledEdits(DefaultListSelectionModel ddb){
 		if(editSecurity == 1){
 			ddb.addSelectionInterval(0, 5);
 		}else{
@@ -291,8 +292,7 @@ public int getNumbertoDisplay(){
 		}
 	}
 	
-	public void setDisabledEdits(DefaultListSelectionModel ddb){
-		
+	public void setDisabledPages(DefaultListSelectionModel ddb){
 		if(security.length == 5){
 			ddb.addSelectionInterval(0, 5);
 		}else{

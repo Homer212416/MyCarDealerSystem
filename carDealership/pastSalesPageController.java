@@ -29,7 +29,15 @@ public class pastSalesPageController {
 		// Launch the view
 		pastSalesPage frame = new pastSalesPage(this);
 	}
-
+	
+	public void setDisabledPages(DefaultListSelectionModel ddb){
+		if(security.length == 5){
+			ddb.addSelectionInterval(0, 5);
+		}else{
+			ddb.addSelectionInterval(4, 4);
+		}
+	}
+	
 	public void pageMenuSelect(int sel, JFrame mainFrame){
 		boolean contains = false;
 		

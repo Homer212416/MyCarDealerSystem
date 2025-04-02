@@ -127,7 +127,7 @@ public class pastSalesPage{
 		pageMenuDD.setRenderer(pageMenuEnableRender);
 		pageMenuDD.setBounds(450, 20, 200, 25);
 		controlPanel.add(pageMenuDD);
-
+		controller.setDisabledPages(pageMenuModel);
 		pageMenuDD.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

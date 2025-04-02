@@ -23,10 +23,10 @@ public class accountManagePageController{
 		user = new User();
 		userLayer = new UserLayer();
 		try{
-			security = user.getPageSecurity(userID);
-		}catch(SQLException e){
-			System.out.println(e.getMessage());
-		}
+				security = user.getPageSecurity(userID);
+			}catch(SQLException e){
+				System.out.println(e.getMessage());
+			}
 		frame = new accountManagePage(this);
 	}
 	
@@ -37,6 +37,14 @@ public class accountManagePageController{
 			box.addItem(element);
 		}
 		
+	}
+	
+	public void setDisabledPages(DefaultListSelectionModel ddb){
+		if(security.length == 5){
+			ddb.addSelectionInterval(0, 5);
+		}else{
+			ddb.addSelectionInterval(4, 4);
+		}
 	}
 	
 	public void pageMenuSelect(int sel, JFrame mainFrame){

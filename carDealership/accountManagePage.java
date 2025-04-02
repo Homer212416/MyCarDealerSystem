@@ -127,7 +127,7 @@ public class accountManagePage{
 		pageMenuDD.setRenderer(pageMenuEnableRender);
 		pageMenuDD.setBounds(450, 20, 200, 25);
 		controlPanel.add(pageMenuDD);
-		
+		controller.setDisabledPages(pageMenuModel);
 		pageMenuDD.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -378,7 +378,8 @@ public class accountManagePage{
 			} 	
 		}else{
 			button.setSelected(false);
-			JOptionPane.showMessageDialog(null, "Password Incorrect");}
+			JOptionPane.showMessageDialog(null, "Password Incorrect");
+			previous = null;}
 			
 	}
 	
@@ -389,7 +390,8 @@ public class accountManagePage{
 			deleteuserID = null;
 		}else{
 			button.setSelected(false);
-			JOptionPane.showMessageDialog(null, "Password Incorrect");}			
+			JOptionPane.showMessageDialog(null, "Password Incorrect");
+			previous = null;}			
 	}
 	
 	
@@ -646,7 +648,8 @@ public class accountManagePage{
 			});
 		}else{
 			button.setSelected(false);
-			JOptionPane.showMessageDialog(null, "Password Incorrect");}
+			JOptionPane.showMessageDialog(null, "Password Incorrect");
+			previous = null;}
 	}
 	
 	public void editUserPage(JToggleButton button){

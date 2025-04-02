@@ -693,7 +693,7 @@ public class inventoryPage{
 		}
 		
 		String[] vehicles = controller.getAllDisplayInfo();
-		for (int i = 0; i < controller.getNumbertoDisplay() -1 ; i++) {
+		for (int i = 0; i < controller.getNumbertoDisplay() ; i++) {
 			//set standard layout for each panel/////
 			vehiclePanelNames[i].setBackground(Color.WHITE);
 			vehiclePanelNames[i].setLayout(new GridBagLayout());
