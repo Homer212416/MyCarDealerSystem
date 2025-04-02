@@ -16,6 +16,7 @@ import carDealership.accountManagePageController;
 import carDealership.dealerShipInfoPageController;
 import carDealership.loginPageController;
 import carDealership.pastSalesPageController;
+import persistance.SaleDAO;
 
 import java.sql.SQLException;
 import java.sql.*;
@@ -28,6 +29,7 @@ public class inventoryPageController{
 	private inventoryPage inventory;
 	private User user;
 	private VehicleDAO vehicleDAO;
+	private SaleDAO saleDAO;
 	private int[] security;
 	private int editSecurity;
 	private int userID;
@@ -59,6 +61,7 @@ public inventoryPageController(int ID){
 				System.out.println(e.getMessage());
 			}
 			this.vehicleDAO = new VehicleDAO();
+			this.saleDAO = new SaleDAO();
 			inventory = new inventoryPage(this);
 		}
 	
@@ -227,26 +230,27 @@ public int getNumbertoDisplay(){
 	}
 	
 	
-	public static String[] getMakes(){
+	public String[] getMakes(){
 		//return distinct makes
 		//reroute to Vehicle or keep here
-		String[] makes = {"1", "2"};
+
+		String[] makes = vehicleDAO.getAllMakes();
 		return makes;
-		
 	}
 	
-	public static String[] getModels(){
+	public String[] getModels(){
 		//return distinct models
 		//reroute to Vehicle or keep here
-		String[] models = {"a", "b"};
+
+		String[] models = vehicleDAO.getAllModels();
 		return models;
 		
 	}
 	
-	public static String[] getColors(){
+	public String[] getColors(){
 		//return distinct models
 		//reroute to Vehicle or keep here
-		String[] colors = {"r", "y"};
+		String[] colors = vehicleDAO.getAllColors();
 		return colors;
 		
 	}
@@ -279,7 +283,7 @@ public int getNumbertoDisplay(){
 		return maxPrice;
 	}
 	
-	public void setDisabledPages(DefaultListSelectionModel ddb){
+	public void setDisabledEdits(DefaultListSelectionModel ddb){
 		if(editSecurity == 1){
 			ddb.addSelectionInterval(0, 5);
 		}else{
@@ -288,8 +292,7 @@ public int getNumbertoDisplay(){
 		}
 	}
 	
-	public void setDisabledEdits(DefaultListSelectionModel ddb){
-		
+	public void setDisabledPages(DefaultListSelectionModel ddb){
 		if(security.length == 5){
 			ddb.addSelectionInterval(0, 5);
 		}else{
@@ -386,8 +389,10 @@ public int getNumbertoDisplay(){
 	}
 	
 	public boolean sellVehicle(int vehicle, String buyerName, String buyerContact){
-		boolean sold = vehicleDAO.sellVehicle(vehicle);
-		return sold;
+		boolean sold = saleDAO.insert(vehicle,buyerName, buyerContact);
+		boolean notin = false;
+		if(sold){notin = vehicleDAO.sellVehicle(vehicle);}
+		return notin;
 		
 	}
 	

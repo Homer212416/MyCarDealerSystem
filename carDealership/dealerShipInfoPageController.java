@@ -22,6 +22,14 @@ public class dealerShipInfoPageController{
 		dealerShipInfoPage frame = new dealerShipInfoPage(this);
 	}
 	
+	public void setDisabledPages(DefaultListSelectionModel ddb){
+		if(security.length == 5){
+			ddb.addSelectionInterval(0, 5);
+		}else{
+			ddb.addSelectionInterval(4, 4);
+		}
+	}
+	
 	public void pageMenuSelect(int sel, JFrame mainFrame){
 		boolean contains = false;
 		
@@ -29,6 +37,7 @@ public class dealerShipInfoPageController{
 			if(sel == page)
 				contains = true;
 		}
+		
 		if(contains){
 			if (sel== 1){
 				inventoryPageController inv = new inventoryPageController(userID);

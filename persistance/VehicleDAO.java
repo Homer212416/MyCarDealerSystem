@@ -99,7 +99,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 
 		try{
 			
-			ResultSet rs3 = DBManager.getInstance().runQuery("SELECT COUNT(*) AS count FROM vehicles");
+			ResultSet rs3 = DBManager.getInstance().runQuery("SELECT COUNT(*) AS count FROM vehicles WHERE inInventory = 'true'");
 			while(rs3.next()){
 				this.count = rs3.getInt("count");
 				
@@ -115,7 +115,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 	public String[][] getAllDisplayInfo(){
 		String[][] displayInfo = new String[getTotalVehiclesInInventory()][];
 		try {
-            String query = "SELECT * FROM vehicles";
+            String query = "SELECT * FROM vehicles WHERE inInventory = 'true'";
             ResultSet resultSet = DBManager.getInstance().runQuery(query);
             ArrayList<Vehicle> vehicles = new ArrayList<>();
 			int x = 0;
@@ -129,7 +129,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
                 String carType = resultSet.getString("carType");
 				String inInventoryValue = resultSet.getString("inInventory");
 				boolean inInventory = "true".equalsIgnoreCase(inInventoryValue);
-				System.out.println(inInventory); 
+				System.out.println("there is : " + inInventory); 
 				String handleBarType = resultSet.getString("handleBarType");
 				String[] vehicle = {Integer.toString(ID), make, model, color, model, Integer.toString(year), Integer.toString(price), carType, handleBarType}; 
 				displayInfo[x] = vehicle;
@@ -154,12 +154,28 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
     }
 	
 	
-	public String[] getAllMakes(){
-		//return list of allMakes with no duplicates
-		//System.out.println("allmakes");
-		String[] makes = {"Honda", "Mazda"};
-		return(makes);
-	}
+    public String[] getAllMakes() {
+        ArrayList<String> makesList = new ArrayList<>();
+        try {
+            // The SQL query to fetch distinct makes where the vehicle is in inventory
+            String query = "SELECT DISTINCT make FROM vehicles WHERE inInventory = 'true'";
+            
+            // Run the query 
+            ResultSet resultSet = DBManager.getInstance().runQuery(query);
+            
+            // Loop through the result set and add each make to the list
+            while (resultSet.next()) {
+                makesList.add(resultSet.getString("make"));
+            }
+
+            // Convert the ArrayList to an array and return it
+            return makesList.toArray(new String[0]);
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new String[0];  // Return an empty if error
+        }
+    }
 	
 	public static String[] getAllModels(){
 		//return list of all models with no duplicates
@@ -167,10 +183,30 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 		return(models);
 	}
 	
-	public static String[] getAllColors(){
+	public String[] getAllColors(){
 		//return list of all colors with no duplicates
-		String[] colors = {"Red", "Blue"};
-		return(colors);
+				//return list of all colors with no duplicates
+                ArrayList<String> colorsList = new ArrayList<>();
+                try {
+                    // The SQL query to fetch distinct color
+                    String query = "SELECT DISTINCT color FROM vehicles WHERE inInventory = 'true'";
+                    
+                    // Run the query 
+                    ResultSet resultSet = DBManager.getInstance().runQuery(query);
+                    
+                    // Loop through and add to list
+                    while (resultSet.next()) {
+                        colorsList.add(resultSet.getString("color"));
+                    }
+        
+                    // Convert the ArrayList to an array and return 
+                    return colorsList.toArray(new String[0]);
+                    
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return new String[0];  // Return an empty if error
+                }
+            
 	}
 	
 	public static int getMinYear(){

@@ -134,6 +134,20 @@ public class UserLayer {
 		}
         return usersInfo;      
 	}
+	
+	public String checkPassword(int userID){
+		String storedPassword = "";
+		try {
+			String query = "SELECT password FROM usersInfo WHERE ID =" + userID + "";
+			ResultSet resultSet = DBManager.getInstance().runQuery(query);
+			while (resultSet.next()) {
+				storedPassword = resultSet.getString("password");
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return storedPassword;
+	}
 	/*
 	public boolean validateUserLogin(String username){
 		if(userName exsist){

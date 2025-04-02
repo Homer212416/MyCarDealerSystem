@@ -7,8 +7,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import java.sql.SQLException;
 
+import persistance.DBManager;
 import persistance.UserLayer;
-
 
 public class accountManagePageController{
 	private int[] security;
@@ -23,10 +23,10 @@ public class accountManagePageController{
 		user = new User();
 		userLayer = new UserLayer();
 		try{
-			security = user.getPageSecurity(userID);
-		}catch(SQLException e){
-			System.out.println(e.getMessage());
-		}
+				security = user.getPageSecurity(userID);
+			}catch(SQLException e){
+				System.out.println(e.getMessage());
+			}
 		frame = new accountManagePage(this);
 	}
 	
@@ -37,6 +37,14 @@ public class accountManagePageController{
 			box.addItem(element);
 		}
 		
+	}
+	
+	public void setDisabledPages(DefaultListSelectionModel ddb){
+		if(security.length == 5){
+			ddb.addSelectionInterval(0, 5);
+		}else{
+			ddb.addSelectionInterval(4, 4);
+		}
 	}
 	
 	public void pageMenuSelect(int sel, JFrame mainFrame){
@@ -65,69 +73,119 @@ public class accountManagePageController{
 			}
 		}
 	}
-	
-	public String generatePassword(){
-		//generatePassword
-		return("abcde");
+
+	public static String generatePassword() {
+		// generatePassword
+		String alphabeta = "abcdefghijklmnopqrstuvwxyz";
+		String password = "";
+		for (int i = 0; i < 5; i++) {
+			int randomIndex = (int) (Math.random() * alphabeta.length());
+			password += alphabeta.charAt(randomIndex);
+		}
+		return password;
 	}
-	
-	public String[][] getAllUsers(){
+
+	public String[][] getAllUsers() {
 		String[][] usersInfo = userLayer.getAllUsers();
 		return usersInfo;
 	}
 	
-	public void adminUser(String type){
+	public void adminUser(String type, JToggleButton button){
 		switch(type){
 				case "delete":
-					frame.deleteUserLoginPage();;
+					frame.deleteUserLoginPage(button);
 					break;
 				case "edit":
-					frame.editUserPage();;
+					frame.editUserPage(button);
 					break;
 				case "add":
-					frame.addUserLoginPage();
+					frame.addUserLoginPage(button);
 					break;
 			}
 	}
 	
-	public void isAdmin(String password, JFrame oldpage, String type){
+	public void isAdmin(String password, JFrame oldpage, String type, JToggleButton button){
 		//if password is valid for user return true
-		result = true;
+		result = false;
+		String storedPassword = userLayer.checkPassword(userID);
+		if(storedPassword == password){result = true;}
 		//close confirm password page
 		oldpage.dispose();
 		if(result){
 			switch(type){
 				case "delete":
-					frame.deleteAdminConfirmed();
+					frame.deleteAdminConfirmed(true, button );
 					break;
 				case "edit":
-					frame.editAdminConfirmed();
+					frame.editAdminConfirmed(true, button );
 					break;
 				case "add":
-					frame.addUserPage();
+					frame.addUserPage(true, button);
+					break;
+			}
+		}
+		if(!result){
+			switch(type){
+				case "delete":
+					frame.deleteAdminConfirmed(false, button);
+					break;
+				case "edit":
+					frame.editAdminConfirmed(false, button);
+					break;
+				case "add":
+					frame.addUserPage(false, button);
 					break;
 			}
 		}
 	}
-	
-	public void editedUser(String[] editedInfo){
-		//update database with new user info
+
+	public void editedUser(String[] editedInfo) {
+		// update database with new user info
+		String userID = editedInfo[0];
+		String firstName = editedInfo[1];
+		String lastName = editedInfo[2];
+		String jobTitle = editedInfo[3];
+		String email = editedInfo[4];
+		String query = "UPDATE usersInfo SET firstName = '" + firstName + "', lastName = '" + lastName
+				+ "', jobTitle = '" + jobTitle + "', email = '" + email + "' WHERE ID = " + userID;
+		try {
+			DBManager.getInstance().runInsert(query);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 		}
-		
-		
-	public static void pressedSubmit(){
-		//open addUserPage
-		
+		frame.populateUsers();
 	}
-	
-	public void newUserSubmit(String[] newUserInfo, JFrame oldPage){
-		//create new user from user info
-		//User newUser = new User(sdfsd)
+
+	public void pressedSubmit() {
+		// open addUserPage
+		//frame.addUserPage(true, button);
+	}
+
+	public void newUserSubmit(String[] newUserInfo, JFrame oldPage) {
+		// create new user from user info
+		String firstName = newUserInfo[0];
+		String lastName = newUserInfo[1];
+		String jobTitle = newUserInfo[2];
+		String password = newUserInfo[3];
+		String query = "INSERT INTO usersInfo (firstName, lastName, jobTitle, password) VALUES ('" + firstName
+				+ "', '" + lastName + "', '" + jobTitle + "', '" + password + "')";
+		try {
+			DBManager.getInstance().runInsert(query);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 		oldPage.dispose();
 	}
-		
-	public void removeUser(int userID){
-		//remove user with userID from database and refresh user list
-		//frame.populateUser()
+
+	public void removeUser(int userID) {
+		// remove user with userID from database and refresh user list
+		// frame.populateUser()
+		String query = "DELETE FROM usersInfo WHERE ID = " + userID;
+		try {
+			DBManager.getInstance().runInsert(query);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		frame.populateUsers();
 	}
 }

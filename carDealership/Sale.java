@@ -2,6 +2,7 @@ package carDealership;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Sale implements Serializable {
     private static final long serialVersionUID = -7473395562909124471L;
@@ -13,12 +14,12 @@ public class Sale implements Serializable {
 	
 	public Sale(){}
     // Full constructor
-    public Sale(Vehicle vehicle, String buyerName, String buyerContact, LocalDate saleDate) {
+    public Sale(int vehicleID, String buyerName, String buyerContact) {
         this.vehicle = vehicle;
         this.buyerName = buyerName;
         this.buyerContact = buyerContact;
-        this.saleDate = saleDate;
-        this.vehicleID = 1;
+        this.saleDate = LocalDate.now();
+        this.vehicleID = vehicleID;
     }
 
     // Simplified constructor

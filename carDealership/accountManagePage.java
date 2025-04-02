@@ -127,7 +127,7 @@ public class accountManagePage{
 		pageMenuDD.setRenderer(pageMenuEnableRender);
 		pageMenuDD.setBounds(450, 20, 200, 25);
 		controlPanel.add(pageMenuDD);
-		
+		controller.setDisabledPages(pageMenuModel);
 		pageMenuDD.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -147,7 +147,7 @@ public class accountManagePage{
 		gbcC.gridy = 0;
 		controlPanel.add(carImage,gbcC);
 		//add user Button/////////////////////////////////////////////////////////////////////////////////
-		JButton addUser = new JButton("Add New User");
+		JToggleButton addUser = new JToggleButton("Add New User");
 		addUser.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		addUser.setMargin(new java.awt.Insets(1, 1, 1, 1));
 		gbcS.insets = new Insets(0, 10, 0, 0);
@@ -160,7 +160,7 @@ public class accountManagePage{
 		addUser.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-					controller.adminUser("add");
+					controller.adminUser("add", (JToggleButton) e.getSource());
 			}
 		});
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +249,7 @@ public class accountManagePage{
 				current = ((JToggleButton) e.getSource());
 				ArrayList<JTextField> textBoxes = userTextBoxes.get(current);
 				if(previous == null || current != previous){
-					controller.adminUser("edit");
+					controller.adminUser("edit",(JToggleButton) e.getSource());
 
 				}if(current == previous){//if they are done editing
 					for(JTextField textBox : textBoxes){
@@ -272,7 +272,7 @@ public class accountManagePage{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				current = ((JToggleButton) e.getSource());
-				controller.adminUser("delete");
+				controller.adminUser("delete", (JToggleButton) e.getSource());
 				ArrayList<JTextField> textBoxes = userTextBoxes.get(current);
 				deleteuserID = String.valueOf(current.getName().charAt(0));
 				
@@ -370,22 +370,33 @@ public class accountManagePage{
 			
 	}
 	
-	public void editAdminConfirmed(	){//if password is correct 		
-		ArrayList<JTextField> textBoxes = userTextBoxes.get(current);
-		for(JTextField textBox : textBoxes){
-			textBox.setEditable(true);
-		} 	
+	public void editAdminConfirmed(boolean result, JToggleButton button){//if password is correct 		
+		if(result){
+			ArrayList<JTextField> textBoxes = userTextBoxes.get(current);
+			for(JTextField textBox : textBoxes){
+				textBox.setEditable(true);
+			} 	
+		}else{
+			button.setSelected(false);
+			JOptionPane.showMessageDialog(null, "Password Incorrect");
+			previous = null;}
+			
 	}
 	
-	public void deleteAdminConfirmed(){	//if password is correct 
-		int id = Integer.valueOf(deleteuserID);
-		controller.removeUser(id);
-		deleteuserID = null;		
+	public void deleteAdminConfirmed(boolean result,JToggleButton button){	//if password is correct 
+		if(result){
+			int id = Integer.valueOf(deleteuserID);
+			controller.removeUser(id);
+			deleteuserID = null;
+		}else{
+			button.setSelected(false);
+			JOptionPane.showMessageDialog(null, "Password Incorrect");
+			previous = null;}			
 	}
 	
 	
 	
-	public void addUserLoginPage(){
+	public void addUserLoginPage(JToggleButton button){
 		//create layout of panels DON'T CHANGE/////////////////////////////////////////////////////////
 		AddUseraccountMainFrame = new JFrame("Create New User?");
 		AddUseraccountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
@@ -471,7 +482,7 @@ public class accountManagePage{
 			public void actionPerformed(ActionEvent e) {
 				char[] adminPasswordChar =  confirmPasswordBar.getPassword();
 				String adminPassword = new String(adminPasswordChar);
-				controller.isAdmin(adminPassword, AddUseraccountMainFrame, "add");
+				controller.isAdmin(adminPassword, AddUseraccountMainFrame, "add", button);
 				
 			}
 		});
@@ -479,164 +490,169 @@ public class accountManagePage{
 	}
 	
 	
-	public void addUserPage(){
-		auaccountMainFrame = new JFrame("Create New User");
-		auaccountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
-		auaccountMainFrame.setBounds(0, 0, 315, 335);
-		auaccountMainFrame.addWindowListener(new WindowAdapter() {
-        public void windowClosing(WindowEvent windowEvent){
-            auaccountMainFrame.dispose();
-			}        
-		});
-		//create layout of panels DON'T CHANGE/////////////////////////////////////////////////////////
-		JPanel controlPanel = new JPanel();
-		controlPanel.setBackground(new Color(230, 230, 230));
-		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		controlPanel.setBounds(0, 0, 315, 335);
-		controlPanel.setLayout(new GridLayout());
-		
-		GridBagLayout layout = new GridBagLayout();
-		controlPanel.setLayout(null);	
-		
-		JPanel announcementBG = new JPanel();
-		announcementBG.setBackground(Color.RED);
-		announcementBG.setLayout(new GridBagLayout());
-		GridBagLayout layoutA = new GridBagLayout();
-		announcementBG.setLayout(layoutA);
-		GridBagConstraints gbcA = new GridBagConstraints();
-		announcementBG.setBounds(0, 0, 300, 50);
-		controlPanel.add(announcementBG);
-		
-		JPanel infoBG = new JPanel();
-		infoBG.setBackground(new Color(230, 230, 230));
-		infoBG.setLayout(new GridBagLayout());
-		GridBagLayout layoutI = new GridBagLayout();
-		infoBG.setLayout(layoutI);
-		infoBG.setBounds(10, 50, 290, 250);
-		GridBagConstraints gbcI = new GridBagConstraints();
-		controlPanel.add(infoBG);
-		
-		JTextArea announcement = new JTextArea(2, 20);
-		announcement.setForeground(Color.BLACK);
-		announcement.setText("Please fill out all the information below to create a new user");
-		announcement.setWrapStyleWord(true);
-		announcement.setLineWrap(true);
-		announcement.setOpaque(false);
-		announcement.setEditable(false);
-		announcement.setFocusable(false);
-		gbcA.fill = GridBagConstraints.BOTH;
-		gbcA.weighty = 1;
-		gbcA.gridx = 0;
-		gbcA.gridy = 0;
-		announcementBG.add(announcement, gbcA);
-		///////////////////////////////////////////////////////////////////////////////////////
-		
-		//request first and last name, job title, email 
-		JLabel fNameL = new JLabel("First Name: ");
-		gbcI.anchor = GridBagConstraints.EAST;
-		gbcI.weighty = .5;
-		gbcI.gridx = 0;
-		gbcI.gridy = 0;
-		infoBG.add(fNameL, gbcI);
-		
-		JLabel lNameL = new JLabel("Last Name: ");
-		gbcI.anchor = GridBagConstraints.EAST;
-		gbcI.gridx = 0;
-		gbcI.gridy = 1;
-		infoBG.add(lNameL, gbcI);
-		
-		JLabel jobTitleL = new JLabel("Job Title: ");
-		gbcI.anchor = GridBagConstraints.EAST;
-		gbcI.gridx = 0;
-		gbcI.gridy = 2;
-		infoBG.add(jobTitleL, gbcI);
-		
-		JLabel emailL = new JLabel("Email: ");
-		gbcI.gridx = 0;
-		gbcI.gridy = 3;
-		infoBG.add(emailL, gbcI);
-		gbcI.anchor = GridBagConstraints.WEST;
-		
-		JLabel passwordL = new JLabel("Password: ");
-		gbcI.gridx = 0;
-		gbcI.gridy = 4;
-		infoBG.add(passwordL, gbcI);
-		gbcI.anchor = GridBagConstraints.WEST;
-		
-		JTextField fNameT = new JTextField(15);
-		gbcI.fill = GridBagConstraints.HORIZONTAL;
-		gbcI.weightx = .99;
-		gbcI.gridx = 1;
-		gbcI.gridy = 0;
-		infoBG.add(fNameT, gbcI);
-		
-		JTextField lNameT = new JTextField(15);
-		gbcI.gridx = 1;
-		gbcI.gridy = 1;
-		infoBG.add(lNameT, gbcI);
-		
-		JTextField jobTitleT = new JTextField(15);
-		gbcI.gridx = 1;
-		gbcI.gridy = 2;
-		infoBG.add(jobTitleT, gbcI);
-		
-		JTextField emailT = new JTextField(15);
-		gbcI.gridx = 1;
-		gbcI.gridy = 3;
-		infoBG.add(emailT, gbcI);
-		
-		
-		JPasswordField passwordT = new JPasswordField(18);
-		//passwordBar.setEchoChar('~');
-		gbcI.gridx = 1;
-		gbcI.gridy = 4;
-		infoBG.add(passwordT, gbcI);
-		
-		//submit button
-		JButton generateB = new JButton("GeneratePassword");
-		generateB.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
-		gbcI.fill = GridBagConstraints.NONE;
-		gbcI.anchor = GridBagConstraints.EAST;
-		gbcI.weightx = .01;
-		gbcI.gridx = 2;
-		gbcI.gridy = 4;
-		infoBG.add(generateB, gbcI);
-		
-		JButton submitB = new JButton("Submit");
-		gbcI.fill = GridBagConstraints.NONE;
-		gbcI.anchor = GridBagConstraints.EAST;
-		gbcI.weightx = .01;
-		gbcI.gridx = 2;
-		gbcI.gridy = 5;
-		infoBG.add(submitB, gbcI);
-		auaccountMainFrame.setContentPane(controlPanel);
-		auaccountMainFrame.setVisible(true);
-		
-		
-		generateB.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String genPassword = controller.generatePassword();
-				passwordT.setText(genPassword);
-			}
-		});
-		
-		submitB.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				String firstName = fNameT.getText();
-				String lastName = lNameT.getText();
-				String jobTitle = jobTitleT.getText();
-				char[] passwordChar =  passwordT.getPassword();
-				String password = new String(passwordChar);
-				String[] newUserInfo = {firstName, lastName, jobTitle, password};
-				controller.newUserSubmit(newUserInfo, auaccountMainFrame);
-			}
-		});
+	public void addUserPage(boolean result, JToggleButton button){
+		if(result){
+			auaccountMainFrame = new JFrame("Create New User");
+			auaccountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
+			auaccountMainFrame.setBounds(0, 0, 315, 335);
+			auaccountMainFrame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent windowEvent){
+				auaccountMainFrame.dispose();
+				}        
+			});
+			//create layout of panels DON'T CHANGE/////////////////////////////////////////////////////////
+			JPanel controlPanel = new JPanel();
+			controlPanel.setBackground(new Color(230, 230, 230));
+			controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+			controlPanel.setBounds(0, 0, 315, 335);
+			controlPanel.setLayout(new GridLayout());
+			
+			GridBagLayout layout = new GridBagLayout();
+			controlPanel.setLayout(null);	
+			
+			JPanel announcementBG = new JPanel();
+			announcementBG.setBackground(Color.RED);
+			announcementBG.setLayout(new GridBagLayout());
+			GridBagLayout layoutA = new GridBagLayout();
+			announcementBG.setLayout(layoutA);
+			GridBagConstraints gbcA = new GridBagConstraints();
+			announcementBG.setBounds(0, 0, 300, 50);
+			controlPanel.add(announcementBG);
+			
+			JPanel infoBG = new JPanel();
+			infoBG.setBackground(new Color(230, 230, 230));
+			infoBG.setLayout(new GridBagLayout());
+			GridBagLayout layoutI = new GridBagLayout();
+			infoBG.setLayout(layoutI);
+			infoBG.setBounds(10, 50, 290, 250);
+			GridBagConstraints gbcI = new GridBagConstraints();
+			controlPanel.add(infoBG);
+			
+			JTextArea announcement = new JTextArea(2, 20);
+			announcement.setForeground(Color.BLACK);
+			announcement.setText("Please fill out all the information below to create a new user");
+			announcement.setWrapStyleWord(true);
+			announcement.setLineWrap(true);
+			announcement.setOpaque(false);
+			announcement.setEditable(false);
+			announcement.setFocusable(false);
+			gbcA.fill = GridBagConstraints.BOTH;
+			gbcA.weighty = 1;
+			gbcA.gridx = 0;
+			gbcA.gridy = 0;
+			announcementBG.add(announcement, gbcA);
+			///////////////////////////////////////////////////////////////////////////////////////
+			
+			//request first and last name, job title, email 
+			JLabel fNameL = new JLabel("First Name: ");
+			gbcI.anchor = GridBagConstraints.EAST;
+			gbcI.weighty = .5;
+			gbcI.gridx = 0;
+			gbcI.gridy = 0;
+			infoBG.add(fNameL, gbcI);
+			
+			JLabel lNameL = new JLabel("Last Name: ");
+			gbcI.anchor = GridBagConstraints.EAST;
+			gbcI.gridx = 0;
+			gbcI.gridy = 1;
+			infoBG.add(lNameL, gbcI);
+			
+			JLabel jobTitleL = new JLabel("Job Title: ");
+			gbcI.anchor = GridBagConstraints.EAST;
+			gbcI.gridx = 0;
+			gbcI.gridy = 2;
+			infoBG.add(jobTitleL, gbcI);
+			
+			JLabel emailL = new JLabel("Email: ");
+			gbcI.gridx = 0;
+			gbcI.gridy = 3;
+			infoBG.add(emailL, gbcI);
+			gbcI.anchor = GridBagConstraints.WEST;
+			
+			JLabel passwordL = new JLabel("Password: ");
+			gbcI.gridx = 0;
+			gbcI.gridy = 4;
+			infoBG.add(passwordL, gbcI);
+			gbcI.anchor = GridBagConstraints.WEST;
+			
+			JTextField fNameT = new JTextField(15);
+			gbcI.fill = GridBagConstraints.HORIZONTAL;
+			gbcI.weightx = .99;
+			gbcI.gridx = 1;
+			gbcI.gridy = 0;
+			infoBG.add(fNameT, gbcI);
+			
+			JTextField lNameT = new JTextField(15);
+			gbcI.gridx = 1;
+			gbcI.gridy = 1;
+			infoBG.add(lNameT, gbcI);
+			
+			JTextField jobTitleT = new JTextField(15);
+			gbcI.gridx = 1;
+			gbcI.gridy = 2;
+			infoBG.add(jobTitleT, gbcI);
+			
+			JTextField emailT = new JTextField(15);
+			gbcI.gridx = 1;
+			gbcI.gridy = 3;
+			infoBG.add(emailT, gbcI);
+			
+			
+			JPasswordField passwordT = new JPasswordField(18);
+			//passwordBar.setEchoChar('~');
+			gbcI.gridx = 1;
+			gbcI.gridy = 4;
+			infoBG.add(passwordT, gbcI);
+			
+			//submit button
+			JButton generateB = new JButton("GeneratePassword");
+			generateB.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
+			gbcI.fill = GridBagConstraints.NONE;
+			gbcI.anchor = GridBagConstraints.EAST;
+			gbcI.weightx = .01;
+			gbcI.gridx = 2;
+			gbcI.gridy = 4;
+			infoBG.add(generateB, gbcI);
+			
+			JButton submitB = new JButton("Submit");
+			gbcI.fill = GridBagConstraints.NONE;
+			gbcI.anchor = GridBagConstraints.EAST;
+			gbcI.weightx = .01;
+			gbcI.gridx = 2;
+			gbcI.gridy = 5;
+			infoBG.add(submitB, gbcI);
+			auaccountMainFrame.setContentPane(controlPanel);
+			auaccountMainFrame.setVisible(true);
+			
+			
+			generateB.addActionListener( new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String genPassword = controller.generatePassword();
+					passwordT.setText(genPassword);
+				}
+			});
+			
+			submitB.addActionListener( new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+					String firstName = fNameT.getText();
+					String lastName = lNameT.getText();
+					String jobTitle = jobTitleT.getText();
+					char[] passwordChar =  passwordT.getPassword();
+					String password = new String(passwordChar);
+					String[] newUserInfo = {firstName, lastName, jobTitle, password};
+					controller.newUserSubmit(newUserInfo, auaccountMainFrame);
+				}
+			});
+		}else{
+			button.setSelected(false);
+			JOptionPane.showMessageDialog(null, "Password Incorrect");
+			previous = null;}
 	}
 	
-	public void editUserPage(){
+	public void editUserPage(JToggleButton button){
 		euaccountMainFrame = new JFrame("Edit User Info");
 		euaccountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
 		euaccountMainFrame.setBounds(0, 0, 400, 200);
@@ -721,14 +737,14 @@ public class accountManagePage{
 			public void actionPerformed(ActionEvent e) {
 				char[] adminPasswordChar =  confirmPasswordBar.getPassword();
 				String adminPassword = new String(adminPasswordChar);
-				controller.isAdmin(adminPassword, euaccountMainFrame, "edit");
+				controller.isAdmin(adminPassword, euaccountMainFrame, "edit", button);
 				
 			}
 		});
 		
 	}
 	
-	public void deleteUserLoginPage(){
+	public void deleteUserLoginPage(JToggleButton button){
 		deleteUseraccountMainFrame = new JFrame("Delete User");
 		deleteUseraccountMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
 		deleteUseraccountMainFrame.setBounds(0, 0, 400, 200);
@@ -811,7 +827,7 @@ public class accountManagePage{
 			public void actionPerformed(ActionEvent e) {
 				char[] adminPasswordChar =  confirmPasswordBar.getPassword();
 				String adminPassword = new String(adminPasswordChar);
-				controller.isAdmin(adminPassword, deleteUseraccountMainFrame, "delete");
+				controller.isAdmin(adminPassword, deleteUseraccountMainFrame, "delete", button);
 				
 			}
 		});
