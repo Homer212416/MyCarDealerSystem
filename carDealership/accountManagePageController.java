@@ -1,63 +1,65 @@
 package carDealership;
 
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
 import java.sql.SQLException;
 
 import persistance.DBManager;
 import persistance.UserLayer;
 
-public class accountManagePageController {
+public class accountManagePageController{
 	private int[] security;
 	private int userID;
 	private User user;
 	private UserLayer userLayer;
-	private static accountManagePage frame;
+	private accountManagePage frame;
 	private Boolean result = false;
-
-	public accountManagePageController(int ID) {
+	
+	public accountManagePageController(int ID){
 		this.userID = ID;
 		user = new User();
 		userLayer = new UserLayer();
-		try {
+		try{
 			security = user.getPageSecurity(userID);
-		} catch (SQLException e) {
+		}catch(SQLException e){
 			System.out.println(e.getMessage());
 		}
 		frame = new accountManagePage(this);
 	}
-
-	public void fillPageElements(JComboBox<String> box) {
-		String[] pageElements = new String[] { "", "Inventory", "Dealership Info", "Sales History",
-				"Manage User Accounts", "Sign Out" };
-		for (String element : pageElements) {
+	
+	@SuppressWarnings("unchecked")
+	public void fillPageElements(JComboBox box){
+		String[] pageElements = new String[]{"", "Inventory", "Dealership Info", "Sales History", "Manage User Accounts","Sign Out"};
+		for(String element : pageElements){
 			box.addItem(element);
 		}
-
+		
 	}
-
-	public void pageMenuSelect(int sel, JFrame mainFrame) {
+	
+	public void pageMenuSelect(int sel, JFrame mainFrame){
 		boolean contains = false;
-
-		for (int page : security) {
-			if (sel == page)
+		
+		for(int page: security){
+			if(sel == page)
 				contains = true;
 		}
-		if (contains) {
-			System.out.print(contains);
-			if (sel == 1) {
+		if(contains){
+			if (sel== 1){
 				inventoryPageController inv = new inventoryPageController(userID);
 				mainFrame.dispose();
-			} else if (sel == 2) {
+			}else if (sel== 2){
 				dealerShipInfoPageController dsC = new dealerShipInfoPageController(userID);
 				mainFrame.dispose();
-			} else if (sel == 3) {
+			}else if(sel== 3){
 				new pastSalesPageController(userID);
 				mainFrame.dispose();
-			} else if (sel == 4) {
+			}else if(sel== 4){
 				new accountManagePageController(userID);
 				mainFrame.dispose();
-			} else if (sel == 5) {
+			}else if(sel== 5){
 				new loginPageController();
 				mainFrame.dispose();
 			}
@@ -79,38 +81,51 @@ public class accountManagePageController {
 		String[][] usersInfo = userLayer.getAllUsers();
 		return usersInfo;
 	}
-
-	public void adminUser(String type) {
-		switch (type) {
-			case "delete":
-				frame.deleteUserLoginPage();
-				;
-				break;
-			case "edit":
-				frame.editUserPage();
-				;
-				break;
-			case "add":
-				frame.addUserLoginPage();
-				break;
-		}
-	}
-
-	public void isAdmin(String password, JFrame oldpage, String type) {
-		// if password is valid for user return true
-		result = true;
-		// close confirm password page
-		oldpage.dispose();
-		if (result) {
-			switch (type) {
+	
+	public void adminUser(String type, JToggleButton button){
+		switch(type){
 				case "delete":
-					frame.deleteAdminConfirmed();
+					frame.deleteUserLoginPage(button);
 					break;
 				case "edit":
-					frame.editAdminConfirmed();
+					frame.editUserPage(button);
 					break;
 				case "add":
-					frame.addUserPage();
+					frame.addUserLoginPage(button);
+					break;
+			}
+	}
+	
+	public void isAdmin(String password, JFrame oldpage, String type, JToggleButton button){
+		//if password is valid for user return true
+		result = false;
+		String storedPassword = userLayer.checkPassword(userID);
+		if(storedPassword == password){result = true;}
+		//close confirm password page
+		oldpage.dispose();
+		if(result){
+			switch(type){
+				case "delete":
+					frame.deleteAdminConfirmed(true, button );
+					break;
+				case "edit":
+					frame.editAdminConfirmed(true, button );
+					break;
+				case "add":
+					frame.addUserPage(true, button);
+					break;
+			}
+		}
+		if(!result){
+			switch(type){
+				case "delete":
+					frame.deleteAdminConfirmed(false, button);
+					break;
+				case "edit":
+					frame.editAdminConfirmed(false, button);
+					break;
+				case "add":
+					frame.addUserPage(false, button);
 					break;
 			}
 		}
@@ -133,9 +148,9 @@ public class accountManagePageController {
 		frame.populateUsers();
 	}
 
-	public static void pressedSubmit() {
+	public void pressedSubmit() {
 		// open addUserPage
-		frame.addUserPage();
+		//frame.addUserPage(true, button);
 	}
 
 	public void newUserSubmit(String[] newUserInfo, JFrame oldPage) {

@@ -30,22 +30,31 @@ public class pastSalesPageController {
 		pastSalesPage frame = new pastSalesPage(this);
 	}
 
-	public void pageMenuSelect(int sel, JFrame mainFrame) {
+	public void pageMenuSelect(int sel, JFrame mainFrame){
 		boolean contains = false;
-		for (int page : security) {
-			if (sel == page)
+		
+		for(int page: security){
+			if(sel == page)
 				contains = true;
 		}
-		if (contains) {
-			System.out.print(contains);
-			switch (sel) {
-				case 1 : new inventoryPageController(userID);
-				case 2 : new dealerShipInfoPageController(userID);
-				case 3 : new pastSalesPageController(userID);
-				case 4 : new accountManagePageController(userID);
-				case 5 : new loginPageController();
+		
+		if(contains){
+			if (sel== 1){
+				inventoryPageController inv = new inventoryPageController(userID);
+				mainFrame.dispose();
+			}else if (sel== 2){
+				dealerShipInfoPageController dsC = new dealerShipInfoPageController(userID);
+				mainFrame.dispose();
+			}else if(sel== 3){
+				new pastSalesPageController(userID);
+				mainFrame.dispose();
+			}else if(sel== 4){
+				new accountManagePageController(userID);
+				mainFrame.dispose();
+			}else if(sel== 5){
+				new loginPageController();
+				mainFrame.dispose();
 			}
-			mainFrame.dispose();
 		}
 	}
 

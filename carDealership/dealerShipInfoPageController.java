@@ -29,6 +29,7 @@ public class dealerShipInfoPageController{
 			if(sel == page)
 				contains = true;
 		}
+		
 		if(contains){
 			if (sel== 1){
 				inventoryPageController inv = new inventoryPageController(userID);
