@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.util.Date;
 
 import carDealership.Car;
 import carDealership.Main;
@@ -38,7 +39,6 @@ public class inventoryPageController{
 	private String yearFilter = "";
 	private String priceFilter = "";
 	private String sortOrder = "";
-	private String searchFilter = "";
 	
 	
 public inventoryPageController(int ID){ 
@@ -71,7 +71,7 @@ public inventoryPageController(int ID){
 		String[] vehicles = new String[displayInfo.length];
 		int x = 0;
 		for(String[] vehicle: displayInfo){
-			if(vehicle[6] != null){
+			if(vehicle[7] != null){
 				String vehicleInfo = ("ID: " + vehicle[0] + "\n" 
 					+ "Make: " + vehicle[1] + "\n"
 					+ "Model: " + vehicle[2] + "\n"
@@ -118,6 +118,7 @@ public int getNumbertoDisplay(){
 
 	public String getFilterDisplay(){ 
 		     // Base query
+			 System.out.println ("It worked");
     String qry = "SELECT * FROM Inventory";
     
     // Initialize the WHERE clause
@@ -148,118 +149,66 @@ public int getNumbertoDisplay(){
         if (whereClause.length() > 0) whereClause.append(" AND ");
         whereClause.append(priceFilter);  
     }
-
-	//SEARCH
-	if (!searchFilter.isEmpty()) {
-        if (whereClause.length() > 0) whereClause.append(" AND ");
-        whereClause.append(searchFilter); 
-		searchFilter = ""; 
-    }
     
-    // Add WHERE
+    // Add the WHERE clause if it's not empty
     if (whereClause.length() > 0) {
         qry += " WHERE " + whereClause.toString().trim();
     }
 
-    // Add ORDER BY
+    // Add the ORDER BY clause if sortOrder is not empty
     if (!sortOrder.isEmpty()) {
-        qry += " ORDER BY " + sortOrder;  
+        qry += " ORDER BY " + sortOrder;  // Append ORDER BY condition
     }
 
-	//PRINT TO TEST
-	System.out.println (qry);
     return qry;
 }
 
-public String getDisplayDisplay(String display){return display;}
-	
-public void search(String search){
-	if (search == null || search.isEmpty()) {
-        searchFilter = "";
-		}else{
-			if (search.matches("\\d+")){
-				 makeFilter = "";
-				 modelFilter = "";
-				 colorFilter = "";
-				 yearFilter = "";
-				 priceFilter = "";
-				 sortOrder = "";
-			searchFilter = " id = " + search + " ";
-			}else{
-				JOptionPane.showMessageDialog(null, "Invalid input. Please enter a vehicle ID.");
-			}
-		}
-}
-
-	//Format filter for MAKE
 	public void filterMakes(String makes){
  		if (makes == null || makes.isEmpty()) {
         makeFilter = "";
 		}else{
-			makeFilter = " make IN(" + makes + ") ";
+			makeFilter = " make IN(makes) ";
 		}
 	}
 	
-	//Format filter for MODEL
-	public void filterModels(String models){
-		if (models == null || models.isEmpty()) {
-	   modelFilter = "";
-	   }else{
-		   modelFilter = " model IN(" + models + ") ";
-	   }
-   }
+	public String getDisplayDisplay(String display){return display;}
 	
-	//Format filter for COLORS
-	public void filterColors(String colors){
-		if (colors == null || colors.isEmpty()) {
-	   colorFilter = "";
-	   }else{
-		   colorFilter = " color IN(" + colors + ") ";
-	   }
-   }
-	
-   //Format filter for YEAR
-	public void filterYears(int minyear, int maxyear){
-		if (minyear <= 0 || maxyear <= 0 || minyear > maxyear){
-			yearFilter = "";
-			}else{
-				yearFilter = " year >= " + minyear + " AND year <= " + maxyear + " ";
-			}
+	public String search(String search){
+		return search;
 	}
 	
-	//Format filter for PRICE
-	public void filterPrice(int minPrice, int maxPrice){
-		if (minPrice <= 0 || maxPrice <= 0 || minPrice > maxPrice){
-			priceFilter = "";
-			}else{
-				priceFilter = " price >= " + minPrice + " AND price <= " + maxPrice + " ";
-			}
-	}
 	
-	public void sortMenuSelect(int sortSel){
+	public String filterModels(String models){return models;}
+	
+	public String filterColors(String colors){return colors;}
+	
+	public int filterYears(int minyear, int maxyear){return minyear;}
+	
+	public int filterPrice(int minPrice, int maxPrice){return minPrice;}
+	
+	public String sortMenuSelect(int sortSel){
+		String sorted = "";
 		switch(sortSel){
-			case 0:
-				sortOrder = "";
-				break;
 			case 1:
-				sortOrder = "price DESC";
+				sorted = "price DESC";
 				break;
 			case 2:
-			sortOrder = "price ASC";
+				sorted = "price ASC";
 				break;
 			case 3:
-			sortOrder = "make";
+				sorted = "make";
 				break;
 			case 4:
-			sortOrder = "model";
+				sorted = "model";
 				break;	
 			case 5:
-			sortOrder = "year DESC";
+				sorted = "year DESC";
 				break;
 			case 6:
-			sortOrder = "year ASC";
+				sorted = "year ASC";
 				break;	
 		}
+		return sorted;
 	}
 
 	public int getTotalVehiclesInInventory() {
@@ -398,28 +347,7 @@ public void search(String search){
 	}
 	
 	
-	//actions for editInventory Pages///////////////////////////////////////////////////////
-	public boolean addVehicle(Vehicle vehicle) {
-		//currently in dealership.java
-		//reroute to VehicleDAO.java
-		//change to if nuumber of vehicles in inventory = capacity
-		/*
-		if (nv == inventory.length) {
-			return false;
-		}
-		*/
-
-		if (vehicle instanceof Car) {
-			//add car
-		}
-
-		if (vehicle instanceof Motorcycle) {
-			//addcar
-		}
-
-		return true;
-
-	}
+	
 	
 	public void getIndexFromId(int id){
 		//was in InventoryPage
@@ -429,11 +357,12 @@ public void search(String search){
 	
 	public boolean vehicleExsist(int id){
 		boolean exsist = vehicleDAO.exsist(id);
+		System.out.println("controller" + exsist);
 		if (exsist == false) {
 				JOptionPane.showMessageDialog(null, "Vehicle not found!");
 				return false;
 		}else{
-			return false;
+			return true;
 		}
 	}
 	
@@ -453,81 +382,13 @@ public void search(String search){
 	}
 	
 	public void getVehicleType(Vehicle vehicle, JPanel editPanel){
-		//currently in inventoryPage
-		//move all nonUI elements here
-		/*
-		JTextField makeField = new JTextField();
-		JTextField modelField = new JTextField();
-		JTextField colorField = new JTextField();
-		JTextField yearField = new JTextField();
-		JTextField priceField = new JTextField();
-		JTextField typeField = new JTextField();
-		JTextField handlebarField = new JTextField();
-			
-		if (vehicle instanceof Car) {
-				Car car = (Car) vehicle;
-
-				editPanel.add(new JLabel("Make:"));
-				makeField.setText(car.getMake());
-				editPanel.add(makeField);
-
-				editPanel.add(new JLabel("Model:"));
-				modelField.setText(car.getModel());
-				editPanel.add(modelField);
-
-				editPanel.add(new JLabel("Color:"));
-				colorField.setText(car.getColor());
-				editPanel.add(colorField);
-
-				editPanel.add(new JLabel("Year:"));
-				yearField.setText(String.valueOf(car.getYear()));
-				editPanel.add(yearField);
-
-				editPanel.add(new JLabel("Price:"));
-				priceField.setText(String.valueOf(car.getPrice()));
-				editPanel.add(priceField);
-
-				editPanel.add(new JLabel("Type:"));
-				typeField.setText(car.getType());
-				editPanel.add(typeField);
-
-			} else if (vehicle instanceof Motorcycle) {
-				Motorcycle motorcycle = (Motorcycle) vehicle;
-
-				editPanel.add(new JLabel("Make:"));
-				makeField.setText(motorcycle.getMake());
-				editPanel.add(makeField);
-
-				editPanel.add(new JLabel("Model:"));
-				modelField.setText(motorcycle.getModel());
-				editPanel.add(modelField);
-
-				editPanel.add(new JLabel("Color:"));
-				colorField.setText(motorcycle.getColor());
-				editPanel.add(colorField);
-
-				editPanel.add(new JLabel("Year:"));
-				yearField.setText(String.valueOf(motorcycle.getYear()));
-				editPanel.add(yearField);
-
-				editPanel.add(new JLabel("Price:"));
-				priceField.setText(String.valueOf(motorcycle.getPrice()));
-				editPanel.add(priceField);
-
-				editPanel.add(new JLabel("Handlebar Type:"));
-				handlebarField.setText(motorcycle.getHandlebarType());
-				editPanel.add(handlebarField);
-			}
-			*/
+		
 	}
 	
-	public boolean sellVehicle(String[] vehicle, String buyerName, String buyerContact){
-		//return if able to successfully sellVehicle
-		//currently in dealership.java
-		//reroute to SaleDAO.java
-		//VehicleDAO.sellVehicle(vehicle, buyerName, buyerContant);
-		//Main.m_dealership.sellVehicle(vehicle, buyerName, buyerContact);
-		return true;
+	public boolean sellVehicle(int vehicle, String buyerName, String buyerContact){
+		boolean sold = vehicleDAO.sellVehicle(vehicle);
+		return sold;
+		
 	}
 	
 	public boolean removeVehicle(Vehicle vehicle){
@@ -542,16 +403,16 @@ public void search(String search){
 		//return true if successfully added
 		//currently in dealership.java
 		//reroute to VehicleDAO.java
-		Main.m_dealership.addVehicle(new Car(make, model, color, year, price, type));
-		return true;
+		boolean added = vehicleDAO.addCar(make, model, color, year, price, type);
+		return added;
 	}
 
 	public boolean addMotorcycle(String make, String model, String color, int year, int price, String handlebarType){
 		//return true if motorcycle is successfully added
 		//currently in dealership.java
 		//reroute to VehicleDAO.java
-		Main.m_dealership.addVehicle(new Motorcycle(make, model, color, year, price, handlebarType));
-		return true;
+		boolean added = vehicleDAO.addMotorcycle(make, model, color, year, (int) price, handlebarType);
+		return added;
 	}
 	
 	public boolean editCar(String[] car){
@@ -564,5 +425,8 @@ public void search(String search){
 		return editS;
 	}
 
-
+	public boolean removeVehicle(int id){
+		boolean removed = vehicleDAO.removeVehicle(id);
+		return removed;
+	}
 }
