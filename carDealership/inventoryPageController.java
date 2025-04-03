@@ -41,6 +41,7 @@ public class inventoryPageController{
 	private String yearFilter = "";
 	private String priceFilter = "";
 	private String sortOrder = "";
+	private String searchFilter = "";
 	
 	
 public inventoryPageController(int ID){ 
@@ -121,74 +122,111 @@ public int getNumbertoDisplay(){
 
 	public String getFilterDisplay(){ 
 		     // Base query
-			 System.out.println ("It worked");
+			 
     String qry = "SELECT * FROM Inventory";
     
-    // Initialize the WHERE clause
-    StringBuilder whereClause = new StringBuilder();
-    
-    // Add conditions if filters are not empty
-    if (!makeFilter.isEmpty()) {
-        if (whereClause.length() > 0) whereClause.append(" AND ");
-        whereClause.append(makeFilter);  
-    }
-    
-    if (!modelFilter.isEmpty()) {
-        if (whereClause.length() > 0) whereClause.append(" AND ");
-        whereClause.append(modelFilter);  
-    }
-    
-    if (!colorFilter.isEmpty()) {
-        if (whereClause.length() > 0) whereClause.append(" AND ");
-        whereClause.append(colorFilter);  
-    }
-    
-    if (!yearFilter.isEmpty()) {
-        if (whereClause.length() > 0) whereClause.append(" AND ");
-        whereClause.append(yearFilter);  
-    }
-    
-    if (!priceFilter.isEmpty()) {
-        if (whereClause.length() > 0) whereClause.append(" AND ");
-        whereClause.append(priceFilter);  
-    }
-    
-    // Add the WHERE clause if it's not empty
-    if (whereClause.length() > 0) {
-        qry += " WHERE " + whereClause.toString().trim();
-    }
+	//if (searchFilter.isEmpty()){
 
-    // Add the ORDER BY clause if sortOrder is not empty
-    if (!sortOrder.isEmpty()) {
-        qry += " ORDER BY " + sortOrder;  // Append ORDER BY condition
-    }
+			// Initialize the WHERE clause
+			StringBuilder whereClause = new StringBuilder();
+			
+			// Add conditions if filters are not empty
+			if (!makeFilter.isEmpty()) {
+				if (whereClause.length() > 0) whereClause.append(" AND ");
+				whereClause.append(makeFilter);  
+			}
+			
+			if (!modelFilter.isEmpty()) {
+				if (whereClause.length() > 0) whereClause.append(" AND ");
+				whereClause.append(modelFilter);  
+			}
+			
+			if (!colorFilter.isEmpty()) {
+				if (whereClause.length() > 0) whereClause.append(" AND ");
+				whereClause.append(colorFilter);  
+			}
+			
+			if (!yearFilter.isEmpty()) {
+				if (whereClause.length() > 0) whereClause.append(" AND ");
+				whereClause.append(yearFilter);  
+			}
+			
+			if (!priceFilter.isEmpty()) {
+				if (whereClause.length() > 0) whereClause.append(" AND ");
+				whereClause.append(priceFilter);  
+			}
+			
+			// Add the WHERE clause if it's not empty
+			if (whereClause.length() > 0) {
+				qry += " WHERE " + whereClause.toString().trim();
+			}
 
+			// Add the ORDER BY clause if sortOrder is not empty
+			if (!sortOrder.isEmpty()) {
+				qry += " ORDER BY " + sortOrder;  // Append ORDER BY condition
+			}
+	//}else{
+		//qry += " WHERE " + searchFilter; 
+	//}
+	
+	System.out.println(qry);
     return qry;
+	
 }
 
 	public void filterMakes(String makes){
  		if (makes == null || makes.isEmpty()) {
         makeFilter = "";
 		}else{
-			makeFilter = " make IN(makes) ";
+			makeFilter = " make IN(" + makes + ") ";
 		}
 	}
 	
 	public String getDisplayDisplay(String display){return display;}
 	
-	public String search(String search){
-		return search;
+	public void search(String search){
+		  // Check if the search string contains only digits
+		  if (search.matches("\\d+")) {  // \\d+ matches one or more digits
+			searchFilter = " id = " + search + " ";  
+		} else {
+			// Show an error message if input is invalid
+			JOptionPane.showMessageDialog(null, "Invalid input. Please enter a vehicle ID number.");
+		}
 	}
 	
 	
-	public String filterModels(String models){return models;}
+	public void filterModels(String models){
+		if (models == null || models.isEmpty()) {
+			modelFilter = "";
+			}else{
+				modelFilter = " model IN(" + models + ") ";
+			}
+	}
 	
-	public String filterColors(String colors){return colors;}
+	public void filterColors(String colors){
+		if (colors == null || colors.isEmpty()) {
+			colorFilter = "";
+			}else{
+				colorFilter = " color IN(" + colors +") ";
+			}
+	}
 	
-	public int filterYears(int minyear, int maxyear){return minyear;}
+	public void filterYears(int minyear, int maxyear){
+		if (minyear == 0 || maxyear == 0) {
+			yearFilter = "";
+			}else{
+				yearFilter = " year >= " + minyear + " AND year <= " + maxyear + " ";
+			}
+	}
 	
-	public int filterPrice(int minPrice, int maxPrice){return minPrice;}
-	
+	public void filterPrice(int minPrice, int maxPrice){
+		if (minPrice == 0 || maxPrice == 0) {
+			priceFilter = "";
+			}else{
+				priceFilter = " price >= " + minPrice + " AND price <= " + maxPrice + " ";
+		}
+	}
+
 	public String sortMenuSelect(int sortSel){
 		String sorted = "";
 		switch(sortSel){
@@ -255,24 +293,24 @@ public int getNumbertoDisplay(){
 		
 	}
 	
-	public static int getMinYear(){
+	public int getMinYear(){
 		//get year of oldest car
 		//reroute to Vehicle or keep here
-		int minYear = 1960;
+		int minYear = vehicleDAO.getMinYear();
 		return minYear;
 	}
 	
-	public static int getMaxYear(){
+	public int getMaxYear(){
 		//get year of oldest car
 		//reroute to Vehicle or keep here
-		int maxYear = 2005;
+		int maxYear = vehicleDAO.getMaxPrice();
 		return maxYear;
 	}
 	
-	public static int getMinPrice(){
+	public int getMinPrice(){
 		//get Price of oldest car
 		//reroute to Vehicle or keep here
-		int minPrice = 1960;
+		int minPrice = vehicleDAO.getMinPrice();
 		return minPrice;
 	}
 	
@@ -370,8 +408,6 @@ public int getNumbertoDisplay(){
 	}
 	
 	public String[] getVehicleFromId(int id){
-		//currently in dealership.java
-		//rerout to VehicleDAO.java
 		boolean exsist = vehicleDAO.exsist(id);
 		if(!exsist){
 			JOptionPane.showMessageDialog(null, "Vehicle not found!");
@@ -398,24 +434,18 @@ public int getNumbertoDisplay(){
 	
 	public boolean removeVehicle(Vehicle vehicle){
 		//return if able to successfully removeVehicle
-		//currently in dealership.java
-		//reroute to VehicleDAO.java
 		Main.m_dealership.removeVehicle(vehicle);
 		return true;
 	}
 	
 	public boolean addCar(String make, String model, String color, int year, int price, String type){
 		//return true if successfully added
-		//currently in dealership.java
-		//reroute to VehicleDAO.java
 		boolean added = vehicleDAO.addCar(make, model, color, year, price, type);
 		return added;
 	}
 
 	public boolean addMotorcycle(String make, String model, String color, int year, int price, String handlebarType){
 		//return true if motorcycle is successfully added
-		//currently in dealership.java
-		//reroute to VehicleDAO.java
 		boolean added = vehicleDAO.addMotorcycle(make, model, color, year, (int) price, handlebarType);
 		return added;
 	}

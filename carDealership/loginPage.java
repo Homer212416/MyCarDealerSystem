@@ -4,19 +4,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.Color;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.ImageIcon;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 import java.sql.SQLException;
-import java.awt.Toolkit;
 
 public class loginPage{
 	private JFrame mainFrame;
@@ -26,6 +16,8 @@ public class loginPage{
 	private JLabel statusLabel;
 	private JPanel controlPanel;
 	private loginPageController controller;
+	private int resetUserID; // Add this near the top of the class
+
 	
 	public loginPage(loginPageController controller){
       this.controller = controller;
@@ -97,7 +89,7 @@ public class loginPage{
 		gbcA.insets = new Insets(0,0,0,0);
 		gridA.add(loginLabel,gbcA);
 		
-		JTextField usernameBar  = new JTextField("Username", 18);
+		JTextField usernameBar  = new JTextField("User ID", 18);
 		gbcA.insets = new Insets(20,10,0,0);
 		gbcA.gridwidth= 2;
 		gbcA.gridx = 0;
@@ -111,7 +103,7 @@ public class loginPage{
 		gbcA.gridy = 2;
 		gridA.add(passwordBar,gbcA);
 		
-		JButton forgotButton = new JButton("Forgot Password?");
+		JButton forgotButton = new JButton("Forgot/Reset Password?");
 		gbcA.gridwidth= 1;
 		gbcA.anchor = GridBagConstraints.EAST;
 		gbcA.gridx = 0;
@@ -207,7 +199,7 @@ public class loginPage{
 		
 		JTextArea announcement = new JTextArea(2, 20);
 		announcement.setForeground(Color.BLACK);
-		announcement.setText("Please fill out all the information below and a new temporary password will be sent to your email shortly");
+		announcement.setText("Please fill out all the information below to request a new password.");
 		announcement.setWrapStyleWord(true);
 		announcement.setLineWrap(true);
 		announcement.setOpaque(false);
@@ -221,12 +213,12 @@ public class loginPage{
 		announcementBG.add(announcement, gbcA);
 		
 		//request first and last name, job title, email 
-		JLabel userNameL = new JLabel("User Name: ");
+		JLabel userIDL = new JLabel("User ID: ");
 		gbcI.anchor = GridBagConstraints.EAST;
 		gbcI.weighty = .5;
 		gbcI.gridx = 0;
 		gbcI.gridy = 0;
-		infoBG.add(userNameL, gbcI);
+		infoBG.add(userIDL, gbcI);
 		
 		
 		JLabel fNameL = new JLabel("First Name: ");
@@ -261,10 +253,10 @@ public class loginPage{
 		gbcI.gridy = 1;
 		infoBG.add(fNameT, gbcI);
 		
-		JTextField userNameT = new JTextField(15);
+		JTextField userIDT = new JTextField(15);
 		gbcI.gridx = 1;
 		gbcI.gridy = 0;
-		infoBG.add(userNameT, gbcI);
+		infoBG.add(userIDT, gbcI);
 		
 		JTextField lNameT = new JTextField(15);
 		gbcI.gridx = 1;
@@ -292,17 +284,27 @@ public class loginPage{
 		requestPmainFrame.setContentPane(controlPanel);
 		requestPmainFrame.setVisible(true);
 		
-		requestB.addActionListener( new ActionListener() {
+		requestB.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				controller.requestSubmitPressed(requestPmainFrame);
+				try {
+					int userID = Integer.parseInt(userIDT.getText());
+					String firstName = fNameT.getText();
+					String lastName = lNameT.getText();
+					String jobTitle = jobTitleT.getText();
+					String email = emailT.getText();
+		
+					controller.requestSubmitPressed(requestPmainFrame, userID, firstName, lastName, jobTitle, email);
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(requestPmainFrame, "User ID must be a number.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 	}
 	
 	
-	public void resetPasswordPage(){
+	public void resetPasswordPage(int UserId){
+		this.resetUserID = UserId; 
 		resetPmainFrame = new JFrame("Reset Password");
 		resetPmainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
 		resetPmainFrame.setBounds(0, 0, 315, 335);
@@ -317,6 +319,7 @@ public class loginPage{
 		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		controlPanel.setBounds(0, 0, 315, 335);
 		controlPanel.setLayout(new GridLayout());
+		
 		GridBagLayout layout = new GridBagLayout();
 		controlPanel.setLayout(layout);	
 		GridBagConstraints gbcC = new GridBagConstraints();
@@ -351,7 +354,7 @@ public class loginPage{
 		
 		JTextArea announcement = new JTextArea(2, 20);
 		announcement.setForeground(Color.BLACK);
-		announcement.setText("Please fill out all the information below to reset your password. This must be done after recieving a temporary password from an admin.");
+		announcement.setText("Please fill out all the information below to reset your password.");
 		announcement.setWrapStyleWord(true);
 		announcement.setLineWrap(true);
 		announcement.setOpaque(false);
@@ -363,18 +366,12 @@ public class loginPage{
 		gbcA.gridy = 0;
 		announcementBG.add(announcement, gbcA);
 		
-		JLabel userNameL = new JLabel("Username: ");
+		JLabel userIDL = new JLabel("User ID: ");
 		gbcI.anchor = GridBagConstraints.EAST;
 		gbcI.weighty = .5;
 		gbcI.gridx = 0;
 		gbcI.gridy = 0;
-		infoBG.add(userNameL, gbcI);
-		
-		JLabel tempL = new JLabel("Old Password: ");
-		gbcI.anchor = GridBagConstraints.EAST;
-		gbcI.gridx = 0;
-		gbcI.gridy = 1;
-		infoBG.add(tempL, gbcI);
+		infoBG.add(userIDL, gbcI);
 		
 		JLabel newPassL = new JLabel("New Password: ");
 		gbcI.anchor = GridBagConstraints.EAST;
@@ -388,30 +385,23 @@ public class loginPage{
 		infoBG.add(confirmPassL, gbcI);
 		gbcI.anchor = GridBagConstraints.WEST;
 		
-		JPasswordField tempPasswordBar  = new JPasswordField("Password",18);
-		tempPasswordBar.setEchoChar('~');
-		gbcI.fill = GridBagConstraints.HORIZONTAL;
-		gbcI.weightx = .99;
-		gbcI.gridx = 1;
-		gbcI.gridy = 1;
-		infoBG.add(tempPasswordBar, gbcI);
 		
 		JPasswordField newPasswordBar  = new JPasswordField("Password",18);
-		newPasswordBar.setEchoChar('~');
+		newPasswordBar.setEchoChar('*');
 		gbcI.gridx = 1;
 		gbcI.gridy = 2;
 		infoBG.add(newPasswordBar, gbcI);
 		
 		JPasswordField confirmPasswordBar  = new JPasswordField("Password",18);
-		confirmPasswordBar.setEchoChar('~');
+		confirmPasswordBar.setEchoChar('*');
 		gbcI.gridx = 1;
 		gbcI.gridy = 3;
 		infoBG.add(confirmPasswordBar, gbcI);
 		
-		JTextField userNameT = new JTextField(15);
+		JTextField userIDT = new JTextField(15);
 		gbcI.gridx = 1;
 		gbcI.gridy = 0;
-		infoBG.add(userNameT, gbcI);
+		infoBG.add(userIDT, gbcI);
 		
 		//submit button
 		JButton requestB = new JButton("Submit");
@@ -424,12 +414,13 @@ public class loginPage{
 		resetPmainFrame.setContentPane(controlPanel);
 		resetPmainFrame.setVisible(true);
 		
-		//set functions
-		requestB.addActionListener( new ActionListener() {
+		requestB.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				controller.newPasswordSubmitPressed(resetPmainFrame);
+				String newPass = new String(newPasswordBar.getPassword());
+				String confirmPass = new String(confirmPasswordBar.getPassword());
+		
+				controller.newPasswordSubmitPressed(resetPmainFrame, UserId, newPass, confirmPass);
 			}
 		});
 		

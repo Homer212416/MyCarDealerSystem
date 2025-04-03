@@ -177,10 +177,28 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
         }
     }
 	
-	public static String[] getAllModels(){
+	public String[] getAllModels(){
 		//return list of all models with no duplicates
-		String[] models = {"Accord", "Something"};
-		return(models);
+		ArrayList<String> modelsList = new ArrayList<>();
+                try {
+                    // The SQL query to fetch distinct color
+                    String query = "SELECT DISTINCT model FROM vehicles WHERE inInventory = 'true'";
+                    
+                    // Run the query 
+                    ResultSet resultSet = DBManager.getInstance().runQuery(query);
+                    
+                    // Loop through and add to list
+                    while (resultSet.next()) {
+                        modelsList.add(resultSet.getString("model"));
+                    }
+        
+                    // Convert the ArrayList to an array and return 
+                    return modelsList.toArray(new String[0]);
+                    
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return new String[0];  // Return an empty if error
+                }
 	}
 	
 	public String[] getAllColors(){
@@ -209,27 +227,50 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
             
 	}
 	
-	public static int getMinYear(){
+	public int getMinYear(){
 		//return year of oldest vehicle
-		int minyear = 1960;
+		int minyear = 0;
+		try {
+			// The SQL query to fetch min year
+			String query = "SELECT min(year) FROM vehicles WHERE inInventory = 'true'";
+			ResultSet resultSet = DBManager.getInstance().runQuery(query);
+			while (resultSet.next()) {
+				minyear = resultSet.getInt("year");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return(minyear);
 	}
 	
 	public static int getMaxYear(){
 		//return year of oldest vehicle
-		int maxyear = 2025;
+		int maxyear = 0;
+		try {
+			String query = "SELECT MAX(year) FROM vehicles WHERE inInventory = 'true'";
+			ResultSet resultSet = DBManager.getInstance().runQuery(query);
+			while (resultSet.next()) {
+				maxyear = resultSet.getInt("year");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return(maxyear);
 	}
 	
 	public static int getMinPrice(){
 		//return Price of oldest vehicle
 		int minPrice = 1960;
+        //String query = "SELECT MIN(price) FROM vehicles WHERE inInventory = 'true'";
 		return(minPrice);
 	}
 	
 	public static int getMaxPrice(){
 		//return Price of oldest vehicle
 		int maxPrice = 2025;
+        //String query = "SELECT MAX(price) FROM vehicles WHERE inInventory = 'true'";
 		return(maxPrice);
 	}
 	
