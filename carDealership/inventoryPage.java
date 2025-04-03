@@ -138,28 +138,23 @@ public class inventoryPage{
 		filterBG.setBackground(bgColor);
 		GridBagLayout layoutF = new GridBagLayout();
 		filterBG.setLayout(layoutF);
-		filterBG.setPreferredSize(new Dimension(200, 365));
+		//filterBG.setPreferredSize(new Dimension(200, 365));
 		filterBG.setMinimumSize(new Dimension(200, 365));
-		filterBG.setMaximumSize(new Dimension(200, 365));
+		//filterBG.setMaximumSize(new Dimension(200, 365));
 		gbcF = new GridBagConstraints();
+		
+		//make filter a scrollpane when needed
+		filterScroll = new JScrollPane(filterBG, JScrollPane. VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		filterScroll.setPreferredSize(new Dimension(200, 375));
+		filterScroll.setMinimumSize(new Dimension(200, 375));
+		filterScroll.setMaximumSize(new Dimension(200, 375));
+		gbcC.fill = GridBagConstraints.BOTH;
 		gbcC.anchor = GridBagConstraints.NORTHEAST;  
 		gbcC.gridx = 1;
 		gbcC.gridwidth = 1;
 		gbcC.gridheight = 3;
 		gbcC.gridy = 3;
-		gbcC.weightx = .001;
-		controlPanel.add(filterBG,gbcC);
-		
-		//make filter a scrollpane when needed
-		filterScroll = new JScrollPane(filterBG, JScrollPane. VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		filterScroll.setPreferredSize(new Dimension(200, 375));
-		filterScroll.setMinimumSize(new Dimension(200, 375));
-		filterScroll.setMaximumSize(new Dimension(200, 375));
-		gbcC.anchor = GridBagConstraints.NORTHEAST;  
-		gbcC.gridx = 1;
-		gbcC.gridwidth = 1;
-		gbcC.gridy = 3;
-		gbcC.weightx = .001;
+		gbcC.weightx = .3;
 		controlPanel.add(filterScroll,gbcC);
 		////////////////////////////////////////////////////////////////////////////////
 		
@@ -256,6 +251,8 @@ public class inventoryPage{
 				controller.editMenuSelect(editInventoryMenu.getSelectedIndex());
 			}
 		});
+		
+		
 		//////////////////////////////////////////////////////////////////
 			
 		///////search bar and buttonn///////////////////////////////////////////////////////////////
@@ -376,7 +373,7 @@ public class inventoryPage{
 		
 		//filter setup/////////////////////////////////////////////////////////
 		//make filter//////////////////////////
-		int yBox = 3;
+		int yBox = 0;
 		gbcF.anchor = GridBagConstraints.NORTH;
 		JLabel makeL = new JLabel("Make");
 		gbcF.gridwidth = 3;
@@ -541,7 +538,7 @@ public class inventoryPage{
 		gbcF.gridwidth = 1;
 		gbcF.gridx = 0;
 		gbcF.gridy = yBox;
-		gbcF.insets = new Insets(0, 5, 0, 0);
+		gbcF.insets = new Insets(0, 10, 0, 0);
 		filterBG.add(minSpinner, gbcF);
 		
 		//create spinner to set the newest year
@@ -552,8 +549,9 @@ public class inventoryPage{
 		maxSpinner.setEditor(maxEditor);
 		maxSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
 		gbcF.gridwidth = 1;
-		gbcF.gridx = 2;
+		gbcF.gridx = 1;
 		gbcF.gridy = yBox;
+		//gbcF.insets = new Insets(0, 15, 0, 0);
 		filterBG.add(maxSpinner, gbcF);
 		
 		//add dash between two spinners
@@ -564,7 +562,7 @@ public class inventoryPage{
 		gbcF.gridwidth = 1;
 		gbcF.gridx = 1;
 		gbcF.gridy = yBox++;
-		//gbcF.insets = new Insets(0, -15, 0, 0);
+		gbcF.insets = new Insets(0, 15, 0, 0);
 		filterBG.add(dashyear, gbcF);
 		
 		ChangeListener yearListener = new ChangeListener(){
@@ -599,12 +597,12 @@ public class inventoryPage{
 		gbcF.anchor = GridBagConstraints.NORTH;
 		JSlider priceSlider = new JSlider((int)minPrice, (int)maxPrice, (int)maxPrice);
 		priceSlider.setBackground(bgColor);
-		gbcF.insets = new Insets(0, 10, 0, 0);
-		gbcF.gridwidth = 3;
+		gbcF.insets = new Insets(0, -15, 0, 0);
+		gbcF.gridwidth = 2;
 		gbcF.gridx = 0;
 		gbcF.gridy = yBox++;
 		gbcF.ipady = 0;
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
+		gbcF.fill = GridBagConstraints.NONE;
 		filterBG.add(priceSlider, gbcF);
 		
 		//label min price
@@ -614,6 +612,7 @@ public class inventoryPage{
 		gbcF.gridx = 0;
 		gbcF.gridy = yBox;
 		gbcF.ipady = 0;
+		gbcF.insets = new Insets(0,0, 0, 0);
 		//gbcF.weightx = .2;
 		gbcF.fill = GridBagConstraints.HORIZONTAL;
 		filterBG.add(min, gbcF);
@@ -621,9 +620,9 @@ public class inventoryPage{
 		//label max price
 		gbcF.anchor = GridBagConstraints.NORTHWEST;
 		JLabel max = new JLabel(Integer.toString((int)maxPrice));
-		gbcF.insets = new Insets(0, -15, 0, 0);
+		gbcF.insets = new Insets(0, -30, 0, 0);
 		gbcF.gridwidth = 1;
-		gbcF.gridx = 3;
+		gbcF.gridx = 2;
 		gbcF.gridy = yBox++;
 		gbcF.weighty =.2;
 		gbcF.fill = GridBagConstraints.NONE;
@@ -681,9 +680,9 @@ public class inventoryPage{
 		//create an panel for each vehicle that should be shown and name///////////////////////
 		
 		
-		JPanel[] vehiclePanelNames= new JPanel[controller.getNumbertoDisplay()];
-		//System.out.println(numberToShow);
-		for (int i = 0; i < controller.getNumbertoDisplay(); i++) {
+		JPanel[] vehiclePanelNames= new JPanel[controller.getNumbertoDisplay() + 1];
+		System.out.println(controller.getNumbertoDisplay() + "panel");
+		for (int i = 0; i < controller.getNumbertoDisplay() + 1; i++) {
 			String num = Integer.toString(i);
 			JPanel vehicle = new JPanel();
 			//add each panel to the array
@@ -693,7 +692,8 @@ public class inventoryPage{
 		}
 		
 		String[] vehicles = controller.getAllDisplayInfo();
-		for (int i = 0; i < controller.getNumbertoDisplay() ; i++) {
+		System.out.println(controller.getNumbertoDisplay() + "vehicle");
+		for (int i = 0; i < controller.getNumbertoDisplay(); i++) {
 			//set standard layout for each panel/////
 			vehiclePanelNames[i].setBackground(Color.WHITE);
 			vehiclePanelNames[i].setLayout(new GridBagLayout());
@@ -1004,10 +1004,12 @@ public class inventoryPage{
 				JOptionPane.showMessageDialog(null, "Car has been added successfully.");
 				controlPanel.remove(inventoryBG);
 				controlPanel.remove(filterBG);
+				refreshInventory();
+				invMainFrame.validate();
 				controlPanel.validate();
 				controlPanel.repaint();
-				invMainFrame.validate();
-				refreshInventory();
+				
+				
 			}else{
 			JOptionPane.showMessageDialog(null, "Sorry, the car has not been added.");}
 		}

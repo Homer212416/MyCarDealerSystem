@@ -129,9 +129,9 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
                 String carType = resultSet.getString("carType");
 				String inInventoryValue = resultSet.getString("inInventory");
 				boolean inInventory = "true".equalsIgnoreCase(inInventoryValue);
-				System.out.println("there is : " + inInventory); 
+				//System.out.println("there is : " + inInventory); 
 				String handleBarType = resultSet.getString("handleBarType");
-				String[] vehicle = {Integer.toString(ID), make, model, color, model, Integer.toString(year), Integer.toString(price), carType, handleBarType}; 
+				String[] vehicle = {Integer.toString(ID), make, model, color, Integer.toString(year), Integer.toString(price), carType, handleBarType}; 
 				displayInfo[x] = vehicle;
 				x++;
 			}
@@ -229,32 +229,33 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 	
 	public int getMinYear(){
 		//return year of oldest vehicle
-		int minyear = 0;
+		int minyear = 2025;
 		try {
 			// The SQL query to fetch min year
-			String query = "SELECT min(year) FROM vehicles WHERE inInventory = 'true'";
-			ResultSet resultSet = DBManager.getInstance().runQuery(query);
-			while (resultSet.next()) {
-				minyear = resultSet.getInt("year");
+			String query = "SELECT MIN(year) FROM vehicles WHERE inInventory = 'true'";
+			ResultSet rs = DBManager.getInstance().runQuery(query);
+			while(rs.next()) {
+                    minyear = rs.getInt(1);
 			}
-
-		} catch (SQLException e) {
+		}		catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return(minyear);
+		return minyear;
 	}
 	
 	public static int getMaxYear(){
 		//return year of oldest vehicle
 		int maxyear = 0;
+	
 		try {
 			String query = "SELECT MAX(year) FROM vehicles WHERE inInventory = 'true'";
-			ResultSet resultSet = DBManager.getInstance().runQuery(query);
-			while (resultSet.next()) {
-				maxyear = resultSet.getInt("year");
+			ResultSet rs = DBManager.getInstance().runQuery(query);
+			while(rs.next()) {
+				//System.out.println(rs.getInt("year"));
+                    maxyear =rs.getInt(1);
 			}
 
-		} catch (SQLException e) {
+			} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return(maxyear);
@@ -262,15 +263,35 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 	
 	public static int getMinPrice(){
 		//return Price of oldest vehicle
-		int minPrice = 1960;
-        //String query = "SELECT MIN(price) FROM vehicles WHERE inInventory = 'true'";
+		int minPrice = 10000000;
+		try {
+			// The SQL query to fetch min year
+			String query = "SELECT min(price) FROM vehicles WHERE inInventory = 'true'";
+			ResultSet rs = DBManager.getInstance().runQuery(query);
+			while(rs.next()) {
+                    minPrice = rs.getInt(1);
+			}
+		}		catch (SQLException e) {
+			e.printStackTrace();
+		}
+        //String query = 
 		return(minPrice);
 	}
 	
 	public static int getMaxPrice(){
-		//return Price of oldest vehicle
-		int maxPrice = 2025;
-        //String query = "SELECT MAX(price) FROM vehicles WHERE inInventory = 'true'";
+		System.out.println("getMax");
+		int maxPrice = 2121;
+		try {
+			// The SQL query to fetch min year
+			String query = "SELECT MAX(price) FROM vehicles WHERE inInventory = 'true'";
+			ResultSet rs = DBManager.getInstance().runQuery(query);
+			while(rs.next()) {
+                    maxPrice = rs.getInt(1);
+					System.out.println("new max price");
+			}
+		}		catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return(maxPrice);
 	}
 	
@@ -285,7 +306,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 				exsists = true;
 			}
 		}catch(SQLException e){e.printStackTrace();}
-		System.out.println("DAO" + exsists);
+		//System.out.println("DAO" + exsists);
 		return exsists;
 	}
 

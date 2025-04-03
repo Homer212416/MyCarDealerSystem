@@ -71,11 +71,12 @@ public inventoryPageController(int ID){
 	}
 
 	public String[] getAllDisplayInfo(){
+		//System.out.println("getall called");
 		String[][] displayInfo = vehicleDAO.getAllDisplayInfo();
 		String[] vehicles = new String[displayInfo.length];
 		int x = 0;
 		for(String[] vehicle: displayInfo){
-			if(vehicle[7] != null){
+			if(vehicle[6] != null){
 				String vehicleInfo = ("ID: " + vehicle[0] + "\n" 
 					+ "Make: " + vehicle[1] + "\n"
 					+ "Model: " + vehicle[2] + "\n"
@@ -169,7 +170,7 @@ public int getNumbertoDisplay(){
 		//qry += " WHERE " + searchFilter; 
 	//}
 	
-	System.out.println(qry);
+	//System.out.println(qry);
     return qry;
 	
 }
@@ -303,7 +304,7 @@ public int getNumbertoDisplay(){
 	public int getMaxYear(){
 		//get year of oldest car
 		//reroute to Vehicle or keep here
-		int maxYear = vehicleDAO.getMaxPrice();
+		int maxYear = vehicleDAO.getMaxYear();
 		return maxYear;
 	}
 	
@@ -314,10 +315,10 @@ public int getNumbertoDisplay(){
 		return minPrice;
 	}
 	
-	public static int getMaxPrice(){
+	public int getMaxPrice(){
 		//get Price of oldest car
 		//reroute to Vehicle or keep here
-		int maxPrice = 2005;
+		int maxPrice = vehicleDAO.getMaxPrice();
 		return maxPrice;
 	}
 	
@@ -398,7 +399,7 @@ public int getNumbertoDisplay(){
 	
 	public boolean vehicleExsist(int id){
 		boolean exsist = vehicleDAO.exsist(id);
-		System.out.println("controller" + exsist);
+		//System.out.println("controller" + exsist);
 		if (exsist == false) {
 				JOptionPane.showMessageDialog(null, "Vehicle not found!");
 				return false;
