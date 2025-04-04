@@ -5,7 +5,7 @@ import java.util.Scanner;
 import persistance.DealershipLayer;
 import persistance.UserLayer;
 
-
+import java.util.Arrays;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,6 +38,8 @@ public class inventoryPage{
 	public static DefaultListSelectionModel pageMenuModel;
 	public static JComboBox pageMenuDD;
 	private Component previousDisplay;
+	private JLabel totalV;
+	private JLabel cap;
 	
 	//page elements
 	private static String[] sortMenuElements;
@@ -48,8 +50,21 @@ public class inventoryPage{
 	private static Image carHeaderImage;
 	private static Image motoImage;
 	private static Image newCarHeaderImage;
+	private static JCheckBox[] makesCheck;
+	private static JCheckBox[] colorsCheck;
+	private static JCheckBox[] modelsCheck;
+	private JSpinner maxSpinner;
+	private static SpinnerNumberModel yearMaxSpinnerModel;
+	private static SpinnerNumberModel yearMinSpinnerModel;
+	private static JSlider priceSlider;
 	public Color bgColor = new Color(230, 230, 230);
-	
+	private static JLabel min;
+	private static JLabel max;
+	private static boolean ignoreStateChange = false;
+	private static boolean ignoreStateChangeSearch = false;
+	private static JLabel at;
+	private static JButton searchExit;
+	private static JTextField searchBar ;
 	
 	public inventoryPage(inventoryPageController controller){
 		//this.controller = new inventoryPageController();
@@ -192,8 +207,7 @@ public class inventoryPage{
 		//////////////////////////////////////////////////////////////
 
 		//////////inventory information/////////////////////////////////////////////////////
-		int size = controller.getTotalVehiclesInInventory();
-		JLabel cap = new JLabel("Size: " + size);
+		cap = new JLabel("Size: " + controller.getTotalVehiclesInInventory());
 		cap.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		//cap.setBounds(30, 600, 200, 25);
 		gbcC.anchor = GridBagConstraints.SOUTHWEST;  
@@ -203,8 +217,7 @@ public class inventoryPage{
 		gbcC.weighty = .1;
 		controlPanel.add(cap,gbcC);
 		
-		int totalValue = controller.getInventoryGrossValue();
-		JLabel totalV = new JLabel("Total Inventory Value: " + totalValue);
+		totalV = new JLabel("Total Inventory Value: " + controller.getInventoryGrossValue());
 		totalV.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		//totalV.setBounds(240, 600, 200, 25);
 		gbcC.insets = new Insets(0, 50,0,0);
@@ -257,8 +270,22 @@ public class inventoryPage{
 			
 		///////search bar and buttonn///////////////////////////////////////////////////////////////
 		//search bar on right hand side
-		gbcC.anchor = GridBagConstraints.EAST;
-		JTextField searchBar  = new JTextField("Search ID", 15);
+		
+		gbcS.anchor = GridBagConstraints.EAST;
+		searchExit  = new JButton("X");
+		searchExit.setFont(new Font("HP Simplified Hans", Font.PLAIN, 5));
+		gbcS.gridx = 2;
+		gbcS.gridy = 1;
+		gbcS.insets = new Insets(-28,8,0,20);
+		searchExit.setMargin(new java.awt.Insets(0,1,0,1));
+		//gbcS.fill = GridBagConstraints.VERTICAL;	
+		searchBarBG.add(searchExit, gbcS);
+		searchExit.setEnabled(false);
+		searchExit.setVisible(false);
+		
+		gbcS.anchor = GridBagConstraints.CENTER;
+		gbcS.fill = GridBagConstraints.NONE;
+		searchBar  = new JTextField("Search ID", 15);
 		searchBar.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
 		gbcS.gridx = 2;
 		gbcS.gridy = 0;
@@ -266,9 +293,27 @@ public class inventoryPage{
 		gbcS.fill = GridBagConstraints.VERTICAL;	
 		searchBarBG.add(searchBar, gbcS);
 		
+		searchExit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!searchBar.getText().matches("Search ID")){
+					System.out.println("searchExit");
+					searchBar.setText("Search ID");
+					controller.searchExit();
+					controlPanel.remove(inventoryBG);
+					searchExit.setEnabled(false);
+					searchExit.setVisible(false);
+					controlPanel.validate();
+					controlPanel.repaint();
+					invMainFrame.validate();
+					refreshInventory();
+				}
+				ignoreStateChangeSearch = false;
+			}
+		});
 		//searchButton
 		JButton MagButton = new JButton("S");
-		//gbcS.insets = new Insets(0,0,0,10);
+		//gbcS.insets = new Insets(0,0,0,0);
 		gbcS.gridx = 6;
 		gbcS.gridy = 0;
 		searchBarBG.add(MagButton, gbcS);
@@ -276,9 +321,20 @@ public class inventoryPage{
 		ActionListener searchListen = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String searchString = searchBar.getText();
-				
-				controller.search(searchString);
+				if(!searchBar.getText().matches("Search ID")){
+					System.out.println("searchBar");
+					String searchString = searchBar.getText();
+					
+					controller.search(searchString);
+					controlPanel.remove(inventoryBG);
+					searchExit.setEnabled(true);
+					searchExit.setVisible(true);
+					controlPanel.validate();
+					controlPanel.repaint();
+					invMainFrame.validate();
+					refreshInventory();
+				}
+				ignoreStateChangeSearch = false;
 			}
 		};
 		MagButton.addActionListener(searchListen);
@@ -291,6 +347,7 @@ public class inventoryPage{
 				if(text.matches("Search ID")){	
 					searchBar.setText("");
 				}
+				
 			}
 			});
 		///////////////////////////////////////////////////////////////////
@@ -335,10 +392,16 @@ public class inventoryPage{
 					displayString = "car";
 				}if(dMoto.isSelected()){
 					displayString = "motorcycle";
-				}if(dCar.isSelected()){
+				}if(dAll.isSelected()){
 					displayString = "all";
 				}
 				controller.getDisplayDisplay(displayString);
+				controller.getFilterDisplay();
+				controlPanel.remove(inventoryBG);
+				controlPanel.validate();
+				controlPanel.repaint();
+				invMainFrame.validate();
+				refreshInventory();
 			}
 		};
 		
@@ -384,7 +447,7 @@ public class inventoryPage{
 		
 		//make checkbox for eachMake
 		String[] makes = controller.getMakes();
-		JCheckBox[] makesCheck = new JCheckBox[makes.length];
+		makesCheck = new JCheckBox[makes.length];
 		int m = 0;
 		for(String make : makes){
 			yBox++;
@@ -413,6 +476,11 @@ public class inventoryPage{
 
 					controller.filterMakes(makeSel);
 					controller.getFilterDisplay();
+					controlPanel.remove(inventoryBG);
+					controlPanel.validate();
+					controlPanel.repaint();
+					invMainFrame.validate();
+					refreshInventory();
 				}
 			};
 			
@@ -432,7 +500,7 @@ public class inventoryPage{
 		filterBG.add(modelL, gbcF);
 		
 		String[] models = controller.getModels();
-		JCheckBox[] modelsCheck = new JCheckBox[models.length];
+		modelsCheck = new JCheckBox[models.length];
 		int mo = 0;
 		for(String model : models){
 			yBox++;
@@ -461,6 +529,11 @@ public class inventoryPage{
 					
 					controller.filterModels(modelSel);
 					controller.getFilterDisplay();
+					controlPanel.remove(inventoryBG);
+					controlPanel.validate();
+					controlPanel.repaint();
+					invMainFrame.validate();
+					refreshInventory();
 				}
 			};
 			
@@ -479,7 +552,7 @@ public class inventoryPage{
 		filterBG.add(colorL, gbcF);
 		
 		String[] colors = controller.getColors();
-		JCheckBox[] colorsCheck = new JCheckBox[colors.length];
+		colorsCheck = new JCheckBox[colors.length];
 		int c = 0;
 		for(String color : colors){
 			yBox++;
@@ -508,6 +581,11 @@ public class inventoryPage{
 					
 					controller.filterColors(colorSel);
 					controller.getFilterDisplay();
+					controlPanel.remove(inventoryBG);
+					controlPanel.validate();
+					controlPanel.repaint();
+					invMainFrame.validate();
+					refreshInventory();
 				}
 			};
 			
@@ -530,7 +608,7 @@ public class inventoryPage{
 		
 		//create spinner to set the oldest year
 		gbcF.anchor = GridBagConstraints.NORTH;
-		SpinnerModel yearMinSpinnerModel = new SpinnerNumberModel(minyear,minyear,maxyear, 1);//min, max,step
+		yearMinSpinnerModel = new SpinnerNumberModel(controller.getMinYear(),controller.getMinYear(),controller.getMaxYear(), 1);//min, max,step
 		JSpinner minSpinner = new JSpinner(yearMinSpinnerModel);
 		JSpinner.NumberEditor minEditor = new JSpinner.NumberEditor(minSpinner, "#");
 		minSpinner.setEditor(minEditor);	
@@ -543,8 +621,8 @@ public class inventoryPage{
 		
 		//create spinner to set the newest year
 		gbcF.anchor = GridBagConstraints.NORTHEAST;
-		SpinnerModel yearMaxSpinnerModel = new SpinnerNumberModel(maxyear,minyear, maxyear,1);
-		JSpinner maxSpinner = new JSpinner(yearMaxSpinnerModel);
+		yearMaxSpinnerModel = new SpinnerNumberModel(controller.getMaxYear(),controller.getMinYear(), controller.getMaxYear(),1);
+		maxSpinner = new JSpinner(yearMaxSpinnerModel);
 		JSpinner.NumberEditor maxEditor = new JSpinner.NumberEditor(maxSpinner, "#");
 		maxSpinner.setEditor(maxEditor);
 		maxSpinner.setFont(new Font("HP Simplified Hans", Font.PLAIN, 12));
@@ -568,10 +646,18 @@ public class inventoryPage{
 		ChangeListener yearListener = new ChangeListener(){
 			@Override
 			public void stateChanged(ChangeEvent e){
-				int minYear = (int) minSpinner.getValue();
-				int maxYear = (int)maxSpinner.getValue();
-				controller.filterYears(minYear, maxYear);
-				controller.getFilterDisplay();
+				System.out.println("state" + ignoreStateChange);
+				if(!ignoreStateChange){
+					int minYear = (int) minSpinner.getValue();
+					int maxYear = (int)maxSpinner.getValue();
+					controller.filterYears(minYear, maxYear);
+					controller.getFilterDisplay();
+					controlPanel.remove(inventoryBG);
+					controlPanel.validate();
+					controlPanel.repaint();
+					invMainFrame.validate();
+					refreshInventory();
+				}		
 			}
 		};
 		
@@ -595,7 +681,7 @@ public class inventoryPage{
 		maxPrice = controller.getMaxPrice();
 		
 		gbcF.anchor = GridBagConstraints.NORTH;
-		JSlider priceSlider = new JSlider((int)minPrice, (int)maxPrice, (int)maxPrice);
+		priceSlider = new JSlider((int)controller.getMinPrice(), (int)controller.getMaxPrice(), (int)controller.getMaxPrice());
 		priceSlider.setBackground(bgColor);
 		gbcF.insets = new Insets(0, -15, 0, 0);
 		gbcF.gridwidth = 2;
@@ -607,35 +693,76 @@ public class inventoryPage{
 		
 		//label min price
 		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		JLabel min = new JLabel(Integer.toString((int)minPrice));
+		min = new JLabel(Integer.toString((int)minPrice));
 		gbcF.gridwidth = 1;
 		gbcF.gridx = 0;
 		gbcF.gridy = yBox;
 		gbcF.ipady = 0;
 		gbcF.insets = new Insets(0,0, 0, 0);
 		//gbcF.weightx = .2;
-		gbcF.fill = GridBagConstraints.HORIZONTAL;
+		gbcF.fill = GridBagConstraints.NONE;
 		filterBG.add(min, gbcF);
 		
 		//label max price
 		gbcF.anchor = GridBagConstraints.NORTHWEST;
-		JLabel max = new JLabel(Integer.toString((int)maxPrice));
+		max = new JLabel(Integer.toString((int)maxPrice));
 		gbcF.insets = new Insets(0, -30, 0, 0);
 		gbcF.gridwidth = 1;
 		gbcF.gridx = 2;
-		gbcF.gridy = yBox++;
+		gbcF.gridy = yBox;
 		gbcF.weighty =.2;
 		gbcF.fill = GridBagConstraints.NONE;
 		filterBG.add(max, gbcF);
 		
+		//location of slider
+		gbcF.anchor = GridBagConstraints.CENTER;
+		at = new JLabel(Integer.toString(priceSlider.getValue()));
+		at.setOpaque(true);
+		//at.setForeground(Color.WHITE);
+		at.setBackground(Color.WHITE);
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 1;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		gbcF.insets = new Insets(0,-70, 0, 0);
+		gbcF.weightx = .2;
+		gbcF.fill = GridBagConstraints.NONE;
+		filterBG.add(at, gbcF);
 		
+		gbcF.anchor = GridBagConstraints.CENTER;
+		JButton removeChanges = new JButton("Remove Filters");
+		gbcF.gridwidth = 1;
+		gbcF.gridx = 1;
+		gbcF.gridy = yBox++;
+		gbcF.ipady = 0;
+		gbcF.insets = new Insets(30,-70, 0, 0);
+		gbcF.weightx = .2;
+		gbcF.fill = GridBagConstraints.HORIZONTAL;
+		filterBG.add(removeChanges, gbcF);
+		
+		removeChanges.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				checkDemark();
+			}
+		});
 		ChangeListener priceListener = new ChangeListener(){
 			@Override
 			public void stateChanged(ChangeEvent e){
-				int newMaxPrice = (int) priceSlider.getValue();
-				max.setText(Integer.toString(newMaxPrice));
-				controller.filterPrice((int)minPrice, newMaxPrice);
-				controller.getFilterDisplay();
+				if(!ignoreStateChange){
+				if (!priceSlider.getValueIsAdjusting()) {
+					int newMaxPrice = (int) priceSlider.getValue();
+					controller.filterPrice((int)minPrice, newMaxPrice);
+					controller.getFilterDisplay();
+					controlPanel.remove(inventoryBG);
+					controlPanel.validate();
+					controlPanel.repaint();
+					invMainFrame.validate();
+					refreshInventory();
+					}
+				}
+				at.setText(Integer.toString(priceSlider.getValue()));
+				ignoreStateChange = false;
 			}
 		};
 		
@@ -649,9 +776,94 @@ public class inventoryPage{
 		
 	}
 	
+	
+	public void refreshMakes(){
+		String[] filteredMakes = controller.getFilteredMakes();
+		this.ignoreStateChange = true;
+		for(JCheckBox check : makesCheck){
+			String nameCheck = check.getName();
+			String name = nameCheck.replaceAll("Check", "");
+			if(Arrays.asList(filteredMakes).contains(name)){
+				check.setEnabled(true);
+			}else{check.setEnabled(false);}
+		}	
+	}
+	
+	public void refreshModels(){
+		String[] filteredModels = controller.getFilteredModels();
+		this.ignoreStateChange = true;
+		for(JCheckBox check : modelsCheck){
+			String nameCheck = check.getName();
+			String name = nameCheck.replaceAll("Check", "");
+			if(Arrays.asList(filteredModels).contains(name)){
+				check.setEnabled(true);
+			}else{check.setEnabled(false);}
+		}	
+	}
+	
+	public void refreshColors(){
+		String[] filteredColors = controller.getFilteredColors();
+		this.ignoreStateChange = true;
+		for(JCheckBox check : colorsCheck){
+			String nameCheck = check.getName();
+			String name = nameCheck.replaceAll("Check", "");
+			if(Arrays.asList(filteredColors).contains(name)){
+				check.setEnabled(true);
+			}else{check.setEnabled(false);}
+		}	
+	}
+	
+	public void refreshYears(){
+		int[] newYears = controller.getFilteredYears();
+		this.ignoreStateChange = true;
+		if((int) yearMinSpinnerModel.getNumber() < newYears[1]){
+			yearMinSpinnerModel.setValue(newYears[1]);
+		}
+		if((int)yearMaxSpinnerModel.getNumber() > newYears[0]){
+			yearMaxSpinnerModel.setValue(newYears[0]);
+		}
+		
+	}
+	
+	public void refreshPrices(){
+		int[] newPrice = controller.getFilteredPrice();
+		this.ignoreStateChange = true;
+		if(newPrice[1] <  priceSlider.getValue()){
+			priceSlider.setValue(newPrice[1]);
+			min.setText(Integer.toString((int)newPrice[0]));
+			//max.setText(Integer.toString((int)newPrice[1]));
+		}
+		min.setText(Integer.toString((int)newPrice[0]));
+		//max.setText(Integer.toString((int)newPrice[1]));
+	}
+		
+	public void checkDemark(){
+		JCheckBox[][] allCheck = {makesCheck, modelsCheck, colorsCheck};
+		for(JCheckBox[] type: allCheck){
+			for(JCheckBox check: type){
+				check.setSelected(false);
+			}
+		}
+		priceSlider.setValue((int)maxPrice);
+		yearMaxSpinnerModel.setValue(controller.getMaxYear());
+		yearMinSpinnerModel.setValue(controller.getMinYear());
+	}
+	
+	public void searchRemove(){
+		if(searchBar.getText() != "Search ID"){
+			this.ignoreStateChangeSearch = true;
+			searchBar.setText("Search ID");
+			controller.searchExit();
+			searchExit.setEnabled(false);
+			searchExit.setVisible(false);
+		}
+		}
 	private void refreshInventory(){
 		//inventory image list
-		
+		//////////inventory information/////////////////////////////////////////////////////
+		cap.setText("Size: " + controller.getTotalVehiclesInInventory());
+		totalV.setText("Total Inventory Value: " + controller.getInventoryGrossValue());		
+		////////////////////////////////////////////////////////////////
 		
 		//create panels for layout////////////////////////////
 		inventoryBG = new JPanel();
@@ -679,9 +891,8 @@ public class inventoryPage{
 		//int numberToShow = controller.getNumbertoDisplay();
 		//create an panel for each vehicle that should be shown and name///////////////////////
 		
-		
-		JPanel[] vehiclePanelNames= new JPanel[controller.getNumbertoDisplay() + 1];
-		System.out.println(controller.getNumbertoDisplay() + "panel");
+		JPanel[] vehiclePanelNames = new JPanel[0];
+		vehiclePanelNames= new JPanel[controller.getNumbertoDisplay() + 1];
 		for (int i = 0; i < controller.getNumbertoDisplay() + 1; i++) {
 			String num = Integer.toString(i);
 			JPanel vehicle = new JPanel();
@@ -692,7 +903,6 @@ public class inventoryPage{
 		}
 		
 		String[] vehicles = controller.getAllDisplayInfo();
-		System.out.println(controller.getNumbertoDisplay() + "vehicle");
 		for (int i = 0; i < controller.getNumbertoDisplay(); i++) {
 			//set standard layout for each panel/////
 			vehiclePanelNames[i].setBackground(Color.WHITE);
@@ -775,7 +985,7 @@ public class inventoryPage{
 		invMainFrame.repaint();
 		invMainFrame.setVisible(true);
 		}
-		
+
 	public void editVehicleMenu() {
 		try {
 			String idString = JOptionPane.showInputDialog(null, "Enter the id of the vehicle:");

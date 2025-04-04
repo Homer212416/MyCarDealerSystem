@@ -42,7 +42,10 @@ public class inventoryPageController{
 	private String priceFilter = "";
 	private String sortOrder = "";
 	private String searchFilter = "";
-	
+	private String displayFilter = "";
+	private String qry;
+	private String[][] displayInfo;
+	private String[] vehicles;
 	
 public inventoryPageController(int ID){ 
 			
@@ -71,9 +74,16 @@ public inventoryPageController(int ID){
 	}
 
 	public String[] getAllDisplayInfo(){
-		//System.out.println("getall called");
-		String[][] displayInfo = vehicleDAO.getAllDisplayInfo();
-		String[] vehicles = new String[displayInfo.length];
+		//System.out.println("GEETALL CALLED: " + qry);
+		if(qry != null){
+			displayInfo = vehicleDAO.getAllDisplayInfoQ(qry);
+			vehicles = new String[vehicleDAO.getNumberToShow(qry)];
+			System.out.println("number to show: " + vehicleDAO.getNumberToShow(qry));
+		}else{
+			displayInfo = vehicleDAO.getAllDisplayInfo();
+			vehicles = new String[getTotalVehiclesInInventory()];
+			}
+		
 		int x = 0;
 		for(String[] vehicle: displayInfo){
 			if(vehicle[6] != null){
@@ -96,18 +106,8 @@ public inventoryPageController(int ID){
 					+ "Handlebar Type: " + vehicle[7] + "\n"); 
 				vehicles[x] = vehicleInfo;
 				x++;
-				}
 			}
-		
-	
-		//currently in Dealership.java
-		//rerout to VehicleDAO
-		/*
-		get all car that should show in inventory based on filters
-		if search diplay is null
-		get intersection of getFilterDisplay and getDiplayDisplay
-		*/
-		
+		}
 		this.numberToShow = displayInfo.length;
 		return vehicles;
 		
@@ -115,16 +115,18 @@ public inventoryPageController(int ID){
 
 public int getNumbertoDisplay(){
 		//return number that will be shown after filters apply;
-		if(this.numberToShow == 0){
-			this.numberToShow = getAllDisplayInfo().length;
+		if(qry != null){
+			this.numberToShow = vehicleDAO.getNumberToShow(qry);
+		}else{
+			this.numberToShow = getTotalVehiclesInInventory();
 		}
 		return numberToShow;
 	}
 
-	public String getFilterDisplay(){ 
+public String getFilterDisplay(){ 
 		     // Base query
 			 
-    String qry = "SELECT * FROM Inventory";
+    qry = "SELECT * FROM vehicles";
     
 	//if (searchFilter.isEmpty()){
 
@@ -157,9 +159,17 @@ public int getNumbertoDisplay(){
 				whereClause.append(priceFilter);  
 			}
 			
+			if (!displayFilter.isEmpty()) {
+				if (whereClause.length() > 0) whereClause.append(" AND ");
+				whereClause.append(displayFilter);  
+				System.out.println(qry);
+			}
+			
 			// Add the WHERE clause if it's not empty
 			if (whereClause.length() > 0) {
+				whereClause.append(" AND inInventory = 'true'");
 				qry += " WHERE " + whereClause.toString().trim();
+				System.out.println(qry);
 			}
 
 			// Add the ORDER BY clause if sortOrder is not empty
@@ -170,11 +180,35 @@ public int getNumbertoDisplay(){
 		//qry += " WHERE " + searchFilter; 
 	//}
 	
-	//System.out.println(qry);
+	filterFilter();
+	
     return qry;
 	
 }
-
+	public void filterFilter(){ 
+			if(!searchFilter.isEmpty()){inventory.searchRemove();}
+			if (makeFilter.isEmpty()) {
+				inventory.refreshMakes();
+			}
+			
+			if (modelFilter.isEmpty()) {
+				inventory.refreshModels(); 
+			}
+			
+			if (colorFilter.isEmpty()) {
+				inventory.refreshColors(); 
+			}
+			if (yearFilter.isEmpty()) {
+				inventory.refreshYears();
+			}
+			if(priceFilter.isEmpty()){
+				inventory.refreshPrices();
+			}
+			if (!displayFilter.isEmpty()) {
+			}
+			
+	}
+	
 	public void filterMakes(String makes){
  		if (makes == null || makes.isEmpty()) {
         makeFilter = "";
@@ -183,18 +217,68 @@ public int getNumbertoDisplay(){
 		}
 	}
 	
-	public String getDisplayDisplay(String display){return display;}
+	public void getDisplayDisplay(String display){
+		System.out.println("display" + display);
+		switch(display){
+			case "car":
+				displayFilter = " carType is not null ";
+				break;
+			case "motorcycle":
+				displayFilter = " handlebarType is not null ";
+				break;
+			case "all":
+				displayFilter = "";
+				break;
+					
+		}
+				
+	}
+	
+	public String[] getFilteredMakes(){
+		String[] filteredMakes = vehicleDAO.getFilteredMakes(qry);
+		return filteredMakes;
+	}
+	
+	public String[] getFilteredModels(){
+		String[] filteredModels = vehicleDAO.getFilteredModels(qry);
+		return filteredModels;
+	}
+	
+	public String[] getFilteredColors(){
+		String[] filteredColors = vehicleDAO.getFilteredColors(qry);
+		return filteredColors;
+	}
+	
+	public int[] getFilteredYears(){
+		int[] filteredYears = vehicleDAO.getFilteredYears(qry);
+		return filteredYears;
+	}
+	
+	public int[] getFilteredPrice(){
+		int[] filteredPrice = vehicleDAO.getFilteredPrice(qry);
+		return filteredPrice;
+	}
 	
 	public void search(String search){
 		  // Check if the search string contains only digits
 		  if (search.matches("\\d+")) {  // \\d+ matches one or more digits
+			inventory.checkDemark();
 			searchFilter = " id = " + search + " ";  
-		} else {
+			qry = "SELECT * FROM vehicles WHERE" + searchFilter;
+			
+		}
+		else {
 			// Show an error message if input is invalid
+			getFilterDisplay();
 			JOptionPane.showMessageDialog(null, "Invalid input. Please enter a vehicle ID number.");
 		}
 	}
 	
+	public void searchExit(){
+		searchFilter = "";
+		getFilterDisplay();
+		
+	}
 	
 	public void filterModels(String models){
 		if (models == null || models.isEmpty()) {
@@ -260,11 +344,13 @@ public int getNumbertoDisplay(){
 		return(count);//add actually query here
 	}
 		
-	public static int getInventoryGrossValue(){
+	public String getInventoryGrossValue(){
 		//return value of all vehicles in inventory
 		//currently in Dealership.java
 		//rerout to Vehicle
-		return((int)Main.m_dealership.getInventoryGrossValue()); 
+		//return((int)Main.m_dealership.getInventoryGrossValue()); 
+		String value = vehicleDAO.getGrossValue();
+		return(value);
 		
 	}
 	

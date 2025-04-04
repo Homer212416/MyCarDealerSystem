@@ -112,6 +112,37 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 		return count;
 	}
 	
+	public String getGrossValue(){
+		int value = 0;
+		String formattedValue = "";
+		try{
+		String qry = "SELECT SUM(price) as value FROM vehicles WHERE inInventory = 'true'";
+		ResultSet rs3 = DBManager.getInstance().runQuery(qry);
+		while(rs3.next()){
+			value = rs3.getInt("value");
+			Double newValue = Double.valueOf(value);
+			formattedValue = String.format("%,.2f", newValue);
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return formattedValue;
+	}
+	
+	public int getNumberToShow(String qry){
+		int count = 0;
+		try{
+		String str = qry.replaceAll("SELECT ", "SELECT COUNT(");
+		String replacedStr = str.replaceAll(" FROM", ") AS count FROM");
+		ResultSet rs3 = DBManager.getInstance().runQuery(replacedStr);
+		while(rs3.next()){
+			count = rs3.getInt("count");
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return count;
+	}
 	public String[][] getAllDisplayInfo(){
 		String[][] displayInfo = new String[getTotalVehiclesInInventory()][];
 		try {
@@ -142,6 +173,129 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 	}
     // extra method for changing the inInventory status of a vehicle to false
     // when it is sold
+	
+	public String[][] getAllDisplayInfoQ(String qry){
+		String[][] displayInfo = new String[getNumberToShow(qry)][];
+		
+		try {
+            ResultSet resultSet = DBManager.getInstance().runQuery(qry);
+            ArrayList<Vehicle> vehicles = new ArrayList<>();
+			int x = 0;
+			while (resultSet.next()) {
+				int ID = resultSet.getInt("ID");
+				String make = resultSet.getString("make");
+				String model = resultSet.getString("model");
+				String color = resultSet.getString("color");
+				int year = resultSet.getInt("year");
+                int price = resultSet.getInt("price");
+                String carType = resultSet.getString("carType");
+				String inInventoryValue = resultSet.getString("inInventory");
+				boolean inInventory = "true".equalsIgnoreCase(inInventoryValue);
+				//System.out.println("there is : " + inInventory); 
+				String handleBarType = resultSet.getString("handleBarType");
+				String[] vehicle = {Integer.toString(ID), make, model, color, Integer.toString(year), Integer.toString(price), carType, handleBarType}; 
+				displayInfo[x] = vehicle;
+				x++;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+        return displayInfo;      
+	}
+	
+	public String[] getFilteredMakes(String qry){
+		String[] filteredMakes = new String[getNumberToShow(qry)];
+		try {
+            ResultSet resultSet = DBManager.getInstance().runQuery(qry);
+			int x = 0;
+			while (resultSet.next()) {
+				String make = resultSet.getString("make");
+				filteredMakes[x] = make;
+				x++;
+			}}catch(SQLException e){
+			e.printStackTrace();
+		}
+		 return filteredMakes; 
+	}
+	
+		public String[] getFilteredModels(String qry){
+		String[] filteredModel = new String[getNumberToShow(qry)];
+		try {
+            ResultSet resultSet = DBManager.getInstance().runQuery(qry);
+			int x = 0;
+			while (resultSet.next()) {
+				String model = resultSet.getString("model");
+				filteredModel[x] = model;
+				x++;
+			}}catch(SQLException e){
+			e.printStackTrace();
+		}
+		 return filteredModel; 
+	}
+	
+	public String[] getFilteredColors(String qry){
+		String[] filteredColor = new String[getNumberToShow(qry)];
+		try {
+            ResultSet resultSet = DBManager.getInstance().runQuery(qry);
+			int x = 0;
+			while (resultSet.next()) {
+				String color = resultSet.getString("color");
+				filteredColor[x] = color;
+				x++;
+			}}catch(SQLException e){
+			e.printStackTrace();
+		}
+		 return filteredColor; 
+	}
+	
+	public int[] getFilteredYears(String qry){
+		int maxyear = 0;
+		int minyear = 0;
+		try {
+			String str = qry.replaceAll(" FROM", ", MAX(year) as max FROM");
+			ResultSet rs = DBManager.getInstance().runQuery(str);
+			while(rs.next()) {
+				System.out.println("edited string is" + str);
+                maxyear =rs.getInt("max");
+				System.out.println("maxyear = " +maxyear);
+			}
+			String str2 = qry.replaceAll(" FROM", ", MIN(year) as min FROM");
+			ResultSet rs2 = DBManager.getInstance().runQuery(str2);
+			while(rs2.next()) {
+				//System.out.println(rs.getInt("year"));
+                    minyear =rs2.getInt("min");
+			}
+			} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		int[] newYears = {maxyear, minyear};
+		return(newYears);
+	}
+	
+	public int[] getFilteredPrice(String qry){
+		int maxyear = 0;
+		int minyear = 0;
+		try {
+			String str = qry.replaceAll(" FROM", ", MAX(price) as max FROM");
+			ResultSet rs = DBManager.getInstance().runQuery(str);
+			while(rs.next()) {
+				System.out.println("edited string is" + str);
+                maxyear =rs.getInt("max");
+				System.out.println("maxprice = " +maxyear);
+			}
+			String str2 = qry.replaceAll(" FROM", ", MIN(price) as min FROM");
+			ResultSet rs2 = DBManager.getInstance().runQuery(str2);
+			while(rs2.next()) {
+				//System.out.println(rs.getInt("year"));
+                    minyear =rs2.getInt("min");
+			}
+			} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		int[] newYears = {minyear, maxyear};
+		return(newYears);
+	}
+	
     public static boolean removeFromInventory(int id) {
         try {
             String query = "UPDATE vehicles SET inInventory = 'false' WHERE id = " + id;
@@ -251,7 +405,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 			String query = "SELECT MAX(year) FROM vehicles WHERE inInventory = 'true'";
 			ResultSet rs = DBManager.getInstance().runQuery(query);
 			while(rs.next()) {
-				//System.out.println(rs.getInt("year"));
+				
                     maxyear =rs.getInt(1);
 			}
 
@@ -263,7 +417,7 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 	
 	public static int getMinPrice(){
 		//return Price of oldest vehicle
-		int minPrice = 10000000;
+		int minPrice = 0;
 		try {
 			// The SQL query to fetch min year
 			String query = "SELECT min(price) FROM vehicles WHERE inInventory = 'true'";
@@ -287,7 +441,6 @@ public class VehicleDAO implements DAOInterface<Vehicle> {
 			ResultSet rs = DBManager.getInstance().runQuery(query);
 			while(rs.next()) {
                     maxPrice = rs.getInt(1);
-					System.out.println("new max price");
 			}
 		}		catch (SQLException e) {
 			e.printStackTrace();
