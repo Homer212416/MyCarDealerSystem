@@ -108,7 +108,7 @@ public class accountManagePageController{
 		//if password is valid for user return true
 		result = false;
 		String storedPassword = userLayer.checkPassword(userID);
-		if(storedPassword == password){result = true;}
+		if(storedPassword.equals(storedPassword)){result = true;}
 		//close confirm password page
 		oldpage.dispose();
 		if(result){

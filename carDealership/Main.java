@@ -23,9 +23,9 @@ public class Main {
 		} else {
 			m_dealership = new Dealership(dealership.getNname(), dealership.getLocation(), dealership.getCapacity());
 			if(!users.existsAndSet()){
-				User m_user = new User(1, "Firt", "Last", "Admin", "dfdsfsdf@gmail.com", "sdsfds");
+				User m_user = new User(1, "Firt", "Last", "Admin", "first@gmail.com", "123");
 			}
-			inventoryPageController myFrame = new inventoryPageController(1);
+			loginPageController myFrame = new loginPageController();
 		}
 	}
 	
