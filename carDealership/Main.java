@@ -23,7 +23,7 @@ public class Main {
 		} else {
 			m_dealership = new Dealership(dealership.getNname(), dealership.getLocation(), dealership.getCapacity());
 			if(!users.existsAndSet()){
-				User m_user = new User(1, "Firt", "Last", "Admin", "first@gmail.com", "123");
+				User m_user = new User(1, "First", "Last", "Admin", "first@gmail.com", "123");
 			}
 			loginPageController myFrame = new loginPageController();
 		}
