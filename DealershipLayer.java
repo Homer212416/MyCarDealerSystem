@@ -82,6 +82,7 @@ public class DealershipLayer {
 	// truncates all tables in the database
 	public void deleteDealership() {
 		try {
+			DBManager.getInstance().runInsert("DELETE FROM dealerships;");
 			DBManager.getInstance().runInsert("DELETE FROM vehicles;");
 			DBManager.getInstance().runInsert("DELETE FROM users;");
 			DBManager.getInstance().runInsert("DELETE FROM usersInfo;");
