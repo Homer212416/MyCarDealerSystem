@@ -19,14 +19,13 @@ public class User {
 	
 	public User(){u_UserLayer = new UserLayer();}
 	
-	public User(int ID, String firstName, String lastName, String jobTitle, String email, String password) throws SQLException{
+	public User(String firstName, String lastName, String jobTitle, String email, String password) throws SQLException{
 		//System.out.println("User Called");
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.jobTitle = jobTitle;
 		this.email = email;
 		this.password = password;
-		ID = 0;
 		switch(jobTitle){
 			case "SalesPerson":
 				//System.out.println("is salesperson");
@@ -45,13 +44,24 @@ public class User {
 				break;
 		}
 		//System.out.println("user page security" + pageSecurity);
-		u_UserLayer = new UserLayer(ID, firstName,lastName, jobTitle, email, password, editSecurity, pageSecurity);
+		u_UserLayer = new UserLayer(firstName,lastName, jobTitle, email, password, editSecurity, pageSecurity);
 		
 	}
 	
-	public int getEditSecurity(int ID) throws SQLException{
+	public int[] getEditSecurity(int ID) throws SQLException{
 		int edittingSecurity = u_UserLayer.getEditSecurity(ID);
-		return edittingSecurity;
+		int[] list = new int[5];
+		switch(edittingSecurity){
+		case 1:
+				int[] onelist = {1,2,3,4,5};
+				list = onelist;
+				break;
+			case 2:
+				int[] twolist = {4};
+				list = twolist;
+				break;
+		}
+		return list;
 		
 	}
 	

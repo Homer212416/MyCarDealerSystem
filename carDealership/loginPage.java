@@ -90,15 +90,37 @@ public class loginPage{
 		gridA.add(loginLabel,gbcA);
 		
 		JTextField usernameBar  = new JTextField("User ID", 18);
+		usernameBar.setForeground(Color.GRAY);
 		gbcA.insets = new Insets(20,10,0,0);
 		gbcA.gridwidth= 2;
 		gbcA.gridx = 0;
 		gbcA.gridy = 1;
 		gridA.add(usernameBar,gbcA);
 		
+		usernameBar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String text = usernameBar.getText(); 
+				if(text.matches("User ID")){	
+					usernameBar.setForeground(Color.BLACK);
+					usernameBar.setText("");
+				}
+				
+			}
+			});
 		JPasswordField passwordBar  = new JPasswordField("Password",18);
-		//passwordBar.setEchoChar('~');
-		
+		passwordBar.setForeground(Color.GRAY);
+		passwordBar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String text = passwordBar.getText(); 
+				if(text.matches("Password")){	
+					passwordBar.setForeground(Color.BLACK);
+					passwordBar.setText("");
+				}
+				
+			}
+			});
 		gbcA.gridx = 0;
 		gbcA.gridy = 2;
 		gridA.add(passwordBar,gbcA);

@@ -6,6 +6,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.*;
+import java.util.Arrays;
+import java.io.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBManager {
 
@@ -25,29 +30,47 @@ public class DBManager {
 		var stmt = m_connection.createStatement();
 		stmt.execute(query);
 		m_connection.commit();
+		stmt.close();
 	}
-
+	
+	public void closeConnect() throws SQLException {
+		System.out.println("Will close connection");
+		var stmt = m_connection.createStatement();
+		stmt.close();
+		m_connection.close();
+	}
+	
 	public ResultSet runQuery(String query) throws SQLException {
 		System.out.println("Will run query: " + query);
 		var stmt = m_connection.createStatement();
+		stmt.close();
 		return stmt.executeQuery(query);
 	}
 
-	private void initDB() throws SQLException {
+	public void initDB() throws SQLException {
 		var dbFile = new File(m_dbPath);
 		var mustCreateTables = !dbFile.exists();
 		var url = "jdbc:sqlite:" + m_dbPath;
+		String[] tables = new String[8];
+		String[] allTable = {"dealerships", "roles","sales", "users", "vehicles"};
 		try {
 			m_connection = DriverManager.getConnection(url);
 			System.out.println("Connection to SQLite has been established.");
 			m_connection.setAutoCommit(false);
 			//this prints out tables in the database use to check for new tables
-			/*
+			
 			DatabaseMetaData md = m_connection.getMetaData();
 			ResultSet rs = md.getTables(null, null, "%", null);
+			int x = 0;
 			while (rs.next()) {
-			  System.out.println(rs.getString(3));
-			}*/
+			  tables[x] = rs.getString(3);
+			  x++;
+			}
+			for(String tab : allTable){
+				if(!Arrays.asList(tables).contains(tab)){
+					mustCreateTables = true;
+					}
+			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -99,6 +122,7 @@ public class DBManager {
 		stmt.execute(addSalesPersonRoleSQL);
 
 		m_connection.commit();
+		stmt.close();
 
 	}
 

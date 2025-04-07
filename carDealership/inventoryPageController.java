@@ -31,7 +31,7 @@ public class inventoryPageController{
 	private VehicleDAO vehicleDAO;
 	private SaleDAO saleDAO;
 	private int[] security;
-	private int editSecurity;
+	private int[] editSecurity;
 	private int userID;
 
 	//persistant string variables for filter components.
@@ -47,10 +47,10 @@ public class inventoryPageController{
 	private String[][] displayInfo;
 	private String[] vehicles;
 	
-public inventoryPageController(int ID){ 
+public inventoryPageController(int ID, int width, int height){ 
 			
 			JComboBox pageMenuDD = inventoryPage.pageMenuDD;
-			this.numberToShow=0;
+			this.numberToShow=0; 
 			user = new User();
 			//set up user ID retrieval or pass between each controller from LoginContext
 			//but for testing am just using 1
@@ -66,7 +66,7 @@ public inventoryPageController(int ID){
 			}
 			this.vehicleDAO = new VehicleDAO();
 			this.saleDAO = new SaleDAO();
-			inventory = new inventoryPage(this);
+			inventory = new inventoryPage(this, width, height);
 		}
 	
 	public void inventoryRefresh(){
@@ -78,7 +78,7 @@ public inventoryPageController(int ID){
 		if(qry != null){
 			displayInfo = vehicleDAO.getAllDisplayInfoQ(qry);
 			vehicles = new String[vehicleDAO.getNumberToShow(qry)];
-			System.out.println("number to show: " + vehicleDAO.getNumberToShow(qry));
+			//System.out.println("number to show: " + vehicleDAO.getNumberToShow(qry));
 		}else{
 			displayInfo = vehicleDAO.getAllDisplayInfo();
 			vehicles = new String[getTotalVehiclesInInventory()];
@@ -162,14 +162,14 @@ public String getFilterDisplay(){
 			if (!displayFilter.isEmpty()) {
 				if (whereClause.length() > 0) whereClause.append(" AND ");
 				whereClause.append(displayFilter);  
-				System.out.println(qry);
+				//System.out.println(qry);
 			}
 			
 			// Add the WHERE clause if it's not empty
 			if (whereClause.length() > 0) {
 				whereClause.append(" AND inInventory = 'true'");
 				qry += " WHERE " + whereClause.toString().trim();
-				System.out.println(qry);
+				//System.out.println(qry);
 			}
 
 			// Add the ORDER BY clause if sortOrder is not empty
@@ -218,7 +218,7 @@ public String getFilterDisplay(){
 	}
 	
 	public void getDisplayDisplay(String display){
-		System.out.println("display" + display);
+		//System.out.println("display" + display);
 		switch(display){
 			case "car":
 				displayFilter = " carType is not null ";
@@ -409,11 +409,11 @@ public String getFilterDisplay(){
 	}
 	
 	public void setDisabledEdits(DefaultListSelectionModel ddb){
-		if(editSecurity == 1){
+		if(editSecurity.length == 5){
 			ddb.addSelectionInterval(0, 5);
 		}else{
-			ddb.addSelectionInterval(0, 3);
-			ddb.addSelectionInterval(5, 5);
+			ddb.addSelectionInterval(4, 4);
+			
 		}
 	}
 	
@@ -421,11 +421,12 @@ public String getFilterDisplay(){
 		if(security.length == 5){
 			ddb.addSelectionInterval(0, 5);
 		}else{
-			ddb.addSelectionInterval(4, 4);
+			ddb.addSelectionInterval(0, 3);
+			ddb.addSelectionInterval(5, 5);
 		}
 	}
 	
-	public void pageMenuSelect(int sel, JFrame mainFrame){
+	public void pageMenuSelect(int sel, JFrame mainFrame, int w, int h){
 		boolean contains = false;
 		
 		for(int page: security){
@@ -435,16 +436,16 @@ public String getFilterDisplay(){
 		
 		if(contains){
 			if (sel== 1){
-				inventoryPageController inv = new inventoryPageController(userID);
+				inventoryPageController inv = new inventoryPageController(userID,w,h);
 				mainFrame.dispose();
 			}else if (sel== 2){
-				dealerShipInfoPageController dsC = new dealerShipInfoPageController(userID);
+				dealerShipInfoPageController dsC = new dealerShipInfoPageController(userID, w, h);
 				mainFrame.dispose();
 			}else if(sel== 3){
-				new pastSalesPageController(userID);
+				new pastSalesPageController(userID, w, h);
 				mainFrame.dispose();
 			}else if(sel== 4){
-				new accountManagePageController(userID);
+				new accountManagePageController(userID, w, h);
 				mainFrame.dispose();
 			}else if(sel== 5){
 				new loginPageController();
@@ -455,7 +456,8 @@ public String getFilterDisplay(){
 	public void editMenuSelect(int sel){
 		boolean contains = false;
 		
-		for(int edit: security){
+		for(int edit: editSecurity){
+			//System.out.println(edit);
 			if(sel == edit)
 				contains = true;
 		}

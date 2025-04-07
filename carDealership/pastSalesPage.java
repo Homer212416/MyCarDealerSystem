@@ -28,22 +28,22 @@ public class pastSalesPage{
 	private static Image carHeaderImage;
 	
 
-	public pastSalesPage(pastSalesPageController controller){
+	public pastSalesPage(pastSalesPageController controller, int width, int height){
 		this.controller = controller;
 		carHeaderImage = Toolkit.getDefaultToolkit().getImage(dealerShipInfoPage.class.getResource("/images/backgroundd.jpg"));
 		newCarHeaderImage = carHeaderImage.getScaledInstance(300, 150,Image.SCALE_DEFAULT);
 		
-		prepareInventoryGUI();
+		prepareInventoryGUI(width, height);
 	}
 	public static void main(String[] args){
       //pastSalesPage pastSalesPage = new pastSalesPage();
       //pastSalesPage.showEventDemo();
 	}
 	@SuppressWarnings("unchecked")
-	private void prepareInventoryGUI(){
+	private void prepareInventoryGUI(int width, int height){
 		salesMainFrame = new JFrame("Past Sales");
 		salesMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg")));
-		salesMainFrame.setBounds(0, 0, 650, 650);
+		salesMainFrame.setBounds(0, 0, width, height);
 		salesMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
             System.exit(0);
@@ -53,7 +53,7 @@ public class pastSalesPage{
 		JPanel controlPanel = new JPanel();
 		controlPanel.setBackground(new Color(230, 230, 230));
 		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		controlPanel.setBounds(0, 0, 650, 650);
+		controlPanel.setBounds(0, 0, width, height);
 		controlPanel.setLayout(new GridLayout());
 		
 		GridBagLayout layout = new GridBagLayout();
@@ -131,7 +131,10 @@ public class pastSalesPage{
 		pageMenuDD.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), salesMainFrame);
+				Rectangle r = salesMainFrame.getBounds();
+				int h = r.height;
+				int w = r.width;
+				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), salesMainFrame, w, h);
 			}
 		});
 		gbcC.anchor = GridBagConstraints.NORTHEAST;

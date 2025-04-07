@@ -37,7 +37,7 @@ public void submitPressed(JFrame currentFrame, String userIdStr, char[] password
         if (rs.next()) {
             JOptionPane.showMessageDialog(currentFrame, "Login successful. Welcome!");
             currentFrame.dispose();
-            new inventoryPageController(userId);
+            new inventoryPageController(userId, 655, 655);
         } else {
             JOptionPane.showMessageDialog(currentFrame, "Invalid user ID or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
         }

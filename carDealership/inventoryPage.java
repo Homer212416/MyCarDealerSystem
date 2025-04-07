@@ -15,6 +15,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
+import javax.swing.JTree;
 
 
 public class inventoryPage{
@@ -66,7 +67,7 @@ public class inventoryPage{
 	private static JButton searchExit;
 	private static JTextField searchBar ;
 	
-	public inventoryPage(inventoryPageController controller){
+	public inventoryPage(inventoryPageController controller, int width, int height){
 		//this.controller = new inventoryPageController();
 		Image UmotoIconImage = (Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/moto.jpg")));
 		motoImage = UmotoIconImage.getScaledInstance(80, 70,Image.SCALE_DEFAULT);
@@ -78,7 +79,7 @@ public class inventoryPage{
 		pageElements = new String[]{"", "Inventory", "Dealership Info", "Sales History", "Manage User Accounts","Sign Out"};
 		editInventoryElements = new String[]{"", "Add Car", "Add Motorcycle", "Edit Vehicle", "Sell vehicle","Remove Vehicle"};
 		this.controller = controller;
-		prepareInventoryGUI();
+		prepareInventoryGUI(width, height);
 		
 	}
 	public static void main(String[] args){
@@ -86,7 +87,7 @@ public class inventoryPage{
 		//inventoryPage.showEventDemo();
 	}
 	@SuppressWarnings("unchecked")
-	private void prepareInventoryGUI(){
+	private void prepareInventoryGUI(int width, int height){
 		//set standard font 
 		UIManager.put("Label.font", new Font("HP Simplified Hans", Font.BOLD, 12));
         UIManager.put("Button.font", new Font("HP Simplified Hans", Font.BOLD, 12));
@@ -94,7 +95,7 @@ public class inventoryPage{
 		//create window called invMainFrame
 		invMainFrame = new JFrame("Inventory");
 		invMainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage(inventoryPage.class.getResource("/images/icon.jpg")));
-		invMainFrame.setBounds(0, 0, 655, 655);
+		invMainFrame.setBounds(0, 0, width, height);
 		invMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
             System.exit(0);
@@ -195,7 +196,10 @@ public class inventoryPage{
 		pageMenuDD.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), invMainFrame);
+				Rectangle r = invMainFrame.getBounds();
+				int h = r.height;
+				int w = r.width;
+				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), invMainFrame, w, h);
 			}
 		});
 		gbcC.fill = GridBagConstraints.HORIZONTAL;
@@ -297,7 +301,7 @@ public class inventoryPage{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(!searchBar.getText().matches("Search ID")){
-					System.out.println("searchExit");
+					//System.out.println("searchExit");
 					searchBar.setText("Search ID");
 					controller.searchExit();
 					controlPanel.remove(inventoryBG);
@@ -322,7 +326,7 @@ public class inventoryPage{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(!searchBar.getText().matches("Search ID")){
-					System.out.println("searchBar");
+					//System.out.println("searchBar");
 					String searchString = searchBar.getText();
 					
 					controller.search(searchString);
@@ -646,7 +650,7 @@ public class inventoryPage{
 		ChangeListener yearListener = new ChangeListener(){
 			@Override
 			public void stateChanged(ChangeEvent e){
-				System.out.println("state" + ignoreStateChange);
+				//System.out.println("state" + ignoreStateChange);
 				if(!ignoreStateChange){
 					int minYear = (int) minSpinner.getValue();
 					int maxYear = (int)maxSpinner.getValue();
@@ -890,10 +894,10 @@ public class inventoryPage{
 		
 		//int numberToShow = controller.getNumbertoDisplay();
 		//create an panel for each vehicle that should be shown and name///////////////////////
-		
+		int newVehicles = controller.getNumbertoDisplay() + 1;
 		JPanel[] vehiclePanelNames = new JPanel[0];
 		vehiclePanelNames= new JPanel[controller.getNumbertoDisplay() + 1];
-		for (int i = 0; i < controller.getNumbertoDisplay() + 1; i++) {
+		for (int i = 0; i < newVehicles; i++) {
 			String num = Integer.toString(i);
 			JPanel vehicle = new JPanel();
 			//add each panel to the array
@@ -901,9 +905,10 @@ public class inventoryPage{
 			//name each panel so that can be called later if needed
 			vehicle.setName("car" + i);
 		}
-		
+
 		String[] vehicles = controller.getAllDisplayInfo();
-		for (int i = 0; i < controller.getNumbertoDisplay(); i++) {
+		int newInfoLength = controller.getNumbertoDisplay();
+		for (int i = 0; i < newInfoLength; i++) {
 			//set standard layout for each panel/////
 			vehiclePanelNames[i].setBackground(Color.WHITE);
 			vehiclePanelNames[i].setLayout(new GridBagLayout());
@@ -911,7 +916,6 @@ public class inventoryPage{
 			vehiclePanelNames[i].setLayout(layoutC1);
 			GridBagConstraints gbcC1 = new GridBagConstraints();
 			//////////////////////////////////////////
-			
 			//add image to each panel/////////////////////
 			JLabel c1Img = new JLabel("");
 			int index = vehicles[i].indexOf("Handlebar");
@@ -932,7 +936,8 @@ public class inventoryPage{
 			c1Info.setOpaque(false);
 			c1Info.setEditable(false);
 			c1Info.setFocusable(false);
-			gbcC1.anchor = GridBagConstraints.NORTH;
+			gbcC1.anchor = GridBagConstraints.NORTHWEST;
+			gbcC1.fill = GridBagConstraints.BOTH;
 			gbcC1.gridx = 0;
 			gbcC1.gridy = 1;
 			gbcC1.weightx = .2;
@@ -942,10 +947,12 @@ public class inventoryPage{
 			//have 2 vehicles per row
 			gbcvehicleInv.gridx = (int)Math.floor(i%2);
 			gbcvehicleInv.gridy = (int)Math.floor(i/2);
+			gbcvehicleInv.anchor = GridBagConstraints.NORTH;
+			gbcvehicleInv.fill = GridBagConstraints.BOTH;
 			//add weight to last entry, you need weight to get anchor to work
-			if(i == controller.getNumbertoDisplay()-1){
-				gbcvehicleInv.weightx = .9;
-				gbcvehicleInv.weighty = 1;
+			if(i == newInfoLength-1 || i == newInfoLength-2 ){
+				gbcvehicleInv.weightx = .5;
+				gbcvehicleInv.weighty = .5;
 			}
 			//////////////////////////////////////////////
 			
@@ -957,7 +964,7 @@ public class inventoryPage{
 		}
 		
 		//adds vehicle Inventory list to a scroll pane
-		JScrollPane inventoryListScrollPane = new JScrollPane(vehicleInv);   
+		JScrollPane inventoryListScrollPane = new JScrollPane(vehicleInv,20 ,30);   
 		inventoryListScrollPane.setPreferredSize(new Dimension(440, 375));		
 		gbcI.gridx = 0;
 		gbcI.gridy = 1;
@@ -981,6 +988,7 @@ public class inventoryPage{
 		gbcC.weightx = 1;
 		controlPanel.add(inventoryBG,gbcC);
 		inventoryListScrollPane.validate();
+		inventoryListScrollPane.setWheelScrollingEnabled(true);
 		invMainFrame.validate();
 		invMainFrame.repaint();
 		invMainFrame.setVisible(true);

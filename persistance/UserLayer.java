@@ -1,5 +1,5 @@
 package persistance;
-
+import java.util.*;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 public class UserLayer {
@@ -27,17 +27,19 @@ public class UserLayer {
 		}	
 	}
 
-	public UserLayer(int ID, String firstName, String lastName, String jobTitle, String email, String password, int editSecurity, int pageSecurity) throws SQLException {
+	public  UserLayer(String firstName, String lastName, String jobTitle, String email, String password, int editSecurity, int pageSecurity) throws SQLException {
 		u_firstName= firstName;
 		u_lastName = lastName;
-		u_ID = ID;
 		u_jobTitle = jobTitle;
 		u_email = email;
 		u_password = password; 
 		u_pageSecurity = pageSecurity;
 		u_editSecurity = editSecurity;
-		
-		DBManager.getInstance().runInsert("INSERT INTO usersInfo " + "(firstName, lastName, jobTitle, email, password, editSecurity, pageSecurity) " + "VALUES" + " ('" + firstName + "', '" + lastName + "', '" + jobTitle + "', '" + email + "', '" + password + "', " + editSecurity + ", " +pageSecurity +");");
+		try{
+			DBManager.getInstance().runInsert("INSERT INTO usersInfo " + "(firstName, lastName, jobTitle, email, password, editSecurity, pageSecurity) " + "VALUES" + " ('" + firstName + "', '" + lastName + "', '" + jobTitle + "', '" + email + "', '" + password + "', " + editSecurity + ", " +pageSecurity +");");
+		}catch(SQLException e){
+				System.out.println(e.getMessage());
+			}
 	}
 	
 	public boolean existsAndSet() throws SQLException {
@@ -146,6 +148,7 @@ public class UserLayer {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+		
 		return storedPassword;
 	}
 	/*

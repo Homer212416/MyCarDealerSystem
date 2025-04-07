@@ -32,23 +32,23 @@ public class dealerShipInfoPage{
 	private GridBagConstraints gbcC;
 	
 	
-	public dealerShipInfoPage(dealerShipInfoPageController controller){
+	public dealerShipInfoPage(dealerShipInfoPageController controller,int width, int height){
 		this.controller = controller;
 		carImage = Toolkit.getDefaultToolkit().getImage(loginPage.class.getResource("/images/icon.jpg"));
 		carImageHeader = Toolkit.getDefaultToolkit().getImage(dealerShipInfoPage.class.getResource("/images/backgroundd.jpg"));
 		newCarHeaderImage = carImageHeader.getScaledInstance(300, 150,Image.SCALE_DEFAULT);
 		
-		prepareInventoryGUI();
+		prepareInventoryGUI(width, height);
 	}
 	public static void main(String[] args){
       //dealerShipInfoPage dealerShipInfoPage = new dealerShipInfoPage();
       //dealerShipInfoPage.showEventDemo();
 	}
 	@SuppressWarnings("unchecked")
-	private void prepareInventoryGUI(){
+	private void prepareInventoryGUI(int width, int height){
 		dealerMainFrame = new JFrame("Dealership Information");
 		dealerMainFrame.setIconImage(carImage);
-		dealerMainFrame.setBounds(0, 0, 650, 650);
+		dealerMainFrame.setBounds(0, 0, width, height);
 		dealerMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
             System.exit(0);
@@ -58,7 +58,7 @@ public class dealerShipInfoPage{
 		JPanel controlPanel = new JPanel();
 		controlPanel.setBackground(new Color(230, 230, 230));
 		controlPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		controlPanel.setBounds(0, 0, 650, 650);
+		controlPanel.setBounds(0, 0, width, height);
 		controlPanel.setLayout(new GridLayout());
 		
 		GridBagLayout layout = new GridBagLayout();
@@ -143,12 +143,13 @@ public class dealerShipInfoPage{
 		pageMenuDD.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), dealerMainFrame);
+				Rectangle r = dealerMainFrame.getBounds();
+				int h = r.height;
+				int w = r.width;
+				controller.pageMenuSelect(pageMenuDD.getSelectedIndex(), dealerMainFrame, w, h);
 			}
 		});
 		
-		//all dealershipInfo
-		String[] dealer = controller.getDealershipInfo();
 		
 		gbcC.anchor = GridBagConstraints.NORTHEAST;
 		gbcC.fill = GridBagConstraints.NONE; 
@@ -181,37 +182,48 @@ public class dealerShipInfoPage{
 		deleteDealer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				controller.deleteDealer(dealer[0]);//gives name of dealership
+				// confirm delete dealership
+				int response = JOptionPane.showConfirmDialog(dealerMainFrame,
+						"Are you sure you want to delete the dealership?",
+						"Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (response == JOptionPane.YES_OPTION) {
+					controller.deleteDealer();
+					dealerMainFrame.dispose();
+					controller.goToFirstLaunchPage();
+				}
+
 			}
 		});
 		
 
-		//DealershipInformationList list///////////////////////////////////////////
+		// all dealershipInfo
+		String[] dealer = controller.getDealershipInfo();
+
+		// DealershipInformationList list///////////////////////////////////////////
 		final DefaultListModel inventoryModel = new DefaultListModel();
 
-		
-		inventoryModel.addElement("Name: " + dealer[0]);
-		inventoryModel.addElement("Location: " + dealer[1]);
-		inventoryModel.addElement("Inventory Capacity: " + dealer[2]);
-		inventoryModel.addElement("Available Space: " + dealer[3]);
-		inventoryModel.addElement("Total Cars: " + dealer[4]);
-		inventoryModel.addElement("Total Motorcycles: " + dealer[5]);
-		inventoryModel.addElement("Total Sales Profit: " + dealer[6]);
-		inventoryModel.addElement("Total Vehicles Sold: " + dealer[7]);
+		inventoryModel.addElement(dealer[0]);
+		inventoryModel.addElement(dealer[1]);
+		inventoryModel.addElement(dealer[2]);
+		inventoryModel.addElement(dealer[3]);
+		inventoryModel.addElement(dealer[4]);
+		inventoryModel.addElement(dealer[5]);
+		inventoryModel.addElement(dealer[6]);
+		inventoryModel.addElement(dealer[7]);
 		final JList inventoryList = new JList(inventoryModel);
 		inventoryList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		inventoryList.setSelectedIndex(0);
 		inventoryList.setVisibleRowCount(19);
-		JScrollPane inventoryListScrollPane = new JScrollPane(inventoryList);       
+		JScrollPane inventoryListScrollPane = new JScrollPane(inventoryList);
 		gbcI.gridx = 0;
 		gbcI.gridy = 1;
 		gbcI.gridwidth = 3;
 		gbcI.weightx = .9;
 		gbcI.weighty = 1;
 		gbcF.ipady = 0;
-		//gbcI.weighty = .4;
+		// gbcI.weighty = .4;
 		gbcI.fill = GridBagConstraints.BOTH;
-		gbcI.insets = new Insets(-5,0,0,0);
+		gbcI.insets = new Insets(-5, 0, 0, 0);
 		dealershipBG.add(inventoryListScrollPane, gbcI);
 		dealerMainFrame.setContentPane(controlPanel);
 		dealerMainFrame.setVisible(true);

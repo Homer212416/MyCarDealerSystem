@@ -109,8 +109,9 @@ public class FirstLaunchPage extends JFrame {
 				try {
 					Main.createDealership(textField.getText(), textField_2.getText(),
 							Integer.valueOf(textField_1.getText()));
+					controller.initAdmin();
 					dispose();
-					loginPageController myFrame = new loginPageController();
+					new loginPageController();
 				} catch (NumberFormatException ex) {
 					textField_1.setText("");
 					lblNewLabel_4.setVisible(false);

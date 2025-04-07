@@ -78,21 +78,35 @@ public class DealershipDAO implements DAOInterface<Dealership> {
     // for delete dealership button
     public static boolean deleteAll() {
         try {
+			DBManager.getInstance().closeConnect();
+			DBManager.getInstance().initDB();
+			String dropRolesTable = "DROP TABLE IF EXISTS roles";
+            DBManager.getInstance().runInsert(dropRolesTable);
             // Drop the dealerships table
+			
             String dropDealershipsTable = "DROP TABLE IF EXISTS dealerships";
             DBManager.getInstance().runInsert(dropDealershipsTable);
-
+			
             // Drop other tables if they exist (e.g., users, roles, vehicles)
             String dropUsersTable = "DROP TABLE IF EXISTS users";
             DBManager.getInstance().runInsert(dropUsersTable);
 
-            String dropRolesTable = "DROP TABLE IF EXISTS roles";
-            DBManager.getInstance().runInsert(dropRolesTable);
+           String dropSalesTable = "DROP TABLE IF EXISTS sales";
+           DBManager.getInstance().runInsert(dropSalesTable);
 
             String dropVehiclesTable = "DROP TABLE IF EXISTS vehicles";
             DBManager.getInstance().runInsert(dropVehiclesTable);
-
+			
+			String dropUsersInfoTable = "DROP TABLE IF EXISTS usersInfo";
+            DBManager.getInstance().runInsert(dropUsersInfoTable);
+			
+			
+			
+			
+			
             System.out.println("All tables have been deleted.");
+			DBManager.getInstance().closeConnect();
+			DBManager.getInstance().initDB();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

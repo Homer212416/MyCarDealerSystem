@@ -21,11 +21,10 @@ public class Main {
 		if (!dealership.existsAndSet()) {
 			FirstLaunchPageController newPage = new FirstLaunchPageController();
 		} else {
-			m_dealership = new Dealership(dealership.getNname(), dealership.getLocation(), dealership.getCapacity());
-			if(!users.existsAndSet()){
-				User m_user = new User(1, "Firt", "Last", "Admin", "dfdsfsdf@gmail.com", "sdsfds");
-			}
-			inventoryPageController myFrame = new inventoryPageController(1);
+			//m_dealership = new Dealership(dealership.getNname(), dealership.getLocation(), dealership.getCapacity());
+			loginPageController myFrame = new loginPageController();
+			
+			
 		}
 	}
 	

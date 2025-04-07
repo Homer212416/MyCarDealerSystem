@@ -11,7 +11,7 @@ public class pastSalesPageController {
 	private int userID;
 	private User user;
 
-	public pastSalesPageController(int ID) {
+	public pastSalesPageController(int ID, int width, int height) {
 		this.userID = ID;
 		user = new User();
 		try {
@@ -27,18 +27,19 @@ public class pastSalesPageController {
 		//new SaleDAO().keepOnlyOneTestSale();
 
 		// Launch the view
-		pastSalesPage frame = new pastSalesPage(this);
+		pastSalesPage frame = new pastSalesPage(this, width, height);
 	}
 	
 	public void setDisabledPages(DefaultListSelectionModel ddb){
 		if(security.length == 5){
 			ddb.addSelectionInterval(0, 5);
 		}else{
-			ddb.addSelectionInterval(4, 4);
+			ddb.addSelectionInterval(0, 3);
+			ddb.addSelectionInterval(5, 5);
 		}
 	}
 	
-	public void pageMenuSelect(int sel, JFrame mainFrame){
+	public void pageMenuSelect(int sel, JFrame mainFrame, int w, int h){
 		boolean contains = false;
 		
 		for(int page: security){
@@ -48,16 +49,15 @@ public class pastSalesPageController {
 		
 		if(contains){
 			if (sel== 1){
-				inventoryPageController inv = new inventoryPageController(userID);
+				inventoryPageController inv = new inventoryPageController(userID,w,h);
 				mainFrame.dispose();
 			}else if (sel== 2){
-				dealerShipInfoPageController dsC = new dealerShipInfoPageController(userID);
-				mainFrame.dispose();
+				dealerShipInfoPageController dsC = new dealerShipInfoPageController(userID, w, h);
 			}else if(sel== 3){
-				new pastSalesPageController(userID);
+				new pastSalesPageController(userID,w,h);
 				mainFrame.dispose();
 			}else if(sel== 4){
-				new accountManagePageController(userID);
+				new accountManagePageController(userID, w, h);
 				mainFrame.dispose();
 			}else if(sel== 5){
 				new loginPageController();
