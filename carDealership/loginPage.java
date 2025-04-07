@@ -410,6 +410,8 @@ public class loginPage{
 		
 		JPasswordField newPasswordBar  = new JPasswordField("Password",18);
 		newPasswordBar.setEchoChar('*');
+		gbcI.fill = GridBagConstraints.HORIZONTAL;
+		gbcI.weightx = .1;
 		gbcI.gridx = 1;
 		gbcI.gridy = 2;
 		infoBG.add(newPasswordBar, gbcI);
@@ -430,6 +432,7 @@ public class loginPage{
 		gbcI.fill = GridBagConstraints.NONE;
 		gbcI.anchor = GridBagConstraints.EAST;
 		gbcI.weightx = .01;
+		gbcI.weighty = .01;
 		gbcI.gridx = 2;
 		gbcI.gridy = 4;
 		infoBG.add(requestB, gbcI);
