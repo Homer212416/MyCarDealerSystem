@@ -19,6 +19,7 @@ Account Manage: edit no longer produces error if click it more than 3 times
 
 GUI: scaling will remain consistent throughout the windows even when they have been rescaled
 
+OLD UPDATES
 
 can remove search value
 
