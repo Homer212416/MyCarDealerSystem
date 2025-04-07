@@ -20,7 +20,7 @@ import java.awt.Toolkit;
 import java.util.*;
 
 public class accountManagePage {
-	private JFrame accountMainFrame;
+	public JFrame accountMainFrame;
 	private JFrame auaccountMainFrame;
 	private JFrame euaccountMainFrame;
 	private JFrame deleteUseraccountMainFrame;
@@ -171,18 +171,18 @@ public class accountManagePage {
 		gbcD.insets = new Insets(0, 5, 0, 0);
 		gbcD.anchor = GridBagConstraints.CENTER;
 		gbcD.fill = GridBagConstraints.HORIZONTAL;
-		JLabel fNameL = new JLabel("Name        ");
+		JLabel fNameL = new JLabel("User ID  ");
 		gbcD.gridx = 0;
 		gbcD.gridy = 0;
 		gbcD.weightx = .25;
 		displayBG.add(fNameL, gbcD);
 
-		JLabel lNameL = new JLabel("UserName");
+		JLabel lNameL = new JLabel("Name  ");
 		gbcD.gridx = 1;
 		gbcD.gridy = 0;
 		displayBG.add(lNameL, gbcD);
 
-		JLabel jobTitleL = new JLabel("Job Title  ");
+		JLabel jobTitleL = new JLabel("  Job Title  ");
 		gbcD.gridx = 2;
 		gbcD.gridy = 0;
 		displayBG.add(jobTitleL, gbcD);
@@ -260,8 +260,8 @@ public class accountManagePage {
 						String firstName = fNameT.getText();
 						String lastName = lNameT.getText();
 						String jobTitle = jobTitleT.getText();
-						String email = emailT.getText();
-						String[] editedUserInfo = { userID, firstName, lastName, jobTitle, email };
+						String email = emailT.getText(); // added email
+						String[] editedUserInfo = { userID, firstName, lastName, jobTitle, email }; // added email
 						controller.editedUser(editedUserInfo);
 
 					}
@@ -294,7 +294,7 @@ public class accountManagePage {
 			gbcI.anchor = GridBagConstraints.NORTHWEST;
 			gbcI.weightx = .25;
 
-			fNameT = new JTextField(user[0], 15);
+			fNameT = new JTextField(user[4], 15);
 			fNameT.setName(user[4] + "_first");
 			fNameT.setEditable(false);
 			gbcI.gridx = userGridX++;

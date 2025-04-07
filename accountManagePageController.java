@@ -156,6 +156,7 @@ public class accountManagePageController {
 			System.out.println(e.getMessage());
 		}
 		frame.populateUsers();
+		refreshPage();
 	}
 
 	public void pressedSubmit() {
@@ -201,6 +202,9 @@ public class accountManagePageController {
 			System.out.println(e.getMessage());
 		}
 		oldPage.dispose();
+		frame.populateUsers();
+		refreshPage();
+
 	}
 
 	public void removeUser(int userID) {
@@ -213,5 +217,16 @@ public class accountManagePageController {
 			System.out.println(e.getMessage());
 		}
 		frame.populateUsers();
+		refreshPage();
 	}
+
+	// close the page
+	public void refreshPage() {
+		// refresh the page
+		frame.accountMainFrame.dispose();
+
+		new accountManagePageController(userID);
+
+	}
+
 }
