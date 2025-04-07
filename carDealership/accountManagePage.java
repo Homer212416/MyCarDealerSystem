@@ -32,6 +32,7 @@ public class accountManagePage{
 	private JTextField jobTitleT;
 	private JTextField emailT;
 	private JTextField lNameT;
+	private JTextField userT;
 	private int verifiedEdit = 0;
 	//private User[] allUsers;
 	int nextEmployeeID = 0;
@@ -172,26 +173,34 @@ public class accountManagePage{
 		gbcD.insets = new Insets(0, 5,0, 0);
 		gbcD.anchor = GridBagConstraints.CENTER;
 		gbcD.fill = GridBagConstraints.HORIZONTAL;
-		JLabel fNameL = new JLabel("Name        ");
+		JLabel userL = new JLabel("User ID ");
 		gbcD.gridx = 0;
+		gbcD.gridy = 0;
+		gbcD.weightx = .01;
+		displayBG.add(userL, gbcD);
+		
+		gbcD.anchor = GridBagConstraints.CENTER;
+		gbcD.fill = GridBagConstraints.HORIZONTAL;
+		JLabel fNameL = new JLabel("First Name       ");
+		gbcD.gridx = 1;
 		gbcD.gridy = 0;
 		gbcD.weightx = .25;
 		displayBG.add(fNameL, gbcD);
 		
-		JLabel lNameL = new JLabel("UserName");
-		gbcD.gridx = 1;
+		JLabel lNameL = new JLabel("Last Name     ");
+		gbcD.gridx = 2;
 		gbcD.gridy = 0;
 		displayBG.add(lNameL, gbcD);
 		
 		
 		JLabel jobTitleL = new JLabel("Job Title  ");
-		gbcD.gridx = 2;
+		gbcD.gridx = 3;
 		gbcD.gridy = 0;
 		displayBG.add(jobTitleL, gbcD);
 		
 	
 		JLabel emailL = new JLabel("Email       ");
-		gbcD.gridx = 3;
+		gbcD.gridx = 4;
 		gbcD.gridy = 0;
 		displayBG.add(emailL, gbcD);
 
@@ -252,8 +261,8 @@ public class accountManagePage{
 					controller.adminUser("edit",(JToggleButton) e.getSource(), textBoxes);
 				}if(current == previous){//if they are done editing
 					for(JTextField textBox : textBoxes){
-						String userID = String.valueOf(current.getName().charAt(0));
 						textBox.setEditable(false);	
+						String userID = userT.getText();
 						String firstName = fNameT.getText();
 						String lastName = lNameT.getText();
 						String jobTitle = jobTitleT.getText();
@@ -272,12 +281,7 @@ public class accountManagePage{
 				current = ((JToggleButton) e.getSource());
 				controller.adminUser("delete", (JToggleButton) e.getSource());
 				ArrayList<JTextField> textBoxes = userTextBoxes.get(current);
-				String currentName = (current.getName());
-				String split = currentName.split("_")[0];
-				deleteuserID = String.valueOf(split);
-				
-
-				
+				deleteuserID = userT.getText();		
 			}
 		};
 		
@@ -289,14 +293,22 @@ public class accountManagePage{
 			gbcI.insets = new Insets(5, 5,0, 0);
 			gbcI.fill = GridBagConstraints.HORIZONTAL;
 			gbcI.anchor = GridBagConstraints.NORTHWEST;
-			gbcI.weightx = .25;
+			gbcI.weightx = .1;
 			
+			userT = new JTextField(user[4], 15);
+			userT.setName(user[4] +"_ID");
+			userT.setEditable(false);		
+			gbcI.gridx = userGridX++;
+			gbcI.gridy = userGridY;
+			inventoryBG.add(userT, gbcI);
 			
+			gbcI.fill = GridBagConstraints.HORIZONTAL;
 			fNameT = new JTextField(user[0], 15);
 			fNameT.setName(user[4] +"_first");
 			fNameT.setEditable(false);		
 			gbcI.gridx = userGridX++;
 			gbcI.gridy = userGridY;
+			gbcI.weightx = .25;
 			inventoryBG.add(fNameT, gbcI);
 		
 			lNameT = new JTextField(user[1],15);
@@ -400,7 +412,6 @@ public class accountManagePage{
 			for(JTextField textBox : textBoxes){
 				//System.out.println(textBox.getName());
 				textBox.setEditable(true);
-				
 			} 
 			previous = button;			
 		}else{
