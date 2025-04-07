@@ -6,8 +6,10 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 public class FirstLaunchPageController{
+	private FirstLaunchPage frame;
+	
 	public FirstLaunchPageController(){
-		FirstLaunchPage frame = new FirstLaunchPage(this);
+		frame = new FirstLaunchPage(this);
 	}
 
 	// create an initial admin user when the dealership is created
