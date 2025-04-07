@@ -82,12 +82,25 @@ public class DealershipLayer {
 	// truncates all tables in the database
 	public void deleteDealership() {
 		try {
-			DBManager.getInstance().runInsert("DELETE FROM dealerships;");
 			DBManager.getInstance().runInsert("DELETE FROM vehicles;");
+			DBManager.getInstance().runInsert("DELETE FROM sqlite_sequence WHERE name='vehicles';"); // reset the auto
+																										// increment
 			DBManager.getInstance().runInsert("DELETE FROM users;");
+			DBManager.getInstance().runInsert("DELETE FROM sqlite_sequence WHERE name='users';"); // reset the auto
+																									// increment
 			DBManager.getInstance().runInsert("DELETE FROM usersInfo;");
+			DBManager.getInstance().runInsert("DELETE FROM sqlite_sequence WHERE name='usersInfo';"); // reset the auto
+																										// increment
 			DBManager.getInstance().runInsert("DELETE FROM roles;");
+			DBManager.getInstance().runInsert("DELETE FROM sqlite_sequence WHERE name='roles';"); // reset the auto
+																									// increment
 			DBManager.getInstance().runInsert("DELETE FROM sales;");
+			DBManager.getInstance().runInsert("DELETE FROM sqlite_sequence WHERE name='sales';"); // reset the auto
+																									// increment
+			DBManager.getInstance().runInsert("DELETE FROM dealerships;");
+			DBManager.getInstance().runInsert("DELETE FROM sqlite_sequence WHERE name='dealerships';"); // reset the
+																										// auto
+																										// increment
 		} catch (SQLException e) {
 			System.out.println("layer: Error deleting dealership: " + e.getMessage());
 			e.printStackTrace();
