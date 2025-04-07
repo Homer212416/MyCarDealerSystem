@@ -84,10 +84,7 @@ public class DealershipLayer {
 		try {
 			DBManager.getInstance().runInsert("DELETE FROM vehicles;");
 			DBManager.getInstance().runInsert("DELETE FROM sqlite_sequence WHERE name='vehicles';"); // reset the auto
-																										// increment
-			DBManager.getInstance().runInsert("DELETE FROM users;");
-			DBManager.getInstance().runInsert("DELETE FROM sqlite_sequence WHERE name='users';"); // reset the auto
-																									// increment
+																										// increment							// increment
 			DBManager.getInstance().runInsert("DELETE FROM usersInfo;");
 			DBManager.getInstance().runInsert("DELETE FROM sqlite_sequence WHERE name='usersInfo';"); // reset the auto
 																										// increment
