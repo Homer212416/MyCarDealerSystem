@@ -89,6 +89,7 @@ public class DBManager {
 				+ " name text NOT NULL, location text NOT NULL, capacity INTEGER);";
 
 		var stmt = m_connection.createStatement();
+
 		stmt.execute(dealershipSQL);
 		
 		var roleSQL = "CREATE TABLE IF NOT EXISTS roles (id INTEGER PRIMARY KEY AUTOINCREMENT,"

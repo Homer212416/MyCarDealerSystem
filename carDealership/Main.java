@@ -23,8 +23,6 @@ public class Main {
 		} else {
 			//m_dealership = new Dealership(dealership.getNname(), dealership.getLocation(), dealership.getCapacity());
 			loginPageController myFrame = new loginPageController();
-			
-			
 		}
 	}
 	

@@ -1,14 +1,13 @@
 package carDealership;
 
+
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-public class FirstLaunchPageController {
-	private FirstLaunchPage frame;
-
-	public FirstLaunchPageController() {
-		frame = new FirstLaunchPage(this);
+public class FirstLaunchPageController{
+	public FirstLaunchPageController(){
+		FirstLaunchPage frame = new FirstLaunchPage(this);
 	}
 
 	// create an initial admin user when the dealership is created

@@ -122,6 +122,9 @@ public class accountManagePageController{
 		String storedPassword = userLayer.checkPassword(userID);
 		
 		if(storedPassword.matches(password)){result = true;}
+	//close confirm password page
+		oldpage.dispose();
+
 		if(result){
 			switch(type){
 				case "delete":
