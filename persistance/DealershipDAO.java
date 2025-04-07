@@ -88,8 +88,6 @@ public class DealershipDAO implements DAOInterface<Dealership> {
             DBManager.getInstance().runInsert(dropDealershipsTable);
 			
             // Drop other tables if they exist (e.g., users, roles, vehicles)
-            String dropUsersTable = "DROP TABLE IF EXISTS users";
-            DBManager.getInstance().runInsert(dropUsersTable);
 
            String dropSalesTable = "DROP TABLE IF EXISTS sales";
            DBManager.getInstance().runInsert(dropSalesTable);
