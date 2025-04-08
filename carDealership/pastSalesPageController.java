@@ -53,6 +53,7 @@ public class pastSalesPageController {
 				mainFrame.dispose();
 			}else if (sel== 2){
 				dealerShipInfoPageController dsC = new dealerShipInfoPageController(userID, w, h);
+				mainFrame.dispose();
 			}else if(sel== 3){
 				new pastSalesPageController(userID,w,h);
 				mainFrame.dispose();
