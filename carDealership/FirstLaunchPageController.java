@@ -1,6 +1,6 @@
 package carDealership;
 
-
+import persistance.*;
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
@@ -21,7 +21,7 @@ public class FirstLaunchPageController{
 		String email = "default@mail.com";
 		String password = "123";
 		try {
-			new User(firstName, lastName, jobTitle, email, password);
+			new User(firstName, lastName, jobTitle, email, UserLayer.hashPassword(password));
 			JOptionPane.showMessageDialog(frame,
 					"Admin user created successfully. UserID: " + userID + ", Password: " + password, "Success",
 					JOptionPane.INFORMATION_MESSAGE);

@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import javax.swing.*;
 import javax.swing.border.*;
 
-import persistance.DBManager;
+import persistance.*;
 
 public class loginPageController{
 	private loginPage login;
@@ -30,7 +30,7 @@ public void submitPressed(JFrame currentFrame, String userIdStr, char[] password
         String password = new String(passwordChars);
 
         //SQL QUery
-        String query = "SELECT * FROM usersInfo WHERE ID = " + userId + " AND password = '" + password + "'";
+        String query = "SELECT * FROM usersInfo WHERE ID = " + userId + " AND password = '" + UserLayer.hashPassword(password) + "'";
 
         ResultSet rs = DBManager.getInstance().runQuery(query);
 
@@ -88,7 +88,7 @@ public void newPasswordSubmitPressed(JFrame oldPage, int userId, String newPassw
 
     try {
         // Build raw SQL update query
-        String updateQuery = "UPDATE usersInfo SET password = '" + newPassword + "' WHERE ID = " + userId;
+        String updateQuery = "UPDATE usersInfo SET password = '" + UserLayer.hashPassword(newPassword) + "' WHERE ID = " + userId;
 
         DBManager.getInstance().runInsert(updateQuery);
 

@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import persistance.DBManager;
@@ -121,7 +123,7 @@ public class accountManagePageController{
 		
 		String storedPassword = userLayer.checkPassword(userID);
 		
-		if(storedPassword.matches(password)){result = true;}
+		if(storedPassword.matches(UserLayer.hashPassword(password))){result = true;}
 	//close confirm password page
 		oldpage.dispose();
 
@@ -159,7 +161,7 @@ public class accountManagePageController{
 		
 		String storedPassword = userLayer.checkPassword(userID);
 		
-		if(storedPassword.matches(password)){result = true;}
+		if(storedPassword.matches(UserLayer.hashPassword(password))){result = true;}
 		//close confirm password page
 		//System.out.println("password result: " + result);
 		oldpage.dispose();
@@ -216,9 +218,23 @@ public class accountManagePageController{
 		boolean success = false;
 		//String query = "INSERT INTO usersInfo (firstName, lastName, jobTitle, email, password) VALUES ('" + firstName
 				//+ "', '" + lastName + "', '" + jobTitle + "', '" + password + "')";
+		
+		// public static helper methods for password hashing, etc.
+
 		try {
-			User newUser = new User(firstName, lastName, jobTitle, email, password);
+			User newUser = new User(firstName, lastName, jobTitle, email, UserLayer.hashPassword(password));
 			success = true;
+			//SQL QUery
+        	String query = "SELECT Max(ID) FROM usersInfo";
+
+        	ResultSet rs = DBManager.getInstance().runQuery(query);
+			String id = "";
+			if (rs.next()) {
+				int maxID = rs.getInt(1);
+				id = Integer.toString(maxID);
+			}
+
+			JOptionPane.showMessageDialog(oldPage, "User created and email successfully sent. " + id + ", Password: " + password, "Success", JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		} 
