@@ -261,8 +261,8 @@ public class accountManagePage{
 					controller.adminUser("edit",(JToggleButton) e.getSource(), textBoxes);
 				}if(current == previous){//if they are done editing
 					for(JTextField textBox : textBoxes){
+						String userID = String.valueOf(current.getName().charAt(0));
 						textBox.setEditable(false);	
-						String userID = userT.getText();
 						String firstName = fNameT.getText();
 						String lastName = lNameT.getText();
 						String jobTitle = jobTitleT.getText();
@@ -281,7 +281,12 @@ public class accountManagePage{
 				current = ((JToggleButton) e.getSource());
 				controller.adminUser("delete", (JToggleButton) e.getSource());
 				ArrayList<JTextField> textBoxes = userTextBoxes.get(current);
-				deleteuserID = userT.getText();		
+				String currentName = (current.getName());
+				String split = currentName.split("_")[0];
+				deleteuserID = String.valueOf(split);
+				
+
+				
 			}
 		};
 		
@@ -412,6 +417,7 @@ public class accountManagePage{
 			for(JTextField textBox : textBoxes){
 				//System.out.println(textBox.getName());
 				textBox.setEditable(true);
+				
 			} 
 			previous = button;			
 		}else{
