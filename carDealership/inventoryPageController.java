@@ -264,7 +264,7 @@ public String getFilterDisplay(){
 		  if (search.matches("\\d+")) {  // \\d+ matches one or more digits
 			inventory.checkDemark();
 			searchFilter = " id = " + search + " ";  
-			qry = "SELECT * FROM vehicles WHERE" + searchFilter;
+			qry = "SELECT * FROM vehicles WHERE" + searchFilter + "AND inInventory = 'true'";
 			
 		}
 		else {

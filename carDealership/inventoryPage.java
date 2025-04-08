@@ -333,10 +333,12 @@ public class inventoryPage{
 					controlPanel.remove(inventoryBG);
 					searchExit.setEnabled(true);
 					searchExit.setVisible(true);
+					
 					controlPanel.validate();
 					controlPanel.repaint();
 					invMainFrame.validate();
 					refreshInventory();
+					if(controller.getNumbertoDisplay() == 0){JOptionPane.showMessageDialog(invMainFrame, "No vehicle in Inventory matches searchID");}
 				}
 				ignoreStateChangeSearch = false;
 			}

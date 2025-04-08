@@ -27,7 +27,7 @@ public class UserLayer {
 		}	
 	}
 
-	public  UserLayer(String firstName, String lastName, String jobTitle, String email, String password, int editSecurity, int pageSecurity) throws SQLException {
+	public UserLayer(String firstName, String lastName, String jobTitle, String email, String password, int editSecurity, int pageSecurity) throws SQLException {
 		u_firstName= firstName;
 		u_lastName = lastName;
 		u_jobTitle = jobTitle;
@@ -37,11 +37,29 @@ public class UserLayer {
 		u_editSecurity = editSecurity;
 		try{
 			DBManager.getInstance().runInsert("INSERT INTO usersInfo " + "(firstName, lastName, jobTitle, email, password, editSecurity, pageSecurity) " + "VALUES" + " ('" + firstName + "', '" + lastName + "', '" + jobTitle + "', '" + email + "', '" + password + "', " + editSecurity + ", " +pageSecurity +");");
+				
 		}catch(SQLException e){
 				System.out.println(e.getMessage());
+	
 			}
 	}
 	
+	public int getNewID(String firstName, String lastName, String jobTitle, String email, String password){
+		int newUserID = -1;
+		try{
+			var resultSet = DBManager.getInstance().runQuery("SELECT ID FROM usersInfo WHERE firstName = '" + firstName + "'AND lastName = '" + lastName + "'AND email = '" + email + "';");
+			
+			while (resultSet.next()) {
+				newUserID = resultSet.getInt("ID");
+				return newUserID;	
+			}				
+		}catch(SQLException e){
+				System.out.println(e.getMessage());
+				return -1;
+			}
+		return newUserID;
+	}
+		
 	public boolean existsAndSet() throws SQLException {
 		var resultSet = DBManager.getInstance().runQuery("SELECT * FROM usersInfo");
 		boolean usersFound = false;

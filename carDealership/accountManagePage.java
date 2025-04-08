@@ -49,6 +49,7 @@ public class accountManagePage{
 	private JPanel displayBG;
 	private JPanel inventoryBG;
 	private JPanel filterBG; 
+	private JToggleButton addUser;
 	
 
 	public accountManagePage(accountManagePageController controller, int width, int height){
@@ -151,7 +152,7 @@ public class accountManagePage{
 		gbcC.gridy = 0;
 		controlPanel.add(carImage,gbcC);
 		//add user Button/////////////////////////////////////////////////////////////////////////////////
-		JToggleButton addUser = new JToggleButton("Add New User");
+		addUser = new JToggleButton("Add New User");
 		addUser.setFont(new Font("HP Simplified Hans", Font.PLAIN, 10));
 		addUser.setMargin(new java.awt.Insets(1, 1, 1, 1));
 		gbcS.insets = new Insets(0, 10, 0, 0);
@@ -457,6 +458,8 @@ public class accountManagePage{
 		AddUseraccountMainFrame.setBounds(0, 0, 400, 200);
 		AddUseraccountMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
+			addUser.setSelected(false);
+			previous = null;
             AddUseraccountMainFrame.dispose();
 			}        
 		});
@@ -550,6 +553,8 @@ public class accountManagePage{
 			auaccountMainFrame.setBounds(0, 0, 315, 335);
 			auaccountMainFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent){
+				addUser.setSelected(false);
+				previous = null;
 				auaccountMainFrame.dispose();
 				}        
 			});
@@ -697,10 +702,11 @@ public class accountManagePage{
 					char[] passwordChar =  passwordT.getPassword();
 					String password = new String(passwordChar);
 					String[] newUserInfo = {firstName, lastName, jobTitle, email, password};
-					boolean success = controller.newUserSubmit(newUserInfo, auaccountMainFrame);
+					int newUserID = controller.newUserSubmit(newUserInfo, auaccountMainFrame);
 					
-					if(success){
+					if(newUserID != -1){
 						//System.out.println("new user: " + success);
+						JOptionPane.showMessageDialog(auaccountMainFrame, "User Created. \n UserID:  " + newUserID + "\n Password: " + password);
 						controlPanel.remove(inventoryBG);
 						controlPanel.remove(displayBG);
 						controlPanel.remove(filterBG);
@@ -723,6 +729,8 @@ public class accountManagePage{
 		euaccountMainFrame.setBounds(0, 0, 400, 200);
 		euaccountMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
+			current.setSelected(false);
+			previous = null;
             euaccountMainFrame.dispose();
 			}        
 		});
@@ -814,6 +822,8 @@ public class accountManagePage{
 		deleteUseraccountMainFrame.setBounds(0, 0, 400, 200);
 		deleteUseraccountMainFrame.addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent windowEvent){
+			current.setSelected(false);
+			previous = null;
             deleteUseraccountMainFrame.dispose();
 			}        
 		});

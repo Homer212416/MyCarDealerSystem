@@ -206,8 +206,9 @@ public class accountManagePageController{
 		//frame.addUserPage(true, button);
 	}
 
-	public boolean newUserSubmit(String[] newUserInfo, JFrame oldPage) {
+	public int newUserSubmit(String[] newUserInfo, JFrame oldPage) {
 		// create new user from user info
+		int s = -1;
 		String firstName = newUserInfo[0];
 		String lastName = newUserInfo[1];
 		String jobTitle = newUserInfo[2];
@@ -223,7 +224,11 @@ public class accountManagePageController{
 			System.out.println(e.getMessage());
 		} 
 		oldPage.dispose();
-		return success;
+		if(success){
+			s = userLayer.getNewID(firstName, lastName, jobTitle, email, password);
+		}
+		
+		return s;
 	}
 
 	public void removeUser(int userID) {

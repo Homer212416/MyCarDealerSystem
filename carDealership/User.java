@@ -48,6 +48,8 @@ public class User {
 		
 	}
 	
+	
+		
 	public int[] getEditSecurity(int ID) throws SQLException{
 		int edittingSecurity = u_UserLayer.getEditSecurity(ID);
 		int[] list = new int[5];
