@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import persistance.DBManager;
@@ -121,7 +123,7 @@ public class accountManagePageController{
 		
 		String storedPassword = userLayer.checkPassword(userID);
 		
-		if(storedPassword.matches(password)){result = true;}
+		if(storedPassword.matches(UserLayer.hashPassword(password))){result = true;}
 	//close confirm password page
 		oldpage.dispose();
 
@@ -159,7 +161,7 @@ public class accountManagePageController{
 		
 		String storedPassword = userLayer.checkPassword(userID);
 		
-		if(storedPassword.matches(password)){result = true;}
+		if(storedPassword.matches(UserLayer.hashPassword(password))){result = true;}
 		//close confirm password page
 		//System.out.println("password result: " + result);
 		oldpage.dispose();
@@ -232,6 +234,7 @@ public class accountManagePageController{
 			oldPage.dispose();
 			if(success){
 				s = userLayer.getNewID(firstName, lastName, jobTitle, email, password);
+			
 			}
 		}
 		return s;
