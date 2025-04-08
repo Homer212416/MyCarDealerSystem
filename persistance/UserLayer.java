@@ -94,7 +94,7 @@ public class UserLayer {
 			while (pageS.next()) {
 				id_jobTitle = pageS.getString("jobTitle");
 				id_userID = pageS.getString("ID");
-				id_pageSecurity = pageS.getInt("pageSecurity");
+				id_pageSecurity = pageS.getInt("editSecurity");
 			}
 		}catch (SQLException e) {
 			System.out.println(e.getMessage());
