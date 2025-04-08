@@ -285,6 +285,7 @@ public class accountManagePage{
 				String currentName = (current.getName());
 				String split = currentName.split("_")[0];
 				deleteuserID = String.valueOf(split);
+				System.out.print(deleteuserID);
 				
 
 				

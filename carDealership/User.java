@@ -26,28 +26,8 @@ public class User {
 		this.jobTitle = jobTitle;
 		this.email = email;
 		this.password = password;
-		switch(jobTitle){
-			case "Salesperson":
-				//System.out.println("is salesperson");
-				editSecurity = 2;
-				pageSecurity = 2;
-				break;
-			case "Manager":
-				editSecurity = 1;
-				pageSecurity = 2;
-				//System.out.println("is manager");
-				break;
-			case "Admin":
-				editSecurity = 1;
-				pageSecurity = 1;
-				//System.out.println("is admin");
-				break;
-			default:
-				editSecurity = 2;
-				pageSecurity = 2;
-		}
 		//System.out.println("user page security" + pageSecurity);
-		u_UserLayer = new UserLayer(firstName,lastName, jobTitle, email, password, editSecurity, pageSecurity);
+		u_UserLayer = new UserLayer(firstName,lastName, jobTitle, email, password);
 		
 	}
 	

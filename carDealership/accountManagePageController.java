@@ -189,13 +189,13 @@ public class accountManagePageController{
 
 	public void editedUser(String[] editedInfo) {
 		// update database with new user info
-		String userID = editedInfo[0];
+		int deleteUserID = Integer.parseInt(editedInfo[0]);
 		String firstName = editedInfo[1];
 		String lastName = editedInfo[2];
 		String jobTitle = editedInfo[3];
 		String email = editedInfo[4];
 		String query = "UPDATE usersInfo SET firstName = '" + firstName + "', lastName = '" + lastName
-				+ "', jobTitle = '" + jobTitle + "', email = '" + email + "' WHERE ID = " + userID;
+				+ "', jobTitle = '" + jobTitle + "', email = '" + email + "' WHERE ID = " + deleteUserID;
 		try {
 			DBManager.getInstance().runInsert(query);
 		} catch (SQLException e) {

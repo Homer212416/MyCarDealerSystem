@@ -51,8 +51,8 @@ public class DBManager {
 		var dbFile = new File(m_dbPath);
 		var mustCreateTables = !dbFile.exists();
 		var url = "jdbc:sqlite:" + m_dbPath;
-		String[] tables = new String[8];
-		String[] allTable = {"dealerships", "roles","sales", "users", "vehicles"};
+		String[] tables = new String[12];
+		String[] allTable = {"dealerships", "roles","sales", "users", "vehicles","security"};
 		try {
 			m_connection = DriverManager.getConnection(url);
 			System.out.println("Connection to SQLite has been established.");
@@ -98,9 +98,15 @@ public class DBManager {
 		stmt.execute(roleSQL);
 		
 		var users = "CREATE TABLE IF NOT EXISTS usersInfo (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ "firstName text NOT NULL, lastName text NOT NULL, jobTitle text not NULL, email text NOT NULL, password NOT NULL, editSecurity INTEGER NOT NULL, pageSecurity INTEGER NOT NULL)";
+				+ "firstName text NOT NULL, lastName text NOT NULL, jobTitle text not NULL, email text NOT NULL, password NOT NULL)";
 				
 		stmt.execute(users);
+		
+		var security = "CREATE TABLE IF NOT EXISTS security (jobTitle text PRIMARY KEY,editSecurity INTEGER NOT NULL, pageSecurity INTEGER NOT NULL)";
+				
+		stmt.execute(security);
+		var addSecurity = "INSERT INTO security(jobTitle, editSecurity, pageSecurity) VALUES ('Admin', 1, 1),('Salesperson', 2, 2),('Manager', 1, 2);";
+		stmt.execute(addSecurity);
 		
 		var vehicles = "CREATE TABLE IF NOT EXISTS vehicles (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ "model text NOT NULL, make text NOT NULL, color text NOT NULL, year INTEGER, price INTEGER, carType String, handleBarType String, inInventory BOOLEAN)";

@@ -22,23 +22,23 @@ public class UserLayer {
 	public UserLayer() {
 		try{
 				var users = "CREATE TABLE IF NOT EXISTS usersInfo (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ "firstName text NOT NULL, lastName text NOT NULL, jobTitle text not NULL, email text NOT NULL, password NOT NULL, editSecurity INTEGER NOT NULL, pageSecurity INTEGER NOT NULL)";
+				+ "firstName text NOT NULL, lastName text NOT NULL, jobTitle text not NULL, email text NOT NULL, password NOT NULL)";
 				DBManager.getInstance().runInsert(users);
 		}catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}	
 	}
 
-	public UserLayer(String firstName, String lastName, String jobTitle, String email, String password, int editSecurity, int pageSecurity) throws SQLException {
+	public UserLayer(String firstName, String lastName, String jobTitle, String email, String password) throws SQLException {
 		u_firstName= firstName;
 		u_lastName = lastName;
 		u_jobTitle = jobTitle;
 		u_email = email;
 		u_password = password; 
-		u_pageSecurity = pageSecurity;
-		u_editSecurity = editSecurity;
+
+	
 		try{
-			DBManager.getInstance().runInsert("INSERT INTO usersInfo " + "(firstName, lastName, jobTitle, email, password, editSecurity, pageSecurity) " + "VALUES" + " ('" + firstName + "', '" + lastName + "', '" + jobTitle + "', '" + email + "', '" + password + "', " + editSecurity + ", " +pageSecurity +");");
+			DBManager.getInstance().runInsert("INSERT INTO usersInfo " + "(firstName, lastName, jobTitle, email, password) " + "VALUES" + " ('" + firstName + "', '" + lastName + "', '" + jobTitle + "', '" + email + "', '" + password + "');");
 				
 		}catch(SQLException e){
 				System.out.println(e.getMessage());
@@ -95,7 +95,7 @@ public class UserLayer {
 	public int getPageSecurity(int userID) throws SQLException{
 		
 		try{
-			var pageS = DBManager.getInstance().runQuery("SELECT ID, jobTitle, pageSecurity FROM usersInfo WHERE ID =" + userID + "");
+			var pageS = DBManager.getInstance().runQuery("SELECT ID, usersInfo.jobTitle,security.jobTitle, pageSecurity FROM usersInfo, security WHERE ID =" + userID + " AND usersInfo.jobTitle = security.jobTitle");
 			while (pageS.next()) {
 				id_jobTitle = pageS.getString("jobTitle");
 				id_userID = pageS.getString("ID");
@@ -110,7 +110,7 @@ public class UserLayer {
 	public int getEditSecurity(int userID) throws SQLException{
 		
 		try{
-			var pageS = DBManager.getInstance().runQuery("SELECT ID, jobTitle, editSecurity FROM usersInfo WHERE ID =" + userID + "");
+			var pageS = DBManager.getInstance().runQuery("SELECT ID, usersInfo.jobTitle,security.jobTitle, editSecurity FROM usersInfo, security WHERE ID =" + userID + " AND usersInfo.jobTitle = security.jobTitle");
 			while (pageS.next()) {
 				id_jobTitle = pageS.getString("jobTitle");
 				id_userID = pageS.getString("ID");

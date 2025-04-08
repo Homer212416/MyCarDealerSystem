@@ -98,7 +98,8 @@ public class DealershipDAO implements DAOInterface<Dealership> {
 			String dropUsersInfoTable = "DROP TABLE IF EXISTS usersInfo";
             DBManager.getInstance().runInsert(dropUsersInfoTable);
 			
-			
+			String dropSecurity = "DROP TABLE IF EXISTS security";
+            DBManager.getInstance().runInsert(dropSecurity);
 			
 			
 			
