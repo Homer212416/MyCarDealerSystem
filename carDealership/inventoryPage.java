@@ -435,6 +435,11 @@ public class inventoryPage{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					controller.sortMenuSelect(sortMenu.getSelectedIndex());
+					controlPanel.remove(inventoryBG);
+					controlPanel.validate();
+					controlPanel.repaint();
+					invMainFrame.validate();
+					refreshInventory();
 				}
 			});
 		/////////////////////////////////////////////////////////////////
@@ -806,7 +811,9 @@ public class inventoryPage{
 			}else{check.setEnabled(false);}
 		}	
 	}
-	
+	public void ignorestateChanger(){
+		ignoreStateChange = false;
+	}
 	public void refreshColors(){
 		String[] filteredColors = controller.getFilteredColors();
 		this.ignoreStateChange = true;

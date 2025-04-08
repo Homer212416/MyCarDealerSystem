@@ -1,7 +1,7 @@
 package carDealership;
 
 import persistance.UserLayer;
-
+import java.util.Arrays;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
@@ -27,7 +27,7 @@ public class User {
 		this.email = email;
 		this.password = password;
 		switch(jobTitle){
-			case "SalesPerson":
+			case "Salesperson":
 				//System.out.println("is salesperson");
 				editSecurity = 2;
 				pageSecurity = 2;
@@ -42,6 +42,9 @@ public class User {
 				pageSecurity = 1;
 				//System.out.println("is admin");
 				break;
+			default:
+				editSecurity = 2;
+				pageSecurity = 2;
 		}
 		//System.out.println("user page security" + pageSecurity);
 		u_UserLayer = new UserLayer(firstName,lastName, jobTitle, email, password, editSecurity, pageSecurity);
@@ -52,16 +55,18 @@ public class User {
 		
 	public int[] getEditSecurity(int ID) throws SQLException{
 		int edittingSecurity = u_UserLayer.getEditSecurity(ID);
+		System.out.println(edittingSecurity);
 		int[] list = new int[5];
 		switch(edittingSecurity){
 		case 1:
 				int[] onelist = {1,2,3,4,5};
-				list = onelist;
-				break;
-			case 2:
+				return onelist;
+
+		case 2:
 				int[] twolist = {4};
-				list = twolist;
-				break;
+				System.out.println(Arrays.toString(twolist));
+				return twolist;
+				
 		}
 		return list;
 		

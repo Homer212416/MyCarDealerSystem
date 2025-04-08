@@ -1,5 +1,6 @@
 package carDealership;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.*;
@@ -40,7 +41,7 @@ public class inventoryPageController{
 	private String colorFilter = "";
 	private String yearFilter = "";
 	private String priceFilter = "";
-	private String sortOrder = "";
+	private String sorted = "";
 	private String searchFilter = "";
 	private String displayFilter = "";
 	private String qry;
@@ -60,7 +61,7 @@ public inventoryPageController(int ID, int width, int height){
 			try{
 				security = user.getPageSecurity(userID);
 				editSecurity = user.getEditSecurity(userID);
-				//for(int each : security){System.out.print(each +", ");}
+				System.out.println(Arrays.toString(editSecurity));
 			}catch(SQLException e){
 				System.out.println(e.getMessage());
 			}
@@ -172,14 +173,14 @@ public String getFilterDisplay(){
 				//System.out.println(qry);
 			}
 
-			// Add the ORDER BY clause if sortOrder is not empty
-			if (!sortOrder.isEmpty()) {
-				qry += " ORDER BY " + sortOrder;  // Append ORDER BY condition
+			// Add the ORDER BY clause if sorted is not empty
+			if (!sorted.isEmpty()) {
+				qry += " ORDER BY " + sorted;  // Append ORDER BY condition
 			}
 	//}else{
 		//qry += " WHERE " + searchFilter; 
 	//}
-	
+	System.out.println("qry: " + qry);
 	filterFilter();
 	
     return qry;
@@ -206,7 +207,7 @@ public String getFilterDisplay(){
 			}
 			if (!displayFilter.isEmpty()) {
 			}
-			
+		inventory.ignorestateChanger();	
 	}
 	
 	public void filterMakes(String makes){
@@ -312,8 +313,7 @@ public String getFilterDisplay(){
 		}
 	}
 
-	public String sortMenuSelect(int sortSel){
-		String sorted = "";
+	public void sortMenuSelect(int sortSel){
 		switch(sortSel){
 			case 1:
 				sorted = "price DESC";
@@ -334,7 +334,7 @@ public String getFilterDisplay(){
 				sorted = "year ASC";
 				break;	
 		}
-		return sorted;
+		getFilterDisplay();
 	}
 
 	public int getTotalVehiclesInInventory() {
