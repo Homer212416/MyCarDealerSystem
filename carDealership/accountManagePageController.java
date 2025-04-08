@@ -1,6 +1,5 @@
 package carDealership;
 
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -12,65 +11,66 @@ import java.util.*;
 import persistance.DBManager;
 import persistance.UserLayer;
 
-public class accountManagePageController{
+public class accountManagePageController {
 	private int[] security;
 	private int userID;
 	private User user;
 	private UserLayer userLayer;
 	private accountManagePage frame;
 	private Boolean result = false;
-	
-	public accountManagePageController(int ID, int width, int height){
+
+	public accountManagePageController(int ID, int width, int height) {
 		this.userID = ID;
 		user = new User();
 		userLayer = new UserLayer();
-		try{
-				security = user.getPageSecurity(userID);
-			}catch(SQLException e){
-				System.out.println(e.getMessage());
-			}
+		try {
+			security = user.getPageSecurity(userID);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 		frame = new accountManagePage(this, width, height);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public void fillPageElements(JComboBox box){
-		String[] pageElements = new String[]{"", "Inventory", "Dealership Info", "Sales History", "Manage User Accounts","Sign Out"};
-		for(String element : pageElements){
+	public void fillPageElements(JComboBox box) {
+		String[] pageElements = new String[] { "", "Inventory", "Dealership Info", "Sales History",
+				"Manage User Accounts", "Sign Out" };
+		for (String element : pageElements) {
 			box.addItem(element);
 		}
-		
+
 	}
-	
-	public void setDisabledPages(DefaultListSelectionModel ddb){
-		if(security.length == 5){
+
+	public void setDisabledPages(DefaultListSelectionModel ddb) {
+		if (security.length == 5) {
 			ddb.addSelectionInterval(0, 5);
-		}else{
+		} else {
 			ddb.addSelectionInterval(0, 3);
 			ddb.addSelectionInterval(5, 5);
 		}
 	}
-	
-	public void pageMenuSelect(int sel, JFrame mainFrame, int w, int h){
+
+	public void pageMenuSelect(int sel, JFrame mainFrame, int w, int h) {
 		boolean contains = false;
-		
-		for(int page: security){
-			if(sel == page)
+
+		for (int page : security) {
+			if (sel == page)
 				contains = true;
 		}
-		if(contains){
-			if (sel== 1){
-				inventoryPageController inv = new inventoryPageController(userID,w,h);
+		if (contains) {
+			if (sel == 1) {
+				inventoryPageController inv = new inventoryPageController(userID, w, h);
 				mainFrame.dispose();
-			}else if (sel== 2){
+			} else if (sel == 2) {
 				dealerShipInfoPageController dsC = new dealerShipInfoPageController(userID, w, h);
 				mainFrame.dispose();
-			}else if(sel== 3){
+			} else if (sel == 3) {
 				new pastSalesPageController(userID, w, h);
 				mainFrame.dispose();
-			}else if(sel== 4){
+			} else if (sel == 4) {
 				new accountManagePageController(userID, w, h);
 				mainFrame.dispose();
-			}else if(sel== 5){
+			} else if (sel == 5) {
 				new loginPageController();
 				mainFrame.dispose();
 			}
@@ -92,43 +92,47 @@ public class accountManagePageController{
 		String[][] usersInfo = userLayer.getAllUsers();
 		return usersInfo;
 	}
-	
-	public void adminUser(String type, JToggleButton button, ArrayList<JTextField> textBoxes){
-		switch(type){
-				case "delete":
-					frame.deleteUserLoginPage(button);
-					break;
-				case "edit":
-					frame.editUserPage(button, textBoxes);
-					break;
-				case "add":
-					frame.addUserLoginPage(button);
-					break;
-			}
+
+	public void adminUser(String type, JToggleButton button, ArrayList<JTextField> textBoxes) {
+		switch (type) {
+			case "delete":
+				frame.deleteUserLoginPage(button);
+				break;
+			case "edit":
+				frame.editUserPage(button, textBoxes);
+				break;
+			case "add":
+				frame.addUserLoginPage(button);
+				break;
+		}
 	}
-	
-	public void adminUser(String type, JToggleButton button){
-		switch(type){
-				case "delete":
-					frame.deleteUserLoginPage(button);
-					break;
-				case "add":
-					frame.addUserLoginPage(button);
-					break;
-			}
+
+	public void adminUser(String type, JToggleButton button) {
+		switch (type) {
+			case "delete":
+				frame.deleteUserLoginPage(button);
+				break;
+			case "add":
+				frame.addUserLoginPage(button);
+				break;
+		}
 	}
-	public void isAdmin(String password, JFrame oldpage, String type, JToggleButton button, ArrayList<JTextField> textBoxes){
-		//if password is valid for user return true
+
+	public void isAdmin(String password, JFrame oldpage, String type, JToggleButton button,
+			ArrayList<JTextField> textBoxes) {
+		// if password is valid for user return true
 		result = false;
-		
+
 		String storedPassword = userLayer.checkPassword(userID);
-		
-		if(storedPassword.matches(UserLayer.hashPassword(password))){result = true;}
-	//close confirm password page
+
+		if (storedPassword.matches(UserLayer.hashPassword(password))) {
+			result = true;
+		}
+		// close confirm password page
 		oldpage.dispose();
 
-		if(result){
-			switch(type){
+		if (result) {
+			switch (type) {
 				case "delete":
 					frame.deleteAdminConfirmed(true, button);
 					break;
@@ -140,8 +144,8 @@ public class accountManagePageController{
 					break;
 			}
 		}
-		if(!result){
-			switch(type){
+		if (!result) {
+			switch (type) {
 				case "delete":
 					frame.deleteAdminConfirmed(false, button);
 					break;
@@ -154,19 +158,21 @@ public class accountManagePageController{
 			}
 		}
 	}
-		
-	public void isAdmin(String password, JFrame oldpage, String type, JToggleButton button){
-		//if password is valid for user return true
+
+	public void isAdmin(String password, JFrame oldpage, String type, JToggleButton button) {
+		// if password is valid for user return true
 		result = false;
-		
+
 		String storedPassword = userLayer.checkPassword(userID);
-		
-		if(storedPassword.matches(UserLayer.hashPassword(password))){result = true;}
-		//close confirm password page
-		//System.out.println("password result: " + result);
+
+		if (storedPassword.matches(UserLayer.hashPassword(password))) {
+			result = true;
+		}
+		// close confirm password page
+		// System.out.println("password result: " + result);
 		oldpage.dispose();
-		if(result){
-			switch(type){
+		if (result) {
+			switch (type) {
 				case "delete":
 					frame.deleteAdminConfirmed(true, button);
 					break;
@@ -175,8 +181,8 @@ public class accountManagePageController{
 					break;
 			}
 		}
-		if(!result){
-			switch(type){
+		if (!result) {
+			switch (type) {
 				case "delete":
 					frame.deleteAdminConfirmed(false, button);
 					break;
@@ -205,7 +211,7 @@ public class accountManagePageController{
 
 	public void pressedSubmit() {
 		// open addUserPage
-		//frame.addUserPage(true, button);
+		// frame.addUserPage(true, button);
 	}
 
 	public boolean newUserSubmit(String[] newUserInfo, JFrame oldPage) {
@@ -216,28 +222,31 @@ public class accountManagePageController{
 		String password = newUserInfo[4];
 		String email = newUserInfo[3];
 		boolean success = false;
-		//String query = "INSERT INTO usersInfo (firstName, lastName, jobTitle, email, password) VALUES ('" + firstName
-				//+ "', '" + lastName + "', '" + jobTitle + "', '" + password + "')";
-		
+		// String query = "INSERT INTO usersInfo (firstName, lastName, jobTitle, email,
+		// password) VALUES ('" + firstName
+		// + "', '" + lastName + "', '" + jobTitle + "', '" + password + "')";
+
 		// public static helper methods for password hashing, etc.
 
 		try {
 			User newUser = new User(firstName, lastName, jobTitle, email, UserLayer.hashPassword(password));
 			success = true;
-			//SQL QUery
-        	String query = "SELECT Max(ID) FROM usersInfo";
+			// SQL QUery
+			String query = "SELECT Max(ID) FROM usersInfo";
 
-        	ResultSet rs = DBManager.getInstance().runQuery(query);
+			ResultSet rs = DBManager.getInstance().runQuery(query);
 			String id = "";
 			if (rs.next()) {
 				int maxID = rs.getInt(1);
 				id = Integer.toString(maxID);
 			}
 
-			JOptionPane.showMessageDialog(oldPage, "User created and email successfully sent. " + id + ", Password: " + password, "Success", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(oldPage,
+					"User created and email successfully sent. UserID: " + id + ", Password: " + password, "Success",
+					JOptionPane.INFORMATION_MESSAGE);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		} 
+		}
 		oldPage.dispose();
 		return success;
 	}
