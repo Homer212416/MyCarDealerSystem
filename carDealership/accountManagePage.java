@@ -710,6 +710,8 @@ public class accountManagePage{
 						controlPanel.remove(inventoryBG);
 						controlPanel.remove(displayBG);
 						controlPanel.remove(filterBG);
+						addUser.setSelected(false);
+						//previous = null;
 						//controlPanel.validate();
 						controlPanel.repaint();
 						accountMainFrame.validate();

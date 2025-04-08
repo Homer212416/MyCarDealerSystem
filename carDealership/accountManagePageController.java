@@ -219,6 +219,7 @@ public class accountManagePageController{
 		String jobTitle = job.substring(0, 1).toUpperCase() + job.substring(1).toLowerCase();
 		System.out.println(password);
 		String[] roles = {"Admin", "Manager", "Salesperson"};
+		String hashPassword = UserLayer.hashPassword(password);
 		if(!Arrays.asList(roles).contains(jobTitle)){
 			JOptionPane.showMessageDialog(oldPage, "Job Title is not accepted please try again", "Add New User Failed", JOptionPane.ERROR_MESSAGE);
 		}else{
@@ -226,7 +227,7 @@ public class accountManagePageController{
 			//String query = "INSERT INTO usersInfo (firstName, lastName, jobTitle, email, password) VALUES ('" + firstName
 					//+ "', '" + lastName + "', '" + jobTitle + "', '" + password + "')";
 			try {
-				User newUser = new User(firstName, lastName, jobTitle, email, password);
+				User newUser = new User(firstName, lastName, jobTitle, email, hashPassword);
 				success = true;
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
