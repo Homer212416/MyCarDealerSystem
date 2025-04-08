@@ -213,37 +213,30 @@ public class accountManagePageController{
 		int s = -1;
 		String firstName = newUserInfo[0];
 		String lastName = newUserInfo[1];
-		String jobTitle = newUserInfo[2];
+		String job = newUserInfo[2];
 		String password = newUserInfo[4];
 		String email = newUserInfo[3];
-		boolean success = false;
-		//String query = "INSERT INTO usersInfo (firstName, lastName, jobTitle, email, password) VALUES ('" + firstName
-				//+ "', '" + lastName + "', '" + jobTitle + "', '" + password + "')";
-		
-		// public static helper methods for password hashing, etc.
-
-		try {
-			User newUser = new User(firstName, lastName, jobTitle, email, UserLayer.hashPassword(password));
-			success = true;
-			//SQL QUery
-        	String query = "SELECT Max(ID) FROM usersInfo";
-
-        	ResultSet rs = DBManager.getInstance().runQuery(query);
-			String id = "";
-			if (rs.next()) {
-				int maxID = rs.getInt(1);
-				id = Integer.toString(maxID);
+		String jobTitle = job.substring(0, 1).toUpperCase() + job.substring(1).toLowerCase();
+		System.out.println(password);
+		String[] roles = {"Admin", "Manager", "Salesperson"};
+		if(!Arrays.asList(roles).contains(jobTitle)){
+			JOptionPane.showMessageDialog(oldPage, "Job Title is not accepted please try again", "Add New User Failed", JOptionPane.ERROR_MESSAGE);
+		}else{
+			boolean success = false;
+			//String query = "INSERT INTO usersInfo (firstName, lastName, jobTitle, email, password) VALUES ('" + firstName
+					//+ "', '" + lastName + "', '" + jobTitle + "', '" + password + "')";
+			try {
+				User newUser = new User(firstName, lastName, jobTitle, email, password);
+				success = true;
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			} 
+			oldPage.dispose();
+			if(success){
+				s = userLayer.getNewID(firstName, lastName, jobTitle, email, password);
+			
 			}
-
-			JOptionPane.showMessageDialog(oldPage, "User created and email successfully sent. " + id + ", Password: " + password, "Success", JOptionPane.INFORMATION_MESSAGE);
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		} 
-		oldPage.dispose();
-		if(success){
-			s = userLayer.getNewID(firstName, lastName, jobTitle, email, password);
 		}
-		
 		return s;
 	}
 
