@@ -1,6 +1,8 @@
 package persistance;
 import java.util.*;
 import java.sql.SQLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 public class UserLayer {
 	private int u_ID;
@@ -151,6 +153,33 @@ public class UserLayer {
 		
 		return storedPassword;
 	}
+
+	// public static helper methods for password hashing, etc.
+    public static String hashPassword(String password) {
+        // hash the password using a SHA-256 algorithm
+        try {
+            // Create a MessageDigest instance for SHA-256
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            // Perform the hashing
+            byte[] hashBytes = digest.digest(password.getBytes());
+
+            // Convert the byte array to a readable hexadecimal format
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hashBytes) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1)
+                    hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 	/*
 	public boolean validateUserLogin(String username){
 		if(userName exsist){
